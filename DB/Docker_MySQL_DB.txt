@@ -1,0 +1,24 @@
+# To access docker hub run:
+$ docker login
+
+# To run the container with the MySQL DB
+$ docker run --name mysql-db -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql
+
+
+# Debug: *if the container allready exists*
+$ docker start mysql-db
+
+# To see the status of the container
+$ docker ps
+Look for the colomn 'STATUS', it should be up
+
+# Setup IDE DB
+Select your IDE and create a new database
+- Set a name for the DB, e.g. Local Docker DB
+- Set user as: root
+- Set password = my-secret-pw
+- Test connection and if it works apply it.
+
+# Test DB
+To test the datebase select it and write the following query that should return the current date and time:
+SELECT NOW()
