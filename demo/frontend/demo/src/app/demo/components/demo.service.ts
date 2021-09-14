@@ -11,8 +11,8 @@ export class DemoService {
   constructor(private http: HttpClient) { }
 
 
-  public getDemoText(): Observable<DemoDto> {
-    return this.http.get<DemoDto>("http://localhost:8080/helloWorld");
+  public getDemoText(requestString: string): Observable<DemoDto> {
+    return this.http.get<DemoDto>(requestString);
   }
 
 }
