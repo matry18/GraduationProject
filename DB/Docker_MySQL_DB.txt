@@ -20,5 +20,5 @@ Select your IDE and create a new database
 - Test connection and if it works apply it.
 
 # Test DB
-To test the datebase select it and write the following query that should return the current date and time:
+To test the database select it and write the following query that should return the current date and time:
 SELECT NOW()
