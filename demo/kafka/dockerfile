@@ -1,0 +1,8 @@
+FROM ubuntu:latest
+RUN apt-get update && \
+    apt-get install -y openjdk-11-jre-headless && \
+    apt-get clean
+COPY /kafka_2.13-2.8.0 /kafka
+WORKDIR "/kafka"
+#ENTRYPOINT ["./bin/zookeeper-server-start.sh"]
+#CMD ["./config/zookeeper.properties"]
