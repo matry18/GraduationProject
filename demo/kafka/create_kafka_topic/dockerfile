@@ -1,0 +1,7 @@
+FROM ubuntu:latest
+RUN cd && \
+    cd kafka && \
+    pwd && \
+    cd kafka_2.13-2.8.1 && \
+    echo "------ CREATING KAFKA TOPIC ------"
+CMD /root/kafka/kafka_2.13-2.8.1/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic Kafka_Example

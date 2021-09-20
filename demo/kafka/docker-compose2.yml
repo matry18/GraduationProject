@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  zookeeper:
+    build:
+      context: ./start_zookeeper/
+      dockerfile: Dockerfile
+    image: ubuntu:latest
+  kafka_server:
+    build:
+      context: ./start_kafka_server/
+      dockerfile: Dockerfile
+    image: ubuntu:latest
+    depends_on:
+      - zookeeper
+  kafka_topic:
+    build:
+      context: ./create_kafka_topic/
+      dockerfile: Dockerfile
+    image: ubuntu:latest
+    depends_on:
+      - kafka_server
+  consume_kafka_topic:
+    build:
+      context: ./consume_kafka_topic/
+      dockerfile: Dockerfile
+    image: ubuntu:latest
+    depends_on:
+      - kafka_topic
+    
