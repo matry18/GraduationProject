@@ -1,6 +1,0 @@
-FROM ubuntu:latest
-RUN cd && \
-    cd kafka && \
-    cd kafka_2.13-2.8.1 && \
-    echo "------ STARTING CONSUMING KAFKA TOPIC ------"
-CMD /root/kafka/kafka_2.13-2.8.1/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic Kafka_Example --from-beginning
