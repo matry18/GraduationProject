@@ -1,0 +1,17 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    container_name: db
+    environment:
+      #- MYSQL_ROOT_USER=root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=testDB
+      #- MYSQL_USER=db_user
+      - MYSQL_PASSWORD=root
+    ports:
+      - "6033:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+volumes:
+  dbdata:
