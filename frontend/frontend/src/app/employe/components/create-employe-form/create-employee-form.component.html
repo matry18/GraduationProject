@@ -1,0 +1,24 @@
+<ng-container>
+  <h1>Create Employee</h1>
+  <form [formGroup]="employeeForm" >
+    <mat-form-field appearance="fill">
+      <mat-label>First name</mat-label>
+      <input matInput type="password" placeholder="firstname" formControlName="firstname"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Last name</mat-label>
+      <input matInput placeholder="lastname" formControlName="lastname"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password"/>
+    </mat-form-field>
+    <button mat-raised-button class="mat-primary form-submit-btn" [mat-dialog-close] (click)="submit()"  [disabled]="">submit</button>
+    <button mat-raised-button class="mat-warn form-submit-btn" (click)="cancel()">cancel</button>
+  </form>
+</ng-container>
+
