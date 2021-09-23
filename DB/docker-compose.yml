@@ -1,17 +1,17 @@
 version: "3.8"
 services:
   bosted_db:
-    image: mysql:latest
+    image: mysql:8
+    container_name: bosted_db
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: bosted
-      MYSQL_USER: user
-      MYSQL_PASSWORD: pswd
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bosted
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
     ports: 
       - "3306:3306"
     volumes:
       - bosted-volume:/var/lib/mysql
-
 volumes: 
   bosted-volume:
     
