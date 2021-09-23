@@ -37,7 +37,7 @@ public class ResidentService {
        resident.setFirstname(residentDto.getFirstname());
        resident.setLastname(residentDto.getLastname());
        resident.setDepartment(new Department(residentDto.getDepartment()));
-       resident.setEmail(resident.getEmail());
+       resident.setEmail(residentDto.getEmail());
        resident.setPhoneNumber(resident.getPhoneNumber());
        residentRepository.save(resident);
        return resident;
