@@ -16,7 +16,7 @@ import { AppComponent } from './app.component';
 import { CreateUserComponent } from './CreateUser/create-user/create-user.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatListModule} from '@angular/material/list';
-import { CreateCitizenFormComponent } from './citizen/components/create-citizen-form/create-citizen-form.component';
+import { ResidentCreateFormComponent } from './citizen/components/resident-create-form/resident-create-form.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {A11yModule} from '@angular/cdk/a11y';
 import {ClipboardModule} from '@angular/cdk/clipboard';
@@ -62,23 +62,47 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import {ReactiveFormsModule} from "@angular/forms";
 import {FormSubmissionPositiveComponent} from "./snackbars/FormSubmission/form-submission-positive/form-submission-positive.component";
 import { FormSubmissionNegativeComponent } from './snackbars/FormSubmission/form-submission-negative/form-submission-negative.component';
-import {CitizenModule} from "./citizen/citizen.module";
+import {ResidentModule} from "./citizen/resident.module";
 import { CreateEmployeeFormComponent } from './employe/components/create-employe-form/create-employee-form.component';
 import { AddUserDialogButtonComponent } from './user/add-user-dialog/add-user-dialog-button.component';
 import { AddUserMenuComponent } from './user/add-user-menu/add-user-menu.component';
 import { GeneralNavbarComponent } from './navbar/components/general-navbar/general-navbar.component';
+import { HomeComponent } from './homepage/components/home/home.component';
+import {RouterModule} from "@angular/router";
+import {ResidentListComponent} from "./citizen/components/resident-list/resident-list.component";
+import { ErrorComponent } from './errorpage/components/error/error.component';
+import { UserProfileComponent } from './user/user-profile/container/user-profile/user-profile.component';
+import { UserInformationComponent } from './user/user-profile/components/user-information/user-information.component';
+import { ProfilePictureComponent } from './user/user-profile/components/profile-picture/profile-picture.component';
+import { DepartmentContainerComponent } from './department/container/department-container/department-container.component';
+import { DepartmentListComponent } from './department/components/department-list/department-list.component';
+import { CreateDepartmentFormComponent } from './department/components/create-department/create-department-form.component';
+import { CreateDepartmentDialogButtonComponent } from './department/components/create-department-dialog-button/create-department-dialog-button.component';
+import { DepartmentSelectorComponent } from './department/components/department-selector/department-selector.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateUserComponent,
-    CreateCitizenFormComponent,
+    ResidentCreateFormComponent,
     FormSubmissionPositiveComponent,
     FormSubmissionNegativeComponent,
     CreateEmployeeFormComponent,
     AddUserDialogButtonComponent,
     AddUserMenuComponent,
     GeneralNavbarComponent,
+    HomeComponent,
+    ErrorComponent,
+    UserProfileComponent,
+    UserInformationComponent,
+    ProfilePictureComponent,
+    DepartmentContainerComponent,
+    DepartmentListComponent,
+    CreateDepartmentFormComponent,
+    CreateDepartmentDialogButtonComponent,
+    DepartmentSelectorComponent,
+
+
   ],
   imports: [
     MatInputModule,
@@ -141,7 +165,8 @@ import { GeneralNavbarComponent } from './navbar/components/general-navbar/gener
     PortalModule,
     ScrollingModule,
     ReactiveFormsModule,
-    CitizenModule,
+    ResidentModule,
+
 
   ],
   providers: [],

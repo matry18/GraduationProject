@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
+import {DepartmentService} from "../../department.service";
+import {DepartmentDto} from "../../../typings";
 
 @Component({
-  selector: 'app-department-selector',
+  selector: 'department-selector',
   templateUrl: './department-selector.component.html',
   styleUrls: ['./department-selector.component.css']
 })
 export class DepartmentSelectorComponent implements OnInit {
+  public departments: DepartmentDto[] = [];
 
-  constructor() { }
+  constructor(private departmentService: DepartmentService) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    this.departmentService.getAllDepartments().subscribe((departments: DepartmentDto[]) => {
+      this.departments = departments;
+    });
   }
 
 }

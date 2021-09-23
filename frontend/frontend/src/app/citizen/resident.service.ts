@@ -11,7 +11,6 @@ export class ResidentService {
   constructor(private http: HttpClient) { }
 
   public createCitizen(citizenDto: ResidentDto): Observable<ResidentDto> {
-    console.log(citizenDto);
    return this.http.post<ResidentDto>("http://localhost:8080/bosted/citizen", citizenDto);
   }
 
@@ -23,7 +22,7 @@ export class ResidentService {
     return this.http.delete<ResidentDto>("http://localhost:8080/bosted/citizen/"+id);
   }
 
-  public editCitizen(citizen: ResidentDto): Observable<ResidentDto> {
-    return this.http.put<ResidentDto>("http://localhost:8080/bosted/citizen", citizen);
+  public editCitizen(resident: ResidentDto): Observable<ResidentDto> {
+    return this.http.put<ResidentDto>("http://localhost:8080/bosted/citizen", resident);
   }
 }

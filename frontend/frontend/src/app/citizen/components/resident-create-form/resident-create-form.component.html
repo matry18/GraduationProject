@@ -1,7 +1,7 @@
 <ng-container>
   <h1>{{formText}}</h1>
-    <ng-template *ngIf="!isEditMode; else isEditModeForm">
-      <form [formGroup]="residentForm" >
+    <div *ngIf="!isEditMode; else isEditModeForm">
+      <form [formGroup]="residentForm">
         <mat-form-field appearance="fill">
           <mat-label>First name</mat-label>
           <input matInput placeholder="firstname" formControlName="firstname"/>
@@ -23,7 +23,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>Choose an department</mat-label>
+          <mat-label>Choose a department</mat-label>
           <mat-select formControlName="department">
             <mat-option *ngFor="let department of departments" [value]="department">{{department.departmentName}}</mat-option>
           </mat-select>
@@ -44,7 +44,7 @@
         <button mat-raised-button class="mat-primary form-submit-btn" [mat-dialog-close] (click)="submit()"  [disabled]="!this.residentForm.valid">submit</button>
         <button mat-raised-button class="mat-warn form-submit-btn" (click)="cancel()">cancel</button>
       </form>
-    </ng-template>
+    </div>
 </ng-container>
 
 
@@ -71,9 +71,8 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill">
-      <mat-label>Choose an department</mat-label>
-      <mat-select formControlName="department">
-        <mat-option *ngFor="let department of departments" [value]="department">{{department.departmentName}}</mat-option>
+      <mat-select formControlName="department" >
+        <mat-option *ngFor="let department of departments"  [value]="department">{{department.departmentName}}</mat-option>
       </mat-select>
     </mat-form-field>
 

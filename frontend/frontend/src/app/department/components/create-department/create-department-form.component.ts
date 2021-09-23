@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {SnackbarService} from "../../../snackbars/FormSubmission/snackbar.service";
 import {Subscription} from "rxjs";
-import {CitizenDto, DepartmentDto} from "../../../typings";
+import {ResidentDto, DepartmentDto} from "../../../typings";
 import {DepartmentService} from "../../department.service";
 
 @Component({
@@ -20,6 +20,7 @@ export class CreateDepartmentFormComponent implements OnInit {
               private snackbarService: SnackbarService,
               private departmentService: DepartmentService) {
     this.departmentForm = fb.group({
+      id: [null],
       departmentName: ["", Validators.required],
     })
 
@@ -29,6 +30,7 @@ export class CreateDepartmentFormComponent implements OnInit {
   }
 
   public submit(): void {
+
     let subscription: Subscription = this.departmentService.createDepartment(this.departmentForm.value)
       .subscribe(
         (departmentDto: DepartmentDto) => this.snackbarService.openSuccessfulSnackBar(),
