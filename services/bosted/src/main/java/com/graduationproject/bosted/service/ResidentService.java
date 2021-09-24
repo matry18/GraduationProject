@@ -14,10 +14,9 @@ import java.util.UUID;
 @Service
 public class ResidentService {
 
-    @Autowired
     private final ResidentRepository residentRepository;
 
-
+    @Autowired
     public ResidentService(ResidentRepository residentRepository) {
         this.residentRepository = residentRepository;
     }
@@ -40,6 +39,8 @@ public class ResidentService {
        resident.setEmail(residentDto.getEmail());
        resident.setPhoneNumber(resident.getPhoneNumber());
        residentRepository.save(resident);
+
+
        return resident;
     }
 

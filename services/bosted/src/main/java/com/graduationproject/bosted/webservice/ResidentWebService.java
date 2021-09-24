@@ -1,6 +1,9 @@
 package com.graduationproject.bosted.webservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduationproject.bosted.dto.ResidentDto;
+import com.graduationproject.bosted.producer.Producer;
 import com.graduationproject.bosted.repository.ResidentRepository;
 import com.graduationproject.bosted.service.ResidentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +19,13 @@ public class ResidentWebService {
 
     private final ResidentService residentService;
     private final ResidentRepository residentRepository;
+    private final Producer producer;
 
     @Autowired
-    public ResidentWebService(ResidentService residentService, ResidentRepository residentRepository) {
+    public ResidentWebService(ResidentService residentService, ResidentRepository residentRepository, Producer producer) {
         this.residentService = residentService;
         this.residentRepository = residentRepository;
+        this.producer = producer;
     }
 
 
@@ -32,6 +37,12 @@ public class ResidentWebService {
     @PostMapping("bosted/citizen")
     public ResidentDto createCitizen(@RequestBody ResidentDto residentDto) {
         residentService.addCitizen(residentDto);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            producer.sendMessage(objectMapper.writeValueAsString(residentDto));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         return residentDto;
     }
 
