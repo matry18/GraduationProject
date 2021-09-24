@@ -1,8 +1,8 @@
-package com.graduationproject.bosted.producer;
-
+package com.graduationProject.authentication.producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class Producer {
@@ -12,7 +12,7 @@ public class Producer {
 
     public void sendMessage(String message) {
         final String TOPIC = "userCreate";
-        this.kafkaTemplate.send(TOPIC,"FROM Bosted: "+ message);
+        this.kafkaTemplate.send(TOPIC, "FROM Authentication: "+message);
     }
 
 }
