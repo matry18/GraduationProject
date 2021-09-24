@@ -28,6 +28,7 @@ public class Producer {
         this.kafkaTemplate.send(TOPIC, objectMapper.writeValueAsString(user));
     }
 
+    // Will probably not be used
     @Bean
     public NewTopic createTopic(){
         return new NewTopic(TOPIC,3,(short) 1);
