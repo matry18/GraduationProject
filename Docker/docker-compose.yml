@@ -12,5 +12,4 @@ services:
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "composetest:1:3"
-      #<TopicName>:<NumberOfPartitions>:<NumberOfReplicas>
+      #KAFKA_CREATE_TOPICS: "composetest:1:1" <TopicName>:<NumberOfPartitions>:<NumberOfReplicas>
