@@ -22,6 +22,6 @@ public class ResidentWebService {
     @GetMapping("Authentication/test/{message}")
     public void authenticationKafkaPublish(@PathVariable String message) {
         System.out.println("I just produced af message");
-        producer.sendMessage(message);
+        //producer.sendMessage(message);
     }
 }

@@ -1,18 +1,19 @@
-package com.graduationproject.bosted.producer;
+package com.graduationproject.bosted.kafka;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class Producer {
+public class KafkaAPI {
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendMessage(String message) {
-        final String TOPIC = "userCreate";
-        this.kafkaTemplate.send(TOPIC,"FROM Bosted: "+ message);
+    public void publish(String topic, String message) {
+        this.kafkaTemplate.send(topic, message);
+
     }
+
 
 }

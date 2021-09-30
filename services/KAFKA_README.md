@@ -1,0 +1,1 @@
+Consumer classes must be annotated with @Service

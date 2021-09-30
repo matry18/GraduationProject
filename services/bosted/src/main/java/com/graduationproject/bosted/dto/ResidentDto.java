@@ -23,6 +23,10 @@ public class ResidentDto {
         this.department = department;
     }
 
+    public ResidentDto() {
+
+    }
+
     public ResidentDto(Resident resident) {
         this.id = resident.getId();
         this.firstname = resident.getFirstname();
@@ -30,6 +34,8 @@ public class ResidentDto {
         this.department = isNull(resident.getDepartment()) ? null : new DepartmentDto(resident.getDepartment());
         this.email = resident.getEmail();
         this.phoneNumber = resident.getPhoneNumber();
+        this.username = resident.getUsername();
+        this.password = resident.getPassword();
     }
 
     public String getFirstname() {
@@ -94,5 +100,19 @@ public class ResidentDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "ResidentDto{" +
+                "id='" + id + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", department=" + department +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
