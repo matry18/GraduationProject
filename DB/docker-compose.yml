@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  bosted_db:
+    image: mysql:8
+    container_name: bosted_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bosted, authentication, orchestrator, medicine, journal
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
+    ports: 
+      - "3306:3306"
+    volumes:
+      - bosted-volume:/var/lib/mysql
+  authentication_db:
+    image: mysql:8
+    container_name: authentication_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=authentication
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
+    ports: 
+      - "3309:3306"
+    volumes:
+      - authentication-volume:/var/lib/mysql
+  orchestrator_db:
+    image: mysql:8
+    container_name: orchestrator_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=orchestrator
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
+    ports: 
+      - "3308:3306"
+    volumes:
+      - orchestrator-volume:/var/lib/mysql
+      
+volumes: 
+  bosted-volume:
+  authentication-volume:
+  orchestrator-volume:
+    

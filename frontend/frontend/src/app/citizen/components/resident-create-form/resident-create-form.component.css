@@ -1,0 +1,11 @@
+mat-form-field {
+  display: block !important;
+}
+
+.form-submit-btn {
+  margin-left: 1%;
+}
+
+h1 {
+  text-align: center;
+}

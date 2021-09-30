@@ -1,0 +1,35 @@
+To run the dockerfiles user:
+$ docker-compose up
+
+To enter the docker container running the mysql:
+$ docker exec -it db bash
+
+When inside of the container:
+$ mysql -u root -p $ root
+
+CREATE DATABASE testDB;
+
+USE testDB;
+
+CREATE TABLE Persons (
+	PersonID int NOT NULL AUTO_INCREMENT,
+	LastName varchar(255) NOT NULL,
+	FirstName varchar(255),
+	Address varchar(255),
+	City varchar(255),
+	PRIMARY KEY (PersonID)
+);
+
+INSERT INTO Persons (LastName, FirstName, Address, City)
+VALUES ('Borgersen', 'Tove', 'Lumbyvej 26', 'Odense');
+
+INSERT INTO Persons (LastName, FirstName, Address, City)
+VALUES ('Sørensen', 'Lise', 'Dalumvej 253', 'Odense');
+
+INSERT INTO Persons (LastName, FirstName, Address, City)
+VALUES ('Jensen', 'Janus', 'Slotsgade 11', 'Nyborg');
+
+INSERT INTO Persons (LastName, FirstName, Address, City)
+VALUES ('Jensen', 'Vivi', 'Odensevej 2', 'Assens');
+
+SELECT * FROM Persons;

@@ -1,0 +1,6 @@
+from mysql:latest
+VOLUME bosted-volume:/var/lib/mysql
+EXPOSE 3306
+ENV MYSQL_USER=user
+ENV MYSQL_ROOT_PASSWORD=pswd
+ENV MYSQL_DATABASE=bosted
