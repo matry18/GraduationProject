@@ -60,10 +60,8 @@ public class CreateResident implements SagaParticipator<ResidentDto> {
     @Transactional
     public void transact(String sagaId) {
         //this will be run after a successful saga
-        System.out.println("DELETE BEGUN");
         residentRepository.deleteBySagaId(sagaId);
         departmentRepository.deleteBySagaId(sagaId);
-        System.out.println("Was DELETED with sageID: "+ sagaId);
     }
 
     @Override

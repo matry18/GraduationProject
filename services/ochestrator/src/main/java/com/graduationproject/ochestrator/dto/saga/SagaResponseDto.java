@@ -8,6 +8,15 @@ public class SagaResponseDto {
     private String serviceName;
     private SagaStatus sagaStatus;
 
+    public SagaResponseDto(String sagaId, String serviceName, SagaStatus sagaStatus) {
+        this.sagaId = sagaId;
+        this.serviceName = serviceName;
+        this.sagaStatus = sagaStatus;
+    }
+
+    public SagaResponseDto() {
+
+    }
 
     public String getSagaId() {
         return sagaId;

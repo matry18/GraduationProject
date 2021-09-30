@@ -36,13 +36,13 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
         try {
             residentService.addResident(sagaResidentDto.getResidentDto());
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
-                                                                  SagaStatus.SUCCESS);
-            if(sagaResidentDto.getResidentDto().getUsername().equals("fail")) {
+                    SagaStatus.SUCCESS);
+            if (sagaResidentDto.getResidentDto().getUsername().equals("fail")) {
                 throw new Exception(); //this should trigger a revert of the saga.
             }
             kafkaApi.publish(CreateResidentSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
             System.out.println("to topic " + CreateResidentSagaDone + " i sent this: " + sagaResponseDto.toString());
-        } catch(Exception e) {
+        } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
                     SagaStatus.FAILED);
             try {
@@ -65,13 +65,22 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
         Creation: The Saga participator should delete the entity that was just created.
         Update: the saga participator should revert the entity to the state it had before.
          */
-
-        residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
         try {
+            if (sagaResidentDto.getResidentDto().getPassword().equals("fail")) {
+                throw new Exception();
+            }
+
+            residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
             kafkaApi.publish(CreateResidentSagaRevert, new ObjectMapper()
                     .writeValueAsString(new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.SUCCESS)));
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            try {
+                kafkaApi.publish(CreateResidentSagaRevert, new ObjectMapper()
+                        .writeValueAsString(new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.FAILED)));
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
         }
 
     }

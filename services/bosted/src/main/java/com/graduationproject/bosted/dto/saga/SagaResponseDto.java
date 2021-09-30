@@ -5,7 +5,7 @@ import com.graduationproject.bosted.type.SagaStatus;
 
 public class SagaResponseDto {
     private String sagaId;
-    private String serviceName = "authentication";
+    private String serviceName = "bosted";
     private SagaStatus sagaStatus;
 
     public SagaResponseDto(String sagaId, SagaStatus sagaStatus) {
