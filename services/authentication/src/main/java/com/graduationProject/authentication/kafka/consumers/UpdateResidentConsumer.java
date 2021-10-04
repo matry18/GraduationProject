@@ -3,41 +3,42 @@ package com.graduationProject.authentication.kafka.consumers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduationProject.authentication.dto.saga.SagaResidentDto;
-import com.graduationProject.authentication.saga.sagaParticipators.CreateResident;
+import com.graduationProject.authentication.saga.sagaParticipators.UpdateResident;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import static com.graduationProject.authentication.topic.ResidentTopic.CreateResidentSagaBegin;
-import static com.graduationProject.authentication.topic.ResidentTopic.CreateResidentSagaFailed;
+import static com.graduationProject.authentication.topic.ResidentTopic.*;
 
 @Service
-public class CreateResidentConsumer {
+public class UpdateResidentConsumer {
     private static final String GROUP_ID = "authentication";
-
-    private final CreateResident createResident;
+    private final UpdateResident updateResident;
 
     @Autowired
-    public CreateResidentConsumer(CreateResident createResident) {
-        this.createResident = createResident;
+    public UpdateResidentConsumer(UpdateResident updateResident) {
+        this.updateResident = updateResident;
     }
 
-    @KafkaListener(topics = CreateResidentSagaBegin, groupId = GROUP_ID)
+
+    @KafkaListener(topics = UpdateResidentSagaBegin, groupId = GROUP_ID)
     public void consumeCreateResidentSagaBegin(String message) {
         try {
+            System.out.println(GROUP_ID + " " + UpdateResidentSagaBegin);
             SagaResidentDto sagaResidentDto = new ObjectMapper().readValue(message, SagaResidentDto.class);
-            createResident.transact(sagaResidentDto);
+            updateResident.transact(sagaResidentDto);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
     }
 
-    @KafkaListener(topics =  CreateResidentSagaFailed, groupId = GROUP_ID)
+
+    @KafkaListener(topics = UpdateResidentSagaFailed, groupId = GROUP_ID)
     public void consumeCreateResidentSagaFailed(String message) {
         try {
+            System.out.println(GROUP_ID + " " + UpdateResidentSagaFailed);
             SagaResidentDto sagaResidentDto = new ObjectMapper().readValue(message, SagaResidentDto.class);
-            createResident.revert(sagaResidentDto);
+            updateResident.revert(sagaResidentDto);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

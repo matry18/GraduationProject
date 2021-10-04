@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ResidentRepository extends JpaRepository<Resident, String> {
-    
+    public boolean existsResidentById(String id);
 }

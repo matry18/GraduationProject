@@ -1,6 +1,6 @@
 package com.graduationproject.ochestrator.dto.saga;
 
-import com.graduationproject.ochestrator.topic.SagaStatus;
+import com.graduationproject.ochestrator.type.SagaStatus;
 
 public class SagaResponseDto {
 
