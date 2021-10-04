@@ -33,26 +33,36 @@ Topics and group_id are defined in the Comsumer class
 # **run frontend with k8s**
 $ m start --vm-driver=docker
 
-# check
+# check minikube status
 $ m status
 
-# check
+# check k8s version
 $ k version
-# set
+
+# set docker env to connect to minikube
 eval $(minikube docker-env)
 
-# check
+# check that docker containers are running in minikube
 $ docker ps
 
-# check
+# check status with nodes and pods
 m kubectl -- get pods -A -o wide
 
-# check
+# check nodes
 $ k get nodes
 
-# cd to dockerfile
+# cd to dockerfile to build
 $ docker build -t frontend .
+(build tag is the same as the label in the frontend-deployment.yml-file)
 
-# cd to frontend-deployment.yml
+# cd to frontend-deployment.yml to apply and run service
 $ k apply -f frontend-deployment.yml
-$ m service frontend-service
+$ m service frontend-service 
+(app-name is the same as service name in frontend-deployment.yml-file)
+
+# Additional commands
+# see UI for k8s in browser
+$ minikube dashboard
+
+# delete minikube
+minikube delete
