@@ -29,3 +29,30 @@ Things to know about kafka:
 In de docker-compose.yml file the topics are defined (but don't have to be)
 Each topic name is defined in the Producer class
 Topics and group_id are defined in the Comsumer class
+
+# **run frontend with k8s**
+$ m start --vm-driver=docker
+
+# check
+$ m status
+
+# check
+$ k version
+# set
+eval $(minikube docker-env)
+
+# check
+$ docker ps
+
+# check
+m kubectl -- get pods -A -o wide
+
+# check
+$ k get nodes
+
+# cd to dockerfiler
+$ docker build -t frontend .
+
+# cd to frontend-deployment.yml
+$ k apply -f frontend-deployment.yml
+$ m service frontend-service
