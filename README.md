@@ -50,7 +50,7 @@ m kubectl -- get pods -A -o wide
 # check
 $ k get nodes
 
-# cd to dockerfiler
+# cd to dockerfile
 $ docker build -t frontend .
 
 # cd to frontend-deployment.yml
