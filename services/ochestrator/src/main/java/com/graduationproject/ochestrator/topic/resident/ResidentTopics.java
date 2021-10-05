@@ -1,6 +1,8 @@
-package com.graduationproject.ochestrator.topic;
+package com.graduationproject.ochestrator.topic.resident;
 
-public interface ResidentTopics {
+import com.graduationproject.ochestrator.topic.Topic;
+
+public interface ResidentTopics extends Topic {
     //CREATE RESIDENT
     static final String CreateResidentSagaInit = "CreateResidentSagaInit";//used by the initiator service (consume)
     static final String CreateResidentSagaBegin = "CreateResidentSagaBegin"; //used to begin the Saga (publish)
