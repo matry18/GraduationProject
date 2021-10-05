@@ -1,4 +1,4 @@
-package com.graduationproject.ochestrator.topic;
+package com.graduationproject.ochestrator.type;
 
 public enum SagaStatus {
     SUCCESS,

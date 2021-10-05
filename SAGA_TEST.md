@@ -1,5 +1,8 @@
+Overall Context:
+Create Resident
+
 Context:
-Create a new user successfully
+Create a new Resident successfully
 
 Pre req.:
 - Kafka is running
@@ -38,7 +41,7 @@ Expected outcome:
 - The user is saved on Bosted (the service types that does not fail)
 - The user is saved on the Orchestrator
 - The Authentication services fails
-- The user is created on the Autehntication DB
+- The user is NOT created on the Autehntication DB
 -> Then:
 - A compensating transaction will be triggered
 - The user is deleted from the Bosted DB
@@ -156,3 +159,86 @@ Expected outcome:
 - The user is kept on the failed service (Authentication)
 - The user is not deleted from the Orchestrator DB
 
+
+
+Overall Context:
+Delete Resident
+
+
+Context:
+Delete a Resident successfully
+
+Pre req.:
+- Kafka is running
+- Bosted is running
+- Authentication is running
+- Orchestrator is running
+- DB is running
+- Frontend is running
+
+Steps:
+- delete a resident from the frontend UI in the browser
+
+Expected outcome:
+- User is deleted from the Bosted DB
+- User is deleted from the Autentication DB
+- Useris deleted from the Orchestrator DB
+
+---
+Context:
+Deleting a resident and Authentication returns FAILURE -> the resident is not deleted
+
+Pre req.:
+- Kafka is running
+- Bosted is running
+- Authentication is running
+- Orchestrator is running
+- DB is running
+- Frontend is running
+
+Steps:
+- Delete a resident from the frontend UI in the browser
+- Set username: neverDelete (a service throws an exception)
+
+Expected outcome:
+- The user  is deleted from the Bosted DB (the service types that does not fail)
+- The user  is deleted from the Bosted DB
+- The Authentication services fails
+- The user is NOT deleted on the Autehntication DB
+-> Then:
+- A compensating transaction will be triggered
+- The user is created from the Bosted DB
+- The user is created from the Authentication DB
+- The user is deleted from the Orchestrator DB (As the Saga is done)
+
+---
+Context:
+Deleting a resident and Authentication returns FAILURE -> the user is not deleted and the revert fails and has to be manually handled by a developer.
+
+Pre req.:
+- Kafka is running
+- Bosted is running
+- Authentication is running
+- Orchestrator is running
+- DB is running
+- Frontend is running
+
+Steps:
+- Create a new resident from the frontend UI in the browser
+- Set username: neverDelete(a service throws an exception)
+- Set password: neverDelete(a service throws an exception on the revert flow)
+
+Expected outcome:
+- The user is deleted on Bosted (the service types that does not fail)
+- The user is deleted on the Orchestrator
+- The Authentication services fails
+- The user is deleted on the Autehntication DB
+-> Then:
+- A compensating transaction will be triggered
+- The revert fails
+-> Then:
+- The user is created on the Bosted DB
+- The user is not created on the failed service (Authentication)
+- The user is not deleted from the Orchestrator DB (as it should keep the resident instance copy until at developer manually handles the error)
+
+---

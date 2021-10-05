@@ -4,9 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduationproject.ochestrator.dto.ResidentDto;
 import com.graduationproject.ochestrator.dto.saga.SagaResponseDto;
-import com.graduationproject.ochestrator.saga.SagaParticipators.CreateResident;
+import com.graduationproject.ochestrator.saga.SagaParticipators.DeleteResident;
 import com.graduationproject.ochestrator.type.SagaStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +16,10 @@ import static com.graduationproject.ochestrator.type.SagaStatus.FAILED;
 import static java.util.Objects.nonNull;
 
 @Service
-public class CreateResidentConsumer {
+public class DeleteResidentConsumer {
     private static final String GROUP_ID = "orchestrator";
     private Map<String, List<SagaResponseDto>> serviceReplies = new HashMap<>();
-    private final CreateResident createResident;
+    private final DeleteResident deleteResident;
     private static final List<String> services = new ArrayList<>( //Remember that it is not always every service participating in each saga
             Arrays.asList(
                     "bosted",
@@ -28,32 +27,33 @@ public class CreateResidentConsumer {
             )
     );
 
-    @Autowired
-    public CreateResidentConsumer(CreateResident createResident) {
-        this.createResident = createResident;
+    public DeleteResidentConsumer(DeleteResident deleteResident) {
+        this.deleteResident = deleteResident;
     }
 
-    @KafkaListener(topics = CreateResidentSagaInit, groupId = GROUP_ID)
-    public void consumeCreateResidentSagaInit(String message) {
+    @KafkaListener(topics = DeleteResidentSagaInit, groupId = GROUP_ID)
+    public void consumeDeleteResidentSagaInit(String message) {
+        System.out.println(GROUP_ID+ " " +DeleteResidentSagaInit);
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            ResidentDto residentDto = new ObjectMapper().readValue(message, ResidentDto.class);
-            createResident.transact(residentDto);
-
+            ResidentDto residentDto = objectMapper.readValue(message, ResidentDto.class);
+            deleteResident.transact(residentDto);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
 
-    @KafkaListener(topics = CreateResidentSagaDone, groupId = GROUP_ID)
-    public void consumeCreateResidentSagaDone(String message) {
+    @KafkaListener(topics = DeleteResidentSagaDone, groupId = GROUP_ID)
+    public void consumeDeleteResidentSagaDone(String message) {
         try {
+            System.out.println(GROUP_ID+ " " +DeleteResidentSagaDone);
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
             addToServiceReplyMap(sagaResponseDto.getSagaId(), new SagaResponseDto(sagaResponseDto.getSagaId(),
                     "bosted", SagaStatus.SUCCESS));
             addToServiceReplyMap(sagaResponseDto.getSagaId(), sagaResponseDto);
             if (sagaResponseDto.getSagaStatus() == FAILED) {
-                System.out.println(sagaResponseDto.getServiceName() + " FAILED to create resident");
-                createResident.revert(sagaResponseDto.getSagaId());
+                System.out.println(sagaResponseDto.getServiceName() + " FAILED to delete resident");
+                deleteResident.revert(sagaResponseDto.getSagaId());
                 serviceReplies.remove(sagaResponseDto.getSagaId());
                 return;
             }
@@ -63,9 +63,10 @@ public class CreateResidentConsumer {
         }
     }
 
-    @KafkaListener(topics = CreateResidentSagaRevert, groupId = GROUP_ID)
-    public void consumeCreateResidentSagaRevert(String message) {
+    @KafkaListener(topics = DeleteResidentSagaRevert, groupId = GROUP_ID)
+    public void consumeDeleteResidentSagaRevert(String message) {
         try {
+            System.out.println(GROUP_ID+ " " +DeleteResidentSagaRevert);
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
             addToServiceReplyMap(sagaResponseDto.getSagaId(), sagaResponseDto);
             if (sagaResponseDto.getSagaStatus() == FAILED) {
@@ -81,7 +82,7 @@ public class CreateResidentConsumer {
 
     private void deleteResidentDtoWhenAllServiceTypesHasRepliedSuccess(String sagaId) {
         if (hasEveryServiceReplied(sagaId) && hasNoFailStatuses(serviceReplies.get(sagaId))) {
-            createResident.transact(sagaId);
+            deleteResident.transact(sagaId);
             serviceReplies.remove(sagaId);
         }
     }
@@ -101,11 +102,10 @@ public class CreateResidentConsumer {
     }
 
     private boolean hasNoFailStatuses(List<SagaResponseDto> sagaResponseDtos){
-    return sagaResponseDtos.stream().noneMatch(sagaResponse -> sagaResponse.getSagaStatus().equals(FAILED));
+        return sagaResponseDtos.stream().noneMatch(sagaResponse -> sagaResponse.getSagaStatus().equals(FAILED));
     }
 
     private boolean hasEveryServiceReplied(String sagaId) {
         return nonNull(serviceReplies.get(sagaId)) && serviceReplies.get(sagaId).size() == services.size();
     }
-
 }
