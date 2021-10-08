@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bosted
+  labels:
+    app: bosted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bosted
+  template:
+    metadata:
+      labels:
+        app: bosted
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: bosted
+          image: bosted
+          imagePullPolicy: Never
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bosted-service
+spec:
+  selector:
+    app: bosted
+  type: LoadBalancer
+  ports:
+   - port: 8080
+     targetPort: 8080
