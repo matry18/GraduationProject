@@ -2,22 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
-  labels:
-    app: frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: frontend
+      tier: frontend
   template:
     metadata:
       labels:
         app: frontend
+        tier: frontend
     spec:
       containers:
         - name: frontend
           image: frontend
           imagePullPolicy: Never
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/usr/sbin/nginx","-s","quit"]
           resources:
             limits:
               memory: "512Mi"
@@ -32,9 +36,10 @@ metadata:
   name: frontend-service
 spec:  
   selector:
-    app: frontend  
-  type: LoadBalancer
+    app: frontend
+    tier: frontend
   ports:
-   - targetPort: 80
-     port: 80
-     nodePort: 30006
+  - protocol: "TCP"
+    port: 80
+    targetPort: 80
+  type: LoadBalancer

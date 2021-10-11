@@ -1,0 +1,5 @@
+FROM openjdk:11
+COPY /target/bosted-0.0.1-SNAPSHOT.jar /
+EXPOSE 8080
+ENV PORT 8080
+ENTRYPOINT [ "java","-jar","/bosted-0.0.1-SNAPSHOT.jar" ]

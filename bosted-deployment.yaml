@@ -9,10 +9,14 @@ spec:
   selector:
     matchLabels:
       app: bosted
+      tier: backend
+      track: stable
   template:
     metadata:
       labels:
         app: bosted
+        tier: backend
+        track: stable
     spec:
       restartPolicy: Always
       containers:
@@ -30,11 +34,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: bosted-service
+  name: bosted
 spec:
   selector:
     app: bosted
+    tier: backend
   type: LoadBalancer
   ports:
-   - port: 8080
-     targetPort: 8080
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    nodePort: 30069
