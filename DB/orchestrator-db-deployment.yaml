@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: orchestrator-db
+  name: orchestrator-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: orchestrator-db
+  template:
+    metadata:
+      labels:
+        io.kompose.service: orchestrator-db
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_DATABASE
+          value: orchestrator
+        - name: MYSQL_PASSWORD
+          value: pswd
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_USER
+          value: user
+        image: mysql:8
+        imagePullPolicy: "Always"
+        name: orchestrator-db
+        ports:
+        - containerPort: 3306
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: orchestrator-volume
+      restartPolicy: Always
+      volumes:
+      - name: orchestrator-volume
+        persistentVolumeClaim:
+          claimName: orchestrator-volume
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orchestrator-db-service
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    io.kompose.service: orchestrator-db
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    io.kompose.service: orchestrator-volume
+  name: orchestrator-volume
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}

@@ -1,0 +1,5 @@
+FROM openjdk:11
+COPY /target/ochestrator-0.0.1-SNAPSHOT.jar /
+EXPOSE 8088
+ENV PORT 8088
+ENTRYPOINT [ "java","-jar","/ochestrator-0.0.1-SNAPSHOT.jar" ]

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orchestrator
+  labels:
+    app: orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orchestrator
+      tier: backend
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: orchestrator
+        tier: backend
+        track: stable
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: orchestrator
+          image: orchestrator
+          imagePullPolicy: Never
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8088
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orchestrator
+spec:
+  selector:
+    app: orchestrator
+    tier: backend
+  type: LoadBalancer
+  ports:
+  - port: 8088
+    protocol: TCP
+    targetPort: 8088
+    nodePort: 30071
