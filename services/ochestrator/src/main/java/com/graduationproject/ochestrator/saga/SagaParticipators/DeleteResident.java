@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-import static com.graduationproject.ochestrator.topic.ResidentTopics.*;
+import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
 public class DeleteResident implements SagaParticipator<ResidentDto> {
@@ -66,8 +66,11 @@ public class DeleteResident implements SagaParticipator<ResidentDto> {
     @Transactional
     public void transact(String sagaId) {
         //this will be run after a successful saga
+        Resident resident = residentRepository.findResidentBySagaId(sagaId);
         residentRepository.deleteBySagaId(sagaId);
-        departmentRepository.deleteBySagaId(sagaId);
+        if (residentRepository.countByDepartment(resident.getDepartment()) == 0) {
+            departmentRepository.deleteBySagaId(sagaId);
+        }
     }
 
     @Override
