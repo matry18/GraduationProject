@@ -1,0 +1,5 @@
+FROM openjdk:11
+COPY /target/authentication-0.0.1-SNAPSHOT.jar /
+EXPOSE 8081
+ENV PORT 8081
+ENTRYPOINT [ "java","-jar","/authentication-0.0.1-SNAPSHOT.jar" ]
