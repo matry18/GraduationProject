@@ -29,14 +29,15 @@ public class Employee extends User{
 
 
     public Employee(EmployeeDto employeeDto) {
-        this.setFirstname(employeeDto.getFirstname());
-        this.setLastname(employeeDto.getLastname());
-        this.setEmail(employeeDto.getEmail());
-        this.setPhoneNumber(employeeDto.getPhoneNumber());
-
+        this.firstname = employeeDto.getFirstname();
+        this.lastname = employeeDto.getLastname();
+        this.Email = employeeDto.getEmail();
+        this.phoneNumber = employeeDto.getPhoneNumber();
+        this.department = new Department(employeeDto.getDepartment());
         //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
-        this.setUsername(employeeDto.getUsername());
-        this.setPassword(employeeDto.getPassword());
+        this.username = employeeDto.getUsername();
+        this.password = employeeDto.getPassword();
+
     }
 
     public Employee(){
@@ -105,4 +106,18 @@ public class Employee extends User{
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+        public String toString() {
+            return "Resident{" +
+                    "id='" + id + '\'' +
+                    ", firstname='" + firstname + '\'' +
+                    ", lastname='" + lastname + '\'' +
+                    ", email='" + Email + '\'' +
+                    ", phoneNumber='" + phoneNumber + '\'' +
+                    ", department=" + department +
+                    ", username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    '}';
+        }
 }
