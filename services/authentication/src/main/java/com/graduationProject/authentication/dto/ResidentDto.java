@@ -2,8 +2,6 @@ package com.graduationProject.authentication.dto;
 
 import com.graduationProject.authentication.entity.Resident;
 
-import static java.util.Objects.isNull;
-
 public class ResidentDto {
     private String id;
     private String firstname;
