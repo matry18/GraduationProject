@@ -1,8 +1,7 @@
 package com.graduationproject.bosted.webservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduationproject.bosted.dto.ResidentDto;
+import com.graduationproject.bosted.entity.Resident;
 import com.graduationproject.bosted.kafka.KafkaAPI;
 import com.graduationproject.bosted.repository.ResidentRepository;
 import com.graduationproject.bosted.service.ResidentService;
@@ -26,10 +25,10 @@ public class ResidentWebService {
         this.residentRepository = residentRepository;
     }
 
-
     @GetMapping("bosted/citizen/{id}")
     public ResidentDto getPerson(@PathVariable String id) {
-        return new ResidentDto(residentRepository.findById(id).orElse(null));
+        Resident resident = residentRepository.getById(id);
+        return new ResidentDto(resident);
     }
 
     @PostMapping("bosted/citizen")

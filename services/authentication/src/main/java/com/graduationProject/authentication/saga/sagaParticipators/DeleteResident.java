@@ -7,7 +7,6 @@ import com.graduationProject.authentication.dto.saga.SagaResponseDto;
 import com.graduationProject.authentication.kafka.KafkaApi;
 import com.graduationProject.authentication.saga.SagaParticipator;
 import com.graduationProject.authentication.service.ResidentService;
-import com.graduationProject.authentication.topic.ResidentTopic;
 import com.graduationProject.authentication.type.SagaStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,10 +29,10 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
     public void transact(SagaResidentDto sagaResidentDto) {
         SagaResponseDto sagaResponseDto;
         try {
-            residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
             if (sagaResidentDto.getResidentDto().getUsername().equals("neverDelete")) {
-               throw new Exception();
+                throw new IllegalArgumentException("Admin can never be deleted");
             }
+            residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
             sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.SUCCESS);
 
         } catch (Exception e) {
