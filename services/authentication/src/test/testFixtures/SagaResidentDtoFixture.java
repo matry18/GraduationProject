@@ -5,7 +5,7 @@ import com.graduationProject.authentication.dto.saga.SagaResidentDto;
 
 public class SagaResidentDtoFixture {
 
-    private String sagaId;
+    private String sagaId = "id-1234";
     private ResidentDto residentDto = ResidentDtoFixture.createResidentDto();
 
     public static SagaResidentDto createSagaResidentDto() {
