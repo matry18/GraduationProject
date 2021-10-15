@@ -1,60 +1,64 @@
 package com.graduationproject.bosted.service;
 
+import com.graduationproject.bosted.dto.EmployeeDto;
+import com.graduationproject.bosted.entity.Department;
+import com.graduationproject.bosted.entity.Employee;
 import com.graduationproject.bosted.repository.EmployeeRepository;
+import com.graduationproject.bosted.saga.SagaInitiators.CreateEmployee;
+import com.graduationproject.bosted.saga.SagaInitiators.DeleteEmployee;
+import com.graduationproject.bosted.saga.SagaInitiators.UpdateEmployee;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final CreateEmployee...
+    private final CreateEmployee createEmployee;
+    private final UpdateEmployee updateEmployee;
+    private final DeleteEmployee deleteEmployee;
 
+    @Autowired
+    public EmployeeService(EmployeeRepository employeeRepository, CreateEmployee createEmployee, UpdateEmployee updateEmployee, DeleteEmployee deleteEmployee) {
+        this.employeeRepository = employeeRepository;
+        this.createEmployee = createEmployee;
+        this.updateEmployee = updateEmployee;
+        this.deleteEmployee = deleteEmployee;
+    }
 
-    // private final ResidentRepository residentRepository;
-    //
-    //    private final CreateResident createResident;
-    //    private final DeleteResident deleteResident;
-    //    private final UpdateResident updateResident;
-    //
-    //    @Autowired
-    //    public ResidentService(ResidentRepository residentRepository, CreateResident createResident, DeleteResident deleteResident, UpdateResident updateResident) {
-    //        this.residentRepository = residentRepository;
-    //        this.createResident = createResident;
-    //        this.deleteResident = deleteResident;
-    //        this.updateResident = updateResident;
-    //    }
-    //
-    //    public void addCitizen(ResidentDto residentDto) {
-    //        residentDto.setId(UUID.randomUUID().toString());
-    //        Resident resident = residentRepository.save(new Resident(residentDto));
-    //        createResident.initSaga(new ResidentDto(resident));
-    //    }
-    //
-    //
-    //    public List<Resident> getAllCitizen() {
-    //        return residentRepository.findAll();
-    //    }
-    //
-    //    @Transactional
-    //    public Resident editCitizen(ResidentDto residentDto) {
-    //        Resident resident = residentRepository.findById(residentDto.getId()).orElse(null);
-    //        ResidentDto oldResident = new ResidentDto(resident);
-    //        resident.setFirstname(residentDto.getFirstname());
-    //        resident.setLastname(residentDto.getLastname());
-    //        resident.setDepartment(new Department(residentDto.getDepartment()));
-    //        resident.setEmail(residentDto.getEmail());
-    //        resident.setPhoneNumber(resident.getPhoneNumber());
-    //        residentRepository.save(resident);
-    //        ResidentDto newResident = new ResidentDto(resident);
-    //        updateResident.initSaga(oldResident, newResident);
-    //
-    //        return resident;
-    //    }
-    //
-    //    public Resident deleteCitizen(String citizenId) {
-    //        Resident resident = residentRepository.getById(citizenId);
-    //        residentRepository.deleteById(citizenId);
-    //        deleteResident.initSaga(new ResidentDto(resident));
-    //        return resident;
-    //    }
+    public void addEmployee(EmployeeDto employeeDto) {
+        employeeDto.setId(UUID.randomUUID().toString());
+        Employee employee = employeeRepository.save(new Employee(employeeDto));
+        createEmployee.initSaga(new EmployeeDto(employee));
+    }
+
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
+    @Transactional
+    public Employee editEmployee(EmployeeDto employeeDto) {
+        Employee employee = employeeRepository.findById(employeeDto.getId()).orElse(null);
+        EmployeeDto oldEmployeeDto = new EmployeeDto(employee);
+        employee.setFirstname(employeeDto.getFirstname());
+        employee.setLastname(employeeDto.getLastname());
+        employee.setDepartment(new Department(employeeDto.getDepartment()));
+        employee.setEmail(employeeDto.getEmail());
+        employee.setPhoneNumber(employeeDto.getPhoneNumber());
+        employeeRepository.save(employee);
+        EmployeeDto newEmployeeDto = new EmployeeDto(employee);
+        updateEmployee.initSaga(oldEmployeeDto, newEmployeeDto);
+        return employee;
+    }
+
+    public Employee deleteEmployee(String employeeId) {
+        Employee employee = employeeRepository.getById(employeeId);
+        employeeRepository.deleteById(employeeId);
+        deleteEmployee.initSaga(new EmployeeDto(employee));
+        return employee;
+    }
 }
