@@ -1,6 +1,8 @@
-package com.graduationProject.authentication.dto;
+package com.graduationproject.ochestrator.dto;
 
-import com.graduationProject.authentication.entity.Employee;
+import com.graduationproject.ochestrator.entities.Employee;
+
+import static java.util.Objects.isNull;
 
 public class EmployeeDto {
 
@@ -14,51 +16,45 @@ public class EmployeeDto {
     private String username;
     private String password;
 
-
-    public EmployeeDto(String firstname, String id, String lastname, DepartmentDto department){
+    public EmployeeDto(String firstname, String id, String lastname, DepartmentDto department) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.id = id;
         this.department = department;
     }
 
-    public EmployeeDto() {
+    public EmployeeDto(){}
 
-    }
 
     public EmployeeDto(Employee employee) {
         this.id = employee.getId();
+        this.firstname = employee.getFirstname();
+        this.lastname = employee.getLastname();
+        this.department = isNull(employee.getDepartment()) ? null : new DepartmentDto(employee.getDepartment());
+        this.email = employee.getEmail();
+        this.phoneNumber = employee.getPhoneNumber();
         this.username = employee.getUsername();
         this.password = employee.getPassword();
-
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
-    public DepartmentDto getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(DepartmentDto department) {
-        this.department = department;
+    public String getFirstname() {
+        return firstname;
     }
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
     }
 
     public void setLastname(String lastname) {
@@ -79,6 +75,14 @@ public class EmployeeDto {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public DepartmentDto getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(DepartmentDto department) {
+        this.department = department;
     }
 
     public String getUsername() {

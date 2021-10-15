@@ -1,6 +1,8 @@
-package com.graduationproject.bosted.topic;
+package com.graduationproject.ochestrator.topic.employee;
 
-public interface EmployeeTopics {
+import com.graduationproject.ochestrator.topic.Topic;
+
+public interface EmployeeTopics extends Topic {
     //CREATE EMPLOYEE
     static final String CreateEmployeeSagaInit = "CreateEmployeeSagaInit";//used by the initiator service (publish)
     static final String CreateEmployeeSagaBegin = "CreateEmployeeSagaBegin"; //used to begin the Saga by the orchestrator(consume)
@@ -14,7 +16,6 @@ public interface EmployeeTopics {
     static final String DeleteEmployeeSagaFailed = "DeleteEmployeeSagaFailed"; //used when the orchestrator sends out revert message (consume)
     static final String DeleteEmployeeSagaRevert = "DeleteEmployeeSagaRevert"; //used to give the orchestrator a status of the compensating transaction(publish)
     static final String DeleteEmployeeSagaDone = "DeleteEmployeeSagaDone"; //used by the participating services to give the orchestrator transaction status (publish)
-
 
     //UPDATE EMPLOYEE
     static final String UpdateEmployeeSagaInit = "UpdateEmployeeSagaInit";//used by the initiator service (publish)

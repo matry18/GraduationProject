@@ -1,14 +1,17 @@
-package com.graduationproject.bosted.entity;
+package com.graduationproject.ochestrator.entities;
 
-import com.graduationproject.bosted.dto.EmployeeDto;
-import com.graduationproject.bosted.dto.ResidentDto;
+import com.graduationproject.ochestrator.dto.EmployeeDto;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Employee extends User {
+public class Employee {
+    @Column(unique=true)
+    private String sagaId;
+
     @Id
     private String id;
 
@@ -16,7 +19,7 @@ public class Employee extends User {
 
     private String lastname;
 
-    private String Email;
+    private String email;
 
     private String phoneNumber;
 
@@ -27,22 +30,38 @@ public class Employee extends User {
 
     private String password;
 
-
-    public Employee(EmployeeDto employeeDto) {
+    public Employee(EmployeeDto employeeDto, String sagaId) {
+        this.sagaId = sagaId;
+        this.id = employeeDto.getId();
         this.firstname = employeeDto.getFirstname();
         this.lastname = employeeDto.getLastname();
-        this.Email = employeeDto.getEmail();
+        this.email = employeeDto.getEmail();
         this.phoneNumber = employeeDto.getPhoneNumber();
         this.department = new Department(employeeDto.getDepartment());
         //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
         this.username = employeeDto.getUsername();
         this.password = employeeDto.getPassword();
-
     }
 
-    public Employee(){
-
+    public Employee() {
     }
+
+    public String getSagaId() {
+        return sagaId;
+    }
+
+    public void setSagaId(String sagaId) {
+        this.sagaId = sagaId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getFirstname() {
         return firstname;
     }
@@ -60,11 +79,11 @@ public class Employee extends User {
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getPhoneNumber() {
@@ -99,25 +118,17 @@ public class Employee extends User {
         this.password = password;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Override
-        public String toString() {
-            return "Resident{" +
-                    "id='" + id + '\'' +
-                    ", firstname='" + firstname + '\'' +
-                    ", lastname='" + lastname + '\'' +
-                    ", email='" + Email + '\'' +
-                    ", phoneNumber='" + phoneNumber + '\'' +
-                    ", department=" + department +
-                    ", username='" + username + '\'' +
-                    ", password='" + password + '\'' +
-                    '}';
-        }
+    public String toString() {
+        return "Employee{" +
+                "id='" + id + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", department=" + department +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

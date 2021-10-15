@@ -38,7 +38,7 @@ public class CreateEmployee implements SagaInitiator<EmployeeDto> {
     }
 
     @Override
-    public void initSaga(EmployeeDto oldObject, EmployeeDto newObject) {
+    public void initSaga(EmployeeDto oldEmployeeDto, EmployeeDto newEmployeeDto) {
         throw new UnsupportedOperationException("Not implemented for this saga!");
     }
 
