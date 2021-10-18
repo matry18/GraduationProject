@@ -1,6 +1,6 @@
 <ng-container>
   <h1>{{formText}}</h1>
-  <div *ngIf="!isEditMode; else isEditModeForm"></div>
+  <div *ngIf="!isEditMode; else isEditModeForm">
   <form [formGroup]="employeeForm" >
     <mat-form-field appearance="fill">
       <mat-label>First name</mat-label>
@@ -39,9 +39,10 @@
       <input matInput placeholder="****" type="password" formControlName="password"/>
     </mat-form-field>
 
-    <button mat-raised-button class="mat-primary form-submit-btn" [mat-dialog-close] (click)="submit()"  [disabled]="!this.employeeForm.valid">submit</button>
-    <button mat-raised-button class="mat-warn form-submit-btn" (click)="cancel()">cancel</button>
+    <button mat-raised-button class="mat-primary form-submit-btn" [matTooltip]="'Create employee'" [mat-dialog-close] (click)="submit()"  [disabled]="!this.employeeForm.valid">Submit</button>
+    <button mat-raised-button class="mat-warn form-submit-btn" [matTooltip]="'Abort creation of employee'" (click)="cancel()">Cancel</button>
   </form>
+  </div>
 </ng-container>
 
 <ng-template #isEditModeForm>
@@ -72,7 +73,7 @@
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button class="mat-primary form-submit-btn" [mat-dialog-close] (click)="submit()"  [disabled]="!this.employeeForm.valid">submit</button>
-    <button mat-raised-button class="mat-warn form-submit-btn" (click)="cancel()">cancel</button>
+    <button mat-raised-button class="mat-primary form-submit-btn" [matTooltip]="'Update employee'" [mat-dialog-close] (click)="submit()"  [disabled]="!this.employeeForm.valid">Submit</button>
+    <button mat-raised-button class="mat-warn form-submit-btn" [matTooltip]="'Abort update'" (click)="cancel()">Cancel</button>
   </form>
 </ng-template>

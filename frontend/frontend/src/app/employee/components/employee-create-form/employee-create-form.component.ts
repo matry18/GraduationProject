@@ -34,7 +34,7 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
     this.isEditMode = this.data !== null && this.data !== undefined;
     this.formText = this.isEditMode ? `Edit employee (${data.employee.firstname} ${data.employee.lastname})` : 'Create employee';
 
-    if (!this.isEditMode) {
+    if(!this.isEditMode) {
       this.employeeForm = this.fb.group(
         {
           id: [null],
@@ -54,7 +54,7 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
           id: [data.employee.id],
           firstname: [data.employee.firstname, Validators.required],
           lastname: [data.employee.lastname, Validators.required],
-          email: [data.employee.email, Validators.required],
+          email: [data.employee.email, [Validators.required, Validators.email]],
           phoneNumber: [data.employee.phoneNumber, Validators.required],
           department: [null, [Validators.required]]
         }
@@ -76,7 +76,8 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
         () => this.snackbarService.openFailedSnackBar()
         );
     } else {
-      this.subscription = this.employeeService.editEmployee(this.employeeForm.value).subscribe(
+      this.subscription = this.employeeService.editEmployee(this.employeeForm.value)
+        .subscribe(
         (employee: EmployeeDto) => this.snackbarService.openSuccessfulSnackBar(),
         () => this.snackbarService.openFailedSnackBar()
       );
