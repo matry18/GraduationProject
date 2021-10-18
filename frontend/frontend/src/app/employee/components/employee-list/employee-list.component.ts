@@ -3,9 +3,8 @@ import {EmployeeDto} from "../../../typings";
 import {EmployeeService} from "../../../employee/employee.service";
 import {MatDialog} from "@angular/material/dialog";
 import {SnackbarService} from "../../../snackbars/FormSubmission/snackbar.service";
-//import {ResidentCreateFormComponent} from "../../../citizen/components/resident-create-form/resident-create-form.component";
 import {EmployeeCreateFormComponent} from "../../../employee/components/employee-create-form/employee-create-form.component"
-
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'employee-list',
@@ -28,7 +27,6 @@ export class EmployeeListComponent implements OnInit {
     this.enployeeService.getAllEmployees().subscribe((employeeList: EmployeeDto[]) => {
       this.employeeList = employeeList;
     });
-
   }
 
   public deleteEmployee(employeeId: string): void {
@@ -47,6 +45,5 @@ export class EmployeeListComponent implements OnInit {
     this.dialog.afterAllClosed.subscribe(() =>
       this.fetchAllEmployees());
   }
-
 
 }

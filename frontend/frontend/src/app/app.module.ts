@@ -70,6 +70,7 @@ import { GeneralNavbarComponent } from './navbar/components/general-navbar/gener
 import { HomeComponent } from './homepage/components/home/home.component';
 import {RouterModule} from "@angular/router";
 import {ResidentListComponent} from "./citizen/components/resident-list/resident-list.component";
+import {EmployeeListComponent} from "./employee/components/employee-list/employee-list.component";
 import { ErrorComponent } from './errorpage/components/error/error.component';
 import { UserProfileComponent } from './user/user-profile/container/user-profile/user-profile.component';
 import { UserInformationComponent } from './user/user-profile/components/user-information/user-information.component';
@@ -86,7 +87,6 @@ import {EmployeeCreateFormComponent} from "./employee/components/employee-create
     AppComponent,
     CreateUserComponent,
     ResidentCreateFormComponent,
-    EmployeeCreateFormComponent,
     FormSubmissionPositiveComponent,
     FormSubmissionNegativeComponent,
     AddUserDialogButtonComponent,
