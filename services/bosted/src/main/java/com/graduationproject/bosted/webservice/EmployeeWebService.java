@@ -23,31 +23,30 @@ public class EmployeeWebService {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("bosted/employee/{id}")
+    @GetMapping("bosted/employees/{id}")
     public EmployeeDto getPerson(@PathVariable String id) {
         return new EmployeeDto(employeeRepository.findById(id).orElse(null));
     }
 
-    @PostMapping("bosted/employee")
+    @PostMapping("bosted/employees")
     public EmployeeDto createEmployee(@RequestBody EmployeeDto employeeDto) {
         employeeService.addEmployee(employeeDto);
-        System.out.println("Got message from frontend");
         return employeeDto;
     }
 
-    @GetMapping("bosted/employee")
+    @GetMapping("bosted/employees")
     public List<EmployeeDto> getAllEmployees() {
         return this.employeeService.getAllEmployees().stream()
                 .map(EmployeeDto::new)
                 .collect(Collectors.toList());
     }
 
-    @PutMapping("bosted/employee")
+    @PutMapping("bosted/employees")
     public EmployeeDto editEmployee(@RequestBody EmployeeDto employeeDto) {
         return new EmployeeDto(employeeService.editEmployee(employeeDto));
     }
 
-    @DeleteMapping("bosted/employee/{id}")
+    @DeleteMapping("bosted/employees/{id}")
     public EmployeeDto deleteEmployee(@PathVariable String id) {
         return new EmployeeDto(employeeService.deleteEmployee(id));
     }

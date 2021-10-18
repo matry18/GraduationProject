@@ -40,12 +40,12 @@ public class CreateEmployee implements SagaParticipator<SagaEmployeeDto> {
                 throw new Exception();
             }
             employeeService.addEmployee(sagaEmployeeDto.getEmployeeDto());
-            kafkaApi.publish(EmployeeTopic.CreateEmployeeSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
+            kafkaApi.publish(CreateEmployeeSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(),
                     SagaStatus.FAILED);
             try {
-                kafkaApi.publish(EmployeeTopic.CreateEmployeeSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
+                kafkaApi.publish(CreateEmployeeSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
             } catch (JsonProcessingException ex) {
                 ex.printStackTrace();
             }

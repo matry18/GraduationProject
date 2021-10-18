@@ -63,7 +63,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {FormSubmissionPositiveComponent} from "./snackbars/FormSubmission/form-submission-positive/form-submission-positive.component";
 import { FormSubmissionNegativeComponent } from './snackbars/FormSubmission/form-submission-negative/form-submission-negative.component';
 import {ResidentModule} from "./citizen/resident.module";
-import { CreateEmployeeFormComponent } from './employe/components/create-employe-form/create-employee-form.component';
+import {EmployeeModule} from "./employee/employee.module";
 import { AddUserDialogButtonComponent } from './user/add-user-dialog/add-user-dialog-button.component';
 import { AddUserMenuComponent } from './user/add-user-menu/add-user-menu.component';
 import { GeneralNavbarComponent } from './navbar/components/general-navbar/general-navbar.component';
@@ -79,15 +79,16 @@ import { DepartmentListComponent } from './department/components/department-list
 import { CreateDepartmentFormComponent } from './department/components/create-department/create-department-form.component';
 import { CreateDepartmentDialogButtonComponent } from './department/components/create-department-dialog-button/create-department-dialog-button.component';
 import { DepartmentSelectorComponent } from './department/components/department-selector/department-selector.component';
+import {EmployeeCreateFormComponent} from "./employee/components/employee-create-form/employee-create-form.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateUserComponent,
     ResidentCreateFormComponent,
+    EmployeeCreateFormComponent,
     FormSubmissionPositiveComponent,
     FormSubmissionNegativeComponent,
-    CreateEmployeeFormComponent,
     AddUserDialogButtonComponent,
     AddUserMenuComponent,
     GeneralNavbarComponent,
@@ -166,6 +167,7 @@ import { DepartmentSelectorComponent } from './department/components/department-
     ScrollingModule,
     ReactiveFormsModule,
     ResidentModule,
+    EmployeeModule,
 
 
   ],
