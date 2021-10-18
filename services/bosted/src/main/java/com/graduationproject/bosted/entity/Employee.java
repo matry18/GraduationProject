@@ -1,7 +1,6 @@
 package com.graduationproject.bosted.entity;
 
 import com.graduationproject.bosted.dto.EmployeeDto;
-import com.graduationproject.bosted.dto.ResidentDto;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -29,6 +28,7 @@ public class Employee extends User {
 
 
     public Employee(EmployeeDto employeeDto) {
+        this.id = employeeDto.getId();
         this.firstname = employeeDto.getFirstname();
         this.lastname = employeeDto.getLastname();
         this.Email = employeeDto.getEmail();
@@ -43,6 +43,8 @@ public class Employee extends User {
     public Employee(){
 
     }
+
+
     public String getFirstname() {
         return firstname;
     }
@@ -109,7 +111,7 @@ public class Employee extends User {
 
     @Override
         public String toString() {
-            return "Resident{" +
+            return "Employee{" +
                     "id='" + id + '\'' +
                     ", firstname='" + firstname + '\'' +
                     ", lastname='" + lastname + '\'' +
