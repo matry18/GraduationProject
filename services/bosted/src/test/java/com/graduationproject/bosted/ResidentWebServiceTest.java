@@ -45,7 +45,7 @@ public class ResidentWebServiceTest {
     }
 
     @Test
-    public void residentWebServiceTest_getPerson_requestMethodIsPost_shouldReturn405MethodNotAllowed() throws Exception {
+    public void getCitizen_postRequest_returns405MethodNotAllowed() throws Exception {
         mockMvc.perform(post("/bosted/citizen/1234"))
                 .andExpect(status().isMethodNotAllowed());
     }

@@ -9,6 +9,7 @@ import com.graduationproject.bosted.kafka.KafkaAPI;
 import com.graduationproject.bosted.repository.ResidentRepository;
 import com.graduationproject.bosted.saga.SagaInitiator;
 import com.graduationproject.bosted.topic.ResidentTopics;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,13 +50,16 @@ public class DeleteResident implements SagaInitiator<ResidentDto> {
     public void revert(ResidentDto residentDto, String sagaId) {
         SagaResponseDto sagaResponseDto;
         try {
+            if(residentDto.getUsername().equals("bFailRevert")) {
+              throw new IllegalArgumentException("Bosted Failed Revert");
+            }
             residentRepository.save(new Resident(residentDto));
             sagaResponseDto = new SagaResponseDto(sagaId, SUCCESS);
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaId, FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
-
         produceKafkaMessage(ResidentTopics.DeleteResidentSagaRevert, sagaResponseDto);
     }
 

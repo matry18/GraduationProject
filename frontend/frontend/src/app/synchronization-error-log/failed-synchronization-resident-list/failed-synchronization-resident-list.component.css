@@ -1,0 +1,17 @@
+.custom-container {
+  margin: 20px;
+
+}
+
+h1 {
+  text-align: center;
+  font-weight: 400;
+}
+table {
+  width: 100%;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}

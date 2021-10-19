@@ -79,6 +79,9 @@ import { DepartmentListComponent } from './department/components/department-list
 import { CreateDepartmentFormComponent } from './department/components/create-department/create-department-form.component';
 import { CreateDepartmentDialogButtonComponent } from './department/components/create-department-dialog-button/create-department-dialog-button.component';
 import { DepartmentSelectorComponent } from './department/components/department-selector/department-selector.component';
+import { SynchronizationErrorListComponent } from './synchronization-error-log/synchronization-error-list/synchronization-error-list.component';
+import { SynchronizationLogContainerComponent } from './synchronization-error-log/synchronization-log-container/synchronization-log-container.component';
+import { FailedSynchronizationResidentListComponent } from './synchronization-error-log/failed-synchronization-resident-list/failed-synchronization-resident-list.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +104,9 @@ import { DepartmentSelectorComponent } from './department/components/department-
     CreateDepartmentFormComponent,
     CreateDepartmentDialogButtonComponent,
     DepartmentSelectorComponent,
+    SynchronizationErrorListComponent,
+    SynchronizationLogContainerComponent,
+    FailedSynchronizationResidentListComponent,
 
 
   ],

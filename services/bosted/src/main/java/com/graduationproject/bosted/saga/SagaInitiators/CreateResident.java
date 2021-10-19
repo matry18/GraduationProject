@@ -36,7 +36,6 @@ public class CreateResident implements SagaInitiator<ResidentDto> {
         }
     }
 
-
     @Override
     public void initSaga(ResidentDto oldObject, ResidentDto newObject) {
         throw new UnsupportedOperationException("not implemented for this saga");
