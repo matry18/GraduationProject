@@ -9,5 +9,5 @@ class BostedApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-	
+
 }
