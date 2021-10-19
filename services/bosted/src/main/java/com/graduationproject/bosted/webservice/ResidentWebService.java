@@ -34,7 +34,6 @@ public class ResidentWebService {
     @PostMapping("bosted/citizen")
     public ResidentDto createCitizen(@RequestBody ResidentDto residentDto) {
         residentService.addCitizen(residentDto);
-        System.out.println("Got message from frontend");
         return residentDto;
     }
 

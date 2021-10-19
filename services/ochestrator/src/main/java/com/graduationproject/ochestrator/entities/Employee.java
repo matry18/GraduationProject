@@ -2,13 +2,11 @@ package com.graduationproject.ochestrator.entities;
 
 import com.graduationproject.ochestrator.dto.EmployeeDto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Employee {
+
     @Column(unique=true)
     private String sagaId;
 
