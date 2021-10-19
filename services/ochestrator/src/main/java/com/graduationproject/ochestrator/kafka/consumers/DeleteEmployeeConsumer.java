@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.*;
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.DeleteEmployeeSagaRevert;
 
 @Service
 public class DeleteEmployeeConsumer {

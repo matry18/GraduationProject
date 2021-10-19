@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import static com.graduationProject.authentication.topic.EmployeeTopic.UpdateEmployeeSagaBegin;
-import static com.graduationProject.authentication.topic.EmployeeTopic.UpdateEmployeeSagaFailed;
+import static com.graduationProject.authentication.topic.EmployeeTopic.*;
 
 @Service
 public class UpdateEmployeeConsumer {
@@ -21,7 +20,6 @@ public class UpdateEmployeeConsumer {
     public UpdateEmployeeConsumer(UpdateEmployee updateEmployee) {
         this.updateEmployee = updateEmployee;
     }
-
 
     @KafkaListener(topics = UpdateEmployeeSagaBegin, groupId = GROUP_ID)
     public void consumeCreateEmployeeSagaBegin(String message) {
