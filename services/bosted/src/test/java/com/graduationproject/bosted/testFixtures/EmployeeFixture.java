@@ -7,7 +7,7 @@ import static com.graduationproject.bosted.testFixtures.DepartmentFixture.create
 
 public class EmployeeFixture {
 
-    private String id = "UUID-9876";
+    private String id = "1234";
     private String firstName = "Rasmus";
     private String lastName = "Hansen";
     private String email = "rasmus@mail.dk";

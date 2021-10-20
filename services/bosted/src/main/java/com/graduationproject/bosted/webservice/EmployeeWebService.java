@@ -25,7 +25,7 @@ public class EmployeeWebService {
 
     @GetMapping("bosted/employees/{id}")
     public EmployeeDto getPerson(@PathVariable String id) {
-        return new EmployeeDto(employeeRepository.findById(id).orElse(null));
+        return new EmployeeDto(employeeRepository.getById(id));
     }
 
     @PostMapping("bosted/employees")

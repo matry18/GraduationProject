@@ -41,11 +41,21 @@ public class EmployeeWebServiceTest {
     @BeforeEach
     public void setup(){
         employee = EmployeeFixture.createEmployee();
-        when(employeeRepository.getById(employee.getId())).thenReturn(employee);
+        when(employeeRepository.getById("1234")).thenReturn(employee);
     }
 
     @Test
-    public void bla(){
+    public void employeeWebServiceTest_getPerson_requestMethodIsPost_shouldReturn405MethodNotAllowed() throws Exception {
+        mockMvc.perform(post("/bosted/employees/1234"))
+                .andExpect(status().isMethodNotAllowed());
+    }
 
+    @Test
+    public void employeeWebServiceTest_getPerson_requestMethodIsGet_shouldReturnOK() throws Exception {
+        employee = EmployeeFixture.createEmployee();
+        when(employeeRepository.getById("1234")).thenReturn(employee);
+        mockMvc.perform(get("/bosted/employees/1234"))
+                .andExpect(status().isOk());
     }
 }
+
