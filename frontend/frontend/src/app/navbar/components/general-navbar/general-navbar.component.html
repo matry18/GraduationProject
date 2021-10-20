@@ -2,7 +2,7 @@
   <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
     <mat-icon>menu</mat-icon>
   </button>
-  <span routerLink="" class="clickable">Da Frontend <mat-icon>cake</mat-icon></span>
+  <span routerLink="" class="clickable">POC Sensum <mat-icon>home</mat-icon></span>
   <span class="spacer"></span>
   <button routerLink ="department"
            [matTooltip]="'See departments'"
@@ -17,6 +17,11 @@
   <button mat-icon-button routerLink="/citizen">
     <mat-icon [matTooltip]="'See citizens'">groups</mat-icon>
   </button>
+
+  <button mat-icon-button routerLink="/employee">
+    <mat-icon [matTooltip]="'See list of employees'">supervisor_account</mat-icon>
+  </button>
+
   <td-user-profile [matTooltip]="'Profile'" name="daffy duck" email="daffy.duck@teradata.com">
     <ng-container td-user-info-list>
       <mat-list-item>

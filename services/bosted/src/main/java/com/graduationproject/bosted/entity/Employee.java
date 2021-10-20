@@ -1,14 +1,13 @@
 package com.graduationproject.bosted.entity;
 
 import com.graduationproject.bosted.dto.EmployeeDto;
-import com.graduationproject.bosted.dto.ResidentDto;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Employee extends User{
+public class Employee extends User {
     @Id
     private String id;
 
@@ -29,19 +28,23 @@ public class Employee extends User{
 
 
     public Employee(EmployeeDto employeeDto) {
-        this.setFirstname(employeeDto.getFirstname());
-        this.setLastname(employeeDto.getLastname());
-        this.setEmail(employeeDto.getEmail());
-        this.setPhoneNumber(employeeDto.getPhoneNumber());
-
+        this.id = employeeDto.getId();
+        this.firstname = employeeDto.getFirstname();
+        this.lastname = employeeDto.getLastname();
+        this.Email = employeeDto.getEmail();
+        this.phoneNumber = employeeDto.getPhoneNumber();
+        this.department = new Department(employeeDto.getDepartment());
         //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
-        this.setUsername(employeeDto.getUsername());
-        this.setPassword(employeeDto.getPassword());
+        this.username = employeeDto.getUsername();
+        this.password = employeeDto.getPassword();
+
     }
 
     public Employee(){
 
     }
+
+
     public String getFirstname() {
         return firstname;
     }
@@ -105,4 +108,18 @@ public class Employee extends User{
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+        public String toString() {
+            return "Employee{" +
+                    "id='" + id + '\'' +
+                    ", firstname='" + firstname + '\'' +
+                    ", lastname='" + lastname + '\'' +
+                    ", email='" + Email + '\'' +
+                    ", phoneNumber='" + phoneNumber + '\'' +
+                    ", department=" + department +
+                    ", username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    '}';
+        }
 }

@@ -1,5 +1,5 @@
 mat-form-field {
-  display: block;
+  display: block !important;
 }
 
 .form-submit-btn {
