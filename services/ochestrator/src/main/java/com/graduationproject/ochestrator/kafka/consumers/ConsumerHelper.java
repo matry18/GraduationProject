@@ -66,7 +66,7 @@ public class ConsumerHelper<T> {
                 serviceReplies.remove(sagaResponseDto.getSagaId());
                 return;
             }
-            deleteResidentDtoWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
+            deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -82,13 +82,13 @@ public class ConsumerHelper<T> {
                 System.out.println("Revert failed on topic: " + topic);
                 return;
             }
-            deleteResidentDtoWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
+            deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
 
-    private void deleteResidentDtoWhenAllServiceTypesHasRepliedSuccess(String sagaId) {
+    private void deleteEntityWhenAllServiceTypesHasRepliedSuccess(String sagaId) {
         if (hasEveryServiceReplied(sagaId) && hasNoFailStatuses(serviceReplies.get(sagaId))) {
             sagaParticipator.transact(sagaId);
             serviceReplies.remove(sagaId);

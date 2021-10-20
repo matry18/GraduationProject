@@ -40,10 +40,6 @@ export class ResidentListComponent implements OnInit {
       );
   }
 
-  public applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-  }
-
   public openEditDialog(residentDto: ResidentDto): void {
       this.dialog.open(ResidentCreateFormComponent,{
         data: {resident: residentDto}});
