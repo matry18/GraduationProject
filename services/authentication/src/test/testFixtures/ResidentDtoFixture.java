@@ -3,10 +3,8 @@ package testFixtures;
 import com.graduationProject.authentication.dto.ResidentDto;
 
 public class ResidentDtoFixture {
-
     private String username = "JohnDoe";
     private String password = "secretPassword";
-
 
     public static ResidentDto createResidentDto() {
         return new ResidentDtoFixture().build();
@@ -32,5 +30,6 @@ public class ResidentDtoFixture {
         this.password = password;
         return this;
     }
-
 }
+
+

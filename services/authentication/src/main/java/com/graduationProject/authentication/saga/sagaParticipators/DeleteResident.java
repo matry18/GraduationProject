@@ -8,6 +8,7 @@ import com.graduationProject.authentication.kafka.KafkaApi;
 import com.graduationProject.authentication.saga.SagaParticipator;
 import com.graduationProject.authentication.service.ResidentService;
 import com.graduationProject.authentication.type.SagaStatus;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
     public void transact(SagaResidentDto sagaResidentDto) {
         SagaResponseDto sagaResponseDto;
         try {
-            if (sagaResidentDto.getResidentDto().getUsername().equals("neverDelete")) {
+            if (sagaResidentDto.getResidentDto().getUsername().equals("neverDelete") || sagaResidentDto.getResidentDto().getUsername().equals("bFailRevert")) {
                 throw new IllegalArgumentException("Admin can never be deleted");
             }
             residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
@@ -37,6 +38,7 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
 
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
 
@@ -47,13 +49,14 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
     public void revert(SagaResidentDto sagaResidentDto) {
         SagaResponseDto sagaResponseDto;
         try {
-            if (sagaResidentDto.getResidentDto().getPassword().equals("neverDelete")) {
+            if (sagaResidentDto.getResidentDto().getPassword().equals("neverDelete") ) {
                 throw new Exception();
             }
             residentService.addResident(sagaResidentDto.getResidentDto());
             sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.SUCCESS);
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
 

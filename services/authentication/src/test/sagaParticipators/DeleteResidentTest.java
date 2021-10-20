@@ -22,16 +22,13 @@ public class DeleteResidentTest {
 
     @InjectMocks
     private DeleteResident testee;
-
     @Mock
     private ResidentService residentService;
-
     @Mock
     private KafkaApi kafkaApi;
 
     private ResidentDto residentDto;
     private SagaResidentDto sagaResidentDto;
-
 
     @Before
     public void setup() {
@@ -40,7 +37,7 @@ public class DeleteResidentTest {
     }
 
     @Test
-    public void DeleteResidentTest_transact_usernameIsNeverDelete_doesNotDeleteResident() {
+    public void DeleteResidentTest_transact_usernameIsNeverDelete_doesNotCallDeleteResident() {
         residentDto = ResidentDtoFixture.builder()
                 .setUsername("neverDelete")
                 .setPassword("1234")
@@ -52,8 +49,9 @@ public class DeleteResidentTest {
         verify(residentService, times(0)).deleteResident(any());
     }
 
+
     @Test
-    public void DeleteResidentTest_transact_usernameIsNotNeverDelete_doesDeleteResident() {
+    public void DeleteResidentTest_transact_usernameIsNotNeverDelete_doesCallDeleteResident() {
         residentDto = ResidentDtoFixture.builder()
                 .setUsername("test")
                 .setPassword("1234")
@@ -62,7 +60,7 @@ public class DeleteResidentTest {
                 .setResidentDto(residentDto)
                 .build();
         testee.transact(sagaResidentDto);
-        verify(residentService, times(1)).deleteResident(any());
+       verify(residentService, times(1)).deleteResident(any());
     }
 
 }

@@ -23,6 +23,7 @@ public class ResidentService {
 
 
     public void deleteResident(String residentId) {
+        //throw new Exception("Could not revert creation of resident");
         residentRepository.deleteById(residentId);
     }
 

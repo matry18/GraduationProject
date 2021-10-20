@@ -6,6 +6,8 @@ import {EmployeeListComponent} from "./employee/components/employee-list/employe
 import {ErrorComponent} from "./errorpage/components/error/error.component";
 import {UserProfileComponent} from "./user/user-profile/container/user-profile/user-profile.component";
 import {DepartmentContainerComponent} from "./department/container/department-container/department-container.component";
+import {SynchronizationErrorListComponent} from "./synchronization-error-log/synchronization-error-list/synchronization-error-list.component";
+import {SynchronizationLogContainerComponent} from "./synchronization-error-log/synchronization-log-container/synchronization-log-container.component";
 
 const routes: Routes = [];
 
@@ -16,6 +18,7 @@ const routes: Routes = [];
       {path: 'department', component: DepartmentContainerComponent},
       {path: 'user/logged-in', component: UserProfileComponent},
       {path: 'citizen', component: ResidentListComponent},
+      {path: 'synchronization-log', component: SynchronizationLogContainerComponent},
       {path: 'employee', component: EmployeeListComponent},
       {path: '**', component: ErrorComponent},])
     ,],

@@ -17,9 +17,9 @@ export class ResidentListComponent implements OnInit {
 
   displayedColumns = ['id', 'firstname', 'lastname', 'department', 'email', 'phoneNumber'];
 
-    constructor(private citizenService: ResidentService, private dialog: MatDialog, private snackbarService: SnackbarService) { }
+  constructor(private citizenService: ResidentService, private dialog: MatDialog, private snackbarService: SnackbarService) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.fetchAllCitizen();
   }
 
