@@ -66,7 +66,7 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
     this.departmentService.getAllDepartments().subscribe((departments: DepartmentDto[]) => {
       this.departments = departments;
       });
-    this.employeeForm.get('department')?.setValue(this.data.employee.department);
+    this.employeeForm.get('department')?.setValue(this.data?.employee?.department);
   }
 
   public submit(): void {
