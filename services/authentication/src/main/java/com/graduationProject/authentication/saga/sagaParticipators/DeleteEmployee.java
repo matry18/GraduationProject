@@ -8,6 +8,7 @@ import com.graduationProject.authentication.kafka.KafkaApi;
 import com.graduationProject.authentication.saga.SagaParticipator;
 import com.graduationProject.authentication.service.EmployeeService;
 import com.graduationProject.authentication.type.SagaStatus;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +32,17 @@ public class DeleteEmployee implements SagaParticipator<SagaEmployeeDto> {
     public void transact(SagaEmployeeDto sagaEmployeeDto) {
         SagaResponseDto sagaResponseDto;
         try {
-            employeeService.deleteEmployee(sagaEmployeeDto.getEmployeeDto().getId());
-            if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("neverDelete")) {
-                throw new Exception();
+            if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("neverDelete") || sagaEmployeeDto.getEmployeeDto().getUsername().equals("bFailRevert")) {
+                throw new IllegalStateException(String.format("Could not delete Employee with \n ID: %s \n SagaID: %s",
+                        sagaEmployeeDto.getEmployeeDto().getId(),
+                        sagaEmployeeDto.getSagaId()));
             }
+            employeeService.deleteEmployee(sagaEmployeeDto.getEmployeeDto().getId());
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), SagaStatus.SUCCESS);
 
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
         produceKafkaMessage(DeleteEmployeeSagaDone, sagaResponseDto);
@@ -49,12 +53,16 @@ public class DeleteEmployee implements SagaParticipator<SagaEmployeeDto> {
         SagaResponseDto sagaResponseDto;
         try {
             if (sagaEmployeeDto.getEmployeeDto().getPassword().equals("neverDelete")) {
-                throw new Exception();
+                throw new IllegalStateException(String.format("Could not revert deletion of Employee with \n ID: %s \n SagaID: %s",
+                        sagaEmployeeDto.getEmployeeDto().getId(),
+                        sagaEmployeeDto.getSagaId()));
             }
+            employeeService.deleteIfExists(sagaEmployeeDto.getEmployeeDto().getId());
             employeeService.addEmployee(sagaEmployeeDto.getEmployeeDto());
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), SagaStatus.SUCCESS);
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
         produceKafkaMessage(DeleteEmployeeSagaRevert, sagaResponseDto);

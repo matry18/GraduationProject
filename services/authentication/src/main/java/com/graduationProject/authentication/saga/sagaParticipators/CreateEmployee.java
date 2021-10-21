@@ -11,6 +11,7 @@ import com.graduationProject.authentication.topic.EmployeeTopic;
 import com.graduationProject.authentication.type.SagaStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.transaction.Transactional;
 
@@ -33,17 +34,19 @@ public class CreateEmployee implements SagaParticipator<SagaEmployeeDto> {
     @Override
     public void transact(SagaEmployeeDto sagaEmployeeDto) {
         try {
-
-            SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(),
-                    SagaStatus.SUCCESS);
             if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("fail")) {
-                throw new Exception();
+                throw new IllegalStateException(String.format("Could not create Employee with \n ID: %s \n SagaID: %s",
+                        sagaEmployeeDto.getEmployeeDto().getId(),
+                        sagaEmployeeDto.getSagaId()));
             }
             employeeService.addEmployee(sagaEmployeeDto.getEmployeeDto());
+            SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(),
+                    SagaStatus.SUCCESS);
             kafkaApi.publish(CreateEmployeeSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(),
                     SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             try {
                 kafkaApi.publish(CreateEmployeeSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
             } catch (JsonProcessingException ex) {
@@ -57,20 +60,22 @@ public class CreateEmployee implements SagaParticipator<SagaEmployeeDto> {
     public void revert(SagaEmployeeDto sagaEmployeeDto) {
         try {
             if (sagaEmployeeDto.getEmployeeDto().getPassword().equals("fail")) {
-                throw new Exception();
+                throw new IllegalStateException(String.format("Could not revert creation of Employee with \n ID: %s \n SagaID: %s",
+                        sagaEmployeeDto.getEmployeeDto().getId(),
+                        sagaEmployeeDto.getSagaId()));
             }
-
             if (employeeService.employeeExists(sagaEmployeeDto.getEmployeeDto().getId())) {
                 employeeService.deleteEmployee(sagaEmployeeDto.getEmployeeDto().getId());
             }
-
             kafkaApi.publish(CreateEmployeeSagaRevert, new ObjectMapper()
                     .writeValueAsString(new SagaResponseDto(sagaEmployeeDto.getSagaId(), SagaStatus.SUCCESS)));
         } catch (Exception e) {
             e.printStackTrace();
             try {
+                SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), SagaStatus.FAILED);
+                sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
                 kafkaApi.publish(CreateEmployeeSagaRevert, new ObjectMapper()
-                        .writeValueAsString(new SagaResponseDto(sagaEmployeeDto.getSagaId(), SagaStatus.FAILED)));
+                        .writeValueAsString(sagaResponseDto));
             } catch (JsonProcessingException ex) {
                 ex.printStackTrace();
             }

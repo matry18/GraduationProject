@@ -30,4 +30,14 @@ public class ResidentService {
     public boolean residentExists(String residentId) {
         return residentRepository.existsResidentById(residentId);
     }
+
+    private boolean doesResidentExists(String id) {
+        return residentRepository.existsResidentById(id);
+    }
+
+    public void deleteIfExists(String id) {
+        if (doesResidentExists(id)) {
+            deleteResident(id);
+        }
+    }
 }

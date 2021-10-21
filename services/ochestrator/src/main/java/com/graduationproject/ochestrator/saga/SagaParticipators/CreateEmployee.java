@@ -19,7 +19,6 @@ import java.util.UUID;
 
 import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.CreateEmployeeSagaBegin;
 import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.CreateEmployeeSagaFailed;
-import static java.util.Objects.nonNull;
 
 @Service
 public class CreateEmployee implements SagaParticipator<EmployeeDto> {
@@ -67,10 +66,6 @@ public class CreateEmployee implements SagaParticipator<EmployeeDto> {
         //this will be run after a successful saga
         Employee employee = employeeRepository.findEmployeeBySagaId(sagaId);
         employeeRepository.deleteBySagaId(sagaId);
-        if (nonNull(employee.getDepartment()) && employeeRepository.countByDepartment(employee.getDepartment()) == 0) {
-            departmentRepository.deleteBySagaId(sagaId);
-        }
-
     }
 
     @Transactional

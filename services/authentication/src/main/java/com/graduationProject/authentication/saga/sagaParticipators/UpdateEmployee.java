@@ -10,6 +10,7 @@ import com.graduationProject.authentication.kafka.KafkaApi;
 import com.graduationProject.authentication.repository.EmployeeRepository;
 import com.graduationProject.authentication.saga.SagaParticipator;
 import com.graduationProject.authentication.topic.EmployeeTopic;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,9 @@ public class UpdateEmployee implements SagaParticipator<SagaEmployeeDto> {
         SagaResponseDto sagaResponseDto;
         try {
             if (sagaEmployeeDto.getEmployeeDto().getFirstname().equals("updateFail")) {
-                throw new Exception();
+                throw new IllegalStateException(String.format("Could not update Employee with \n ID: %s \n SagaID: %s",
+                        sagaEmployeeDto.getEmployeeDto().getId(),
+                        sagaEmployeeDto.getSagaId()));
             }
             Employee employee = employeeRepository.getById(sagaEmployeeDto.getEmployeeDto().getId());
             updateEmployee(employee, sagaEmployeeDto.getEmployeeDto());
@@ -44,6 +47,7 @@ public class UpdateEmployee implements SagaParticipator<SagaEmployeeDto> {
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), SUCCESS);
         }catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
 
@@ -56,7 +60,9 @@ public class UpdateEmployee implements SagaParticipator<SagaEmployeeDto> {
         SagaResponseDto sagaResponseDto;
         try {
             if (sagaEmployeeDto.getEmployeeDto().getLastname().equals("updateFail")) {
-                throw new Exception();
+                throw new IllegalStateException(String.format("Could not revert update of Employee with \n ID: %s \n SagaID: %s",
+                        sagaEmployeeDto.getEmployeeDto().getId(),
+                        sagaEmployeeDto.getSagaId()));
             }
             Employee employee = employeeRepository.getById(sagaEmployeeDto.getEmployeeDto().getId());
             updateEmployee(employee, sagaEmployeeDto.getEmployeeDto());
@@ -64,6 +70,7 @@ public class UpdateEmployee implements SagaParticipator<SagaEmployeeDto> {
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), SUCCESS);
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
         produceKafkaMessage(EmployeeTopic.UpdateEmployeeSagaRevert, sagaResponseDto);

@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.*;
+import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.UpdateEmployeeSagaBegin;
+import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.UpdateEmployeeSagaFailed;
 
 @Service
 public class UpdateEmployee implements SagaParticipator<EmployeeDto> {
@@ -63,7 +64,7 @@ public class UpdateEmployee implements SagaParticipator<EmployeeDto> {
 
     @Override
     public void revert(String sagaId) {
-        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto( employeeRepository.findEmployeeBySagaId(sagaId));
+        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto(employeeRepository.findEmployeeBySagaId(sagaId));
         try {
             kafkaApi.publish(UpdateEmployeeSagaFailed, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
         } catch (JsonProcessingException e) {
@@ -76,9 +77,6 @@ public class UpdateEmployee implements SagaParticipator<EmployeeDto> {
         //this will be run after a successful saga
         Employee employee = employeeRepository.findEmployeeBySagaId(sagaId);
         employeeRepository.deleteBySagaId(sagaId);
-        if (employeeRepository.countByDepartment(employee.getDepartment()) == 0) {
-            departmentRepository.deleteBySagaId(sagaId);
-        }
     }
 
 }

@@ -53,7 +53,6 @@ public class ConsumerHelper<T> {
     }
 
     public void sagaDone(String message, String topic) {
-
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
             System.out.println(topic + " " + sagaResponseDto.getServiceName());
@@ -79,7 +78,7 @@ public class ConsumerHelper<T> {
             addToServiceReplyMap(sagaResponseDto.getSagaId(), sagaResponseDto);
             if (sagaResponseDto.getSagaStatus() == FAILED) {
                 //todo: error handling for failed revert = human interaction/log
-                System.out.println("Revert failed on topic: " + topic);
+                System.out.println("Revert failed on topic: " + topic + "SagaService: " + sagaResponseDto.getServiceName());
                 return;
             }
             deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());

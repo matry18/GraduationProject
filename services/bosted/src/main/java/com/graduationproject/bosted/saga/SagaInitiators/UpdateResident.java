@@ -10,6 +10,7 @@ import com.graduationproject.bosted.kafka.KafkaAPI;
 import com.graduationproject.bosted.repository.ResidentRepository;
 import com.graduationproject.bosted.saga.SagaInitiator;
 import com.graduationproject.bosted.topic.ResidentTopics;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -60,12 +61,12 @@ public class UpdateResident implements SagaInitiator<ResidentDto> {
             sagaResponseDto = new SagaResponseDto(sagaId, SUCCESS);
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaId, FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
 
         produceKafkaMessage(UpdateResidentSagaRevert, sagaResponseDto);
     }
-
 
     private void updateResident(Resident resident, ResidentDto residentDto) {
         resident.setFirstname(residentDto.getFirstname());

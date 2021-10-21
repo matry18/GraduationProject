@@ -6,9 +6,11 @@ import com.graduationproject.bosted.dto.saga.SagaEmployeeDto;
 import com.graduationproject.bosted.saga.SagaInitiators.DeleteEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
 
 import static com.graduationproject.bosted.topic.EmployeeTopics.DeleteEmployeeSagaFailed;
 
+@Service
 public class DeleteEmployeeConsumer {
 
     private static final String GROUP_ID = "bosted";

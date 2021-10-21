@@ -31,14 +31,12 @@ public class DeleteResidentConsumer {
     private final SagaResponseRepository sagaResponseRepository;
     @Autowired
     public DeleteResidentConsumer(DeleteResident deleteResident, SagaResponseRepository sagaResponseRepository) {
-
         consumerHelper = new ConsumerHelper<>(deleteResident, services, ResidentDto.class);
         this.sagaResponseRepository = sagaResponseRepository;
     }
 
     @KafkaListener(topics = DeleteResidentSagaInit, groupId = GROUP_ID)
     public void consumeDeleteResidentSagaInit(String message) {
-
         consumerHelper.initSaga(message, DeleteResidentSagaInit);
     }
 

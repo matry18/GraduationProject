@@ -31,7 +31,9 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
         SagaResponseDto sagaResponseDto;
         try {
             if (sagaResidentDto.getResidentDto().getUsername().equals("neverDelete") || sagaResidentDto.getResidentDto().getUsername().equals("bFailRevert")) {
-                throw new IllegalArgumentException("Admin can never be deleted");
+                throw new IllegalStateException(String.format("Could not delete Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId()));
             }
             residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
             sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.SUCCESS);
@@ -50,8 +52,11 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
         SagaResponseDto sagaResponseDto;
         try {
             if (sagaResidentDto.getResidentDto().getPassword().equals("neverDelete") ) {
-                throw new Exception();
+                throw new IllegalStateException(String.format("Could not revert deletion of Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId()));
             }
+            residentService.deleteIfExists(sagaResidentDto.getResidentDto().getId());
             residentService.addResident(sagaResidentDto.getResidentDto());
             sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.SUCCESS);
         } catch (Exception e) {
@@ -59,11 +64,8 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
             sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
-
         produceKafkaMessage(DeleteResidentSagaRevert, sagaResponseDto);
-
     }
-
 
     private void produceKafkaMessage(String residentTopic, SagaResponseDto sagaResponseDto) {
         try {
@@ -72,5 +74,4 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
             e.printStackTrace();
         }
     }
-
 }

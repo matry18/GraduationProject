@@ -9,6 +9,7 @@ import com.graduationproject.bosted.kafka.KafkaAPI;
 import com.graduationproject.bosted.repository.EmployeeRepository;
 import com.graduationproject.bosted.saga.SagaInitiator;
 import com.graduationproject.bosted.type.SagaStatus;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,19 +45,23 @@ public class CreateEmployee implements SagaInitiator<EmployeeDto> {
 
     @Override
     public void revert(EmployeeDto employeeDto, String sagaId) {
+        SagaResponseDto sagaResponseDto;
         try {
-            employeeRepository.deleteById(employeeDto.getId());
-            kafkaAPI.publish(CreateEmployeeSagaRevert, new ObjectMapper()
-                    .writeValueAsString(new SagaResponseDto(sagaId, SagaStatus.SUCCESS)));
-        } catch (Exception e) {
-            try {
-                kafkaAPI.publish(CreateEmployeeSagaRevert, new ObjectMapper()
-                        .writeValueAsString(new SagaResponseDto(sagaId, SagaStatus.FAILED)));
-            } catch (JsonProcessingException ex) {
-                ex.printStackTrace();
+            if (employeeRepository.existsEmployeeById(employeeDto.getId())) {
+                employeeRepository.deleteById(employeeDto.getId());
             }
+            sagaResponseDto = new SagaResponseDto(sagaId, SagaStatus.SUCCESS);
+        } catch (Exception e) {
+            sagaResponseDto = new SagaResponseDto(sagaId, SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
+            e.printStackTrace();
+        }
+
+        try {
+            kafkaAPI.publish(CreateEmployeeSagaRevert, new ObjectMapper()
+                    .writeValueAsString(sagaResponseDto));
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
-
 }

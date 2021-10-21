@@ -37,17 +37,19 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
     public void transact(SagaResidentDto sagaResidentDto) {
         //if anything goes wrong it should publish to the revert topic
         try {
-
-            SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
-                    SagaStatus.SUCCESS);
             if (sagaResidentDto.getResidentDto().getUsername().equals("fail")) {
-                throw new Exception(); //this should trigger a revert of the saga.
+                throw new IllegalStateException(String.format("Could not create Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId())); //this should trigger a revert of the saga.
             }
             residentService.addResident(sagaResidentDto.getResidentDto());
+            SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
+                    SagaStatus.SUCCESS);
             kafkaApi.publish(CreateResidentSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
                     SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             try {
                 kafkaApi.publish(CreateResidentSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
             } catch (JsonProcessingException ex) {
@@ -70,8 +72,10 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
         Update: the saga participator should revert the entity to the state it had before.
          */
         try {
-           if (sagaResidentDto.getResidentDto().getPassword().equals("fail")) {
-                throw new Exception("Could not revert creation of resident");
+            if (sagaResidentDto.getResidentDto().getPassword().equals("fail")) {
+                throw new IllegalStateException(String.format("Could not revert creation of Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId()));
             }
             residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
             kafkaApi.publish(CreateResidentSagaRevert, new ObjectMapper()

@@ -20,6 +20,9 @@ public class EmployeeService {
         employeeRepository.save(new Employee(employeeDto));
     }
 
+    private boolean doesEmployeeExists(String employeeId) {
+        return employeeRepository.existsEmployeeById(employeeId);
+    }
 
     public void deleteEmployee(String employeeId) {
         employeeRepository.deleteById(employeeId);
@@ -27,5 +30,11 @@ public class EmployeeService {
 
     public boolean employeeExists(String employeeId) {
         return employeeRepository.existsEmployeeById(employeeId);
+    }
+
+    public void deleteIfExists(String id) {
+        if (doesEmployeeExists(id)) {
+            deleteEmployee(id);
+        }
     }
 }

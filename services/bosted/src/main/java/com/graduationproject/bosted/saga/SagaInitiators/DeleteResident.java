@@ -51,7 +51,7 @@ public class DeleteResident implements SagaInitiator<ResidentDto> {
         SagaResponseDto sagaResponseDto;
         try {
             if(residentDto.getUsername().equals("bFailRevert")) {
-              throw new IllegalArgumentException("Bosted Failed Revert");
+              throw new IllegalStateException("Could not revert deletion of Resident");
             }
             residentRepository.save(new Resident(residentDto));
             sagaResponseDto = new SagaResponseDto(sagaId, SUCCESS);

@@ -8,6 +8,7 @@ import com.graduationproject.bosted.kafka.KafkaAPI;
 import com.graduationproject.bosted.repository.ResidentRepository;
 import com.graduationproject.bosted.saga.SagaInitiator;
 import com.graduationproject.bosted.type.SagaStatus;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,19 +44,23 @@ public class CreateResident implements SagaInitiator<ResidentDto> {
 
     @Override
     public void revert(ResidentDto residentDto, String sagaId) {
+        SagaResponseDto sagaResponseDto;
         try {
-            residentRepository.deleteById(residentDto.getId()); //you have to use the repository so you dont get cyclic bean dependencies
-            kafkaAPI.publish(CreateResidentSagaRevert, new ObjectMapper()
-                    .writeValueAsString(new SagaResponseDto(sagaId, SagaStatus.SUCCESS)));
-        } catch (Exception e) {
-            try {
-                kafkaAPI.publish(CreateResidentSagaRevert, new ObjectMapper()
-                        .writeValueAsString(new SagaResponseDto(sagaId, SagaStatus.FAILED)));
-            } catch (JsonProcessingException ex) {
-                ex.printStackTrace();
+            if (residentRepository.existsResidentById(residentDto.getId())) {
+                residentRepository.deleteById(residentDto.getId()); //you have to use the repository so you dont get cyclic bean dependencies
             }
+            sagaResponseDto = new SagaResponseDto(sagaId, SagaStatus.SUCCESS);
+        } catch (Exception e) {
+            sagaResponseDto = new SagaResponseDto(sagaId, SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
+            e.printStackTrace();
+        }
+
+        try {
+            kafkaAPI.publish(CreateResidentSagaRevert, new ObjectMapper()
+                    .writeValueAsString(sagaResponseDto));
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
-
 }

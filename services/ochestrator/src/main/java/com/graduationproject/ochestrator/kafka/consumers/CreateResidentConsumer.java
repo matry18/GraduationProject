@@ -40,10 +40,9 @@ public class CreateResidentConsumer {
 
     @KafkaListener(topics = CreateResidentSagaDone, groupId = GROUP_ID)
     public void consumeCreateResidentSagaDone(String message) {
-
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
-            if(sagaResponseDto.getSagaStatus().equals(SagaStatus.FAILED)) {
+            if (sagaResponseDto.getSagaStatus().equals(SagaStatus.FAILED)) {
                 sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
             }
         } catch (JsonProcessingException e) {
@@ -56,13 +55,12 @@ public class CreateResidentConsumer {
     public void consumeCreateResidentSagaRevert(String message) {
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
-            if(sagaResponseDto.getSagaStatus().equals(SagaStatus.FAILED)) {
+            if (sagaResponseDto.getSagaStatus().equals(SagaStatus.FAILED)) {
                 sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
         consumerHelper.sagaRevert(message, CreateResidentSagaRevert);
     }
 }

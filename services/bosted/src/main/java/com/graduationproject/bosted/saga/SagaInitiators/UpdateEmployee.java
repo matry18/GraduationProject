@@ -10,6 +10,7 @@ import com.graduationproject.bosted.kafka.KafkaAPI;
 import com.graduationproject.bosted.repository.EmployeeRepository;
 import com.graduationproject.bosted.saga.SagaInitiator;
 import com.graduationproject.bosted.topic.EmployeeTopics;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -61,6 +62,7 @@ public class UpdateEmployee implements SagaInitiator<EmployeeDto> {
             sagaResponseDto = new SagaResponseDto(sagaId, SUCCESS);
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaId, FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
         produceKafkaMessage(UpdateEmployeeSagaRevert, sagaResponseDto);

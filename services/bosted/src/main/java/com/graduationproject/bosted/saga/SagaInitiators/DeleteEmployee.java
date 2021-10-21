@@ -8,6 +8,7 @@ import com.graduationproject.bosted.kafka.KafkaAPI;
 import com.graduationproject.bosted.repository.EmployeeRepository;
 import com.graduationproject.bosted.saga.SagaInitiator;
 import com.graduationproject.bosted.topic.EmployeeTopics;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.graduationproject.bosted.dto.EmployeeDto;
@@ -47,10 +48,14 @@ public class DeleteEmployee implements SagaInitiator<EmployeeDto> {
     public void revert(EmployeeDto employeeDto, String sagaId) {
         SagaResponseDto sagaResponseDto;
         try {
+            if (employeeDto.getUsername().equals("bFailRevert")) {
+                throw new IllegalStateException("Could not revert deletion of Employee");
+            }
             employeeRepository.save(new Employee(employeeDto));
             sagaResponseDto = new SagaResponseDto(sagaId, SUCCESS);
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaId, FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
         produceKafkaMessage(EmployeeTopics.DeleteEmployeeSagaRevert, sagaResponseDto);
