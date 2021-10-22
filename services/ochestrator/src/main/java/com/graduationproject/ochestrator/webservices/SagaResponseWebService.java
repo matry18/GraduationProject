@@ -54,5 +54,4 @@ public class SagaResponseWebService {
                 .collect(Collectors.toList());
         return sagaEmployeeDto;
     }
-
 }

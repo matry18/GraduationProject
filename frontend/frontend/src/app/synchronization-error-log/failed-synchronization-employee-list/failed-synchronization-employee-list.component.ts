@@ -19,7 +19,6 @@ export class FailedSynchronizationEmployeeListComponent implements OnInit {
     this.getAllFailedSynchronizationEmployees();
   }
 
-
   private getAllFailedSynchronizationEmployees() {
     this.syncErrorLogService.getAllFailedEmployeeSynchronization().subscribe((sagaEmployees: SagaEmployeeDto[]) => {
       this.sagaEmployees = sagaEmployees;
