@@ -1,8 +1,7 @@
 package com.graduationproject.bosted.webservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduationproject.bosted.dto.ResidentDto;
+import com.graduationproject.bosted.entity.Resident;
 import com.graduationproject.bosted.kafka.KafkaAPI;
 import com.graduationproject.bosted.repository.ResidentRepository;
 import com.graduationproject.bosted.service.ResidentService;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 @CrossOrigin("*")
 public class ResidentWebService {
 
-
     private final ResidentService residentService;
     private final ResidentRepository residentRepository;
 
@@ -26,16 +24,15 @@ public class ResidentWebService {
         this.residentRepository = residentRepository;
     }
 
-
     @GetMapping("bosted/citizen/{id}")
-    public ResidentDto getPerson(@PathVariable String id) {
-        return new ResidentDto(residentRepository.findById(id).orElse(null));
+    public ResidentDto getCitizen(@PathVariable String id) {
+        Resident resident = residentRepository.getById(id);
+        return new ResidentDto(resident);
     }
 
     @PostMapping("bosted/citizen")
     public ResidentDto createCitizen(@RequestBody ResidentDto residentDto) {
         residentService.addCitizen(residentDto);
-        System.out.println("Got message from frontend");
         return residentDto;
     }
 

@@ -1,5 +1,5 @@
    
-version: '2'
+version: '3.8'
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -13,3 +13,44 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       #KAFKA_CREATE_TOPICS: "composetest:1:1" <TopicName>:<NumberOfPartitions>:<NumberOfReplicas>
+  bosted_db:
+    image: mysql:8
+    container_name: bosted_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bosted
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
+    ports: 
+      - "3307:3306"
+    volumes:
+      - bosted-volume:/var/lib/mysql
+  authentication_db:
+    image: mysql:8
+    container_name: authentication_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=authentication
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
+    ports: 
+      - "3309:3306"
+    volumes:
+      - authentication-volume:/var/lib/mysql
+  orchestrator_db:
+    image: mysql:8
+    container_name: orchestrator_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=orchestrator
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
+    ports: 
+      - "3308:3306"
+    volumes:
+      - orchestrator-volume:/var/lib/mysql
+      
+volumes: 
+  bosted-volume:
+  authentication-volume:
+  orchestrator-volume:

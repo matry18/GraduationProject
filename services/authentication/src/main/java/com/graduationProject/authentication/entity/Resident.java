@@ -2,6 +2,7 @@ package com.graduationProject.authentication.entity;
 
 import com.graduationProject.authentication.dto.ResidentDto;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -10,6 +11,7 @@ public class Resident extends User{
     @Id
     private String id;
 
+    @Column(unique=true)
     private String username;
 
     private String password;

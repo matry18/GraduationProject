@@ -63,13 +63,14 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {FormSubmissionPositiveComponent} from "./snackbars/FormSubmission/form-submission-positive/form-submission-positive.component";
 import { FormSubmissionNegativeComponent } from './snackbars/FormSubmission/form-submission-negative/form-submission-negative.component';
 import {ResidentModule} from "./citizen/resident.module";
-import { CreateEmployeeFormComponent } from './employe/components/create-employe-form/create-employee-form.component';
+import {EmployeeModule} from "./employee/employee.module";
 import { AddUserDialogButtonComponent } from './user/add-user-dialog/add-user-dialog-button.component';
 import { AddUserMenuComponent } from './user/add-user-menu/add-user-menu.component';
 import { GeneralNavbarComponent } from './navbar/components/general-navbar/general-navbar.component';
 import { HomeComponent } from './homepage/components/home/home.component';
 import {RouterModule} from "@angular/router";
 import {ResidentListComponent} from "./citizen/components/resident-list/resident-list.component";
+import {EmployeeListComponent} from "./employee/components/employee-list/employee-list.component";
 import { ErrorComponent } from './errorpage/components/error/error.component';
 import { UserProfileComponent } from './user/user-profile/container/user-profile/user-profile.component';
 import { UserInformationComponent } from './user/user-profile/components/user-information/user-information.component';
@@ -79,6 +80,11 @@ import { DepartmentListComponent } from './department/components/department-list
 import { CreateDepartmentFormComponent } from './department/components/create-department/create-department-form.component';
 import { CreateDepartmentDialogButtonComponent } from './department/components/create-department-dialog-button/create-department-dialog-button.component';
 import { DepartmentSelectorComponent } from './department/components/department-selector/department-selector.component';
+import { SynchronizationErrorListComponent } from './synchronization-error-log/synchronization-error-list/synchronization-error-list.component';
+import { SynchronizationLogContainerComponent } from './synchronization-error-log/synchronization-log-container/synchronization-log-container.component';
+import { FailedSynchronizationResidentListComponent } from './synchronization-error-log/failed-synchronization-resident-list/failed-synchronization-resident-list.component';
+import {EmployeeCreateFormComponent} from "./employee/components/employee-create-form/employee-create-form.component";
+
 
 @NgModule({
   declarations: [
@@ -87,7 +93,6 @@ import { DepartmentSelectorComponent } from './department/components/department-
     ResidentCreateFormComponent,
     FormSubmissionPositiveComponent,
     FormSubmissionNegativeComponent,
-    CreateEmployeeFormComponent,
     AddUserDialogButtonComponent,
     AddUserMenuComponent,
     GeneralNavbarComponent,
@@ -101,6 +106,9 @@ import { DepartmentSelectorComponent } from './department/components/department-
     CreateDepartmentFormComponent,
     CreateDepartmentDialogButtonComponent,
     DepartmentSelectorComponent,
+    SynchronizationErrorListComponent,
+    SynchronizationLogContainerComponent,
+    FailedSynchronizationResidentListComponent,
 
 
   ],
@@ -166,6 +174,7 @@ import { DepartmentSelectorComponent } from './department/components/department-
     ScrollingModule,
     ReactiveFormsModule,
     ResidentModule,
+    EmployeeModule,
 
 
   ],

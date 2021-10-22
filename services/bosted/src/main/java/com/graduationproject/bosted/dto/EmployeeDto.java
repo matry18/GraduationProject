@@ -24,11 +24,17 @@ public class EmployeeDto {
         this.department = department;
     }
 
+    public EmployeeDto() {}
+
     public EmployeeDto(Employee employee) {
         this.id = employee.getId();
         this.firstname = employee.getFirstname();
         this.lastname = employee.getLastname();
         this.department = isNull(employee.getDepartment()) ? null : new DepartmentDto(employee.getDepartment());
+        this.email = employee.getEmail();
+        this.phoneNumber = employee.getPhoneNumber();
+        this.username = employee.getUsername();
+        this.password = employee.getPassword();
     }
 
     public String getFirstname() {
@@ -93,5 +99,19 @@ public class EmployeeDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeeDto{" +
+                "id='" + id + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", department=" + department +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
