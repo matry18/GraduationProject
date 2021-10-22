@@ -30,6 +30,11 @@ export interface SagaResidentDto {
   residentDto: ResidentDto;
 }
 
+export interface SagaEmployeeDto {
+  sagaId: string;
+  employeeDto: EmployeeDto;
+}
+
 export interface EmployeeDto {
   id: string,
   firstname: string,

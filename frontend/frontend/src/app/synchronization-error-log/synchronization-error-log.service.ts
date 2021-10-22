@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {SagaResidentDto, SagaResponseDto} from "../typings";
+import {SagaEmployeeDto, SagaResidentDto, SagaResponseDto} from "../typings";
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +16,9 @@ export class SynchronizationErrorLogService {
 
   public getAllFailedResidentSynchronization(): Observable<SagaResidentDto[]> {
     return this.http.get<SagaResidentDto[]>("http://localhost:8088/orchestrator/saga-residents");
+  }
+
+  public getAllFailedEmployeeSynchronization(): Observable<SagaEmployeeDto[]> {
+    return this.http.get<SagaEmployeeDto[]>("http://localhost:8088/orchestrator/saga-employees");
   }
 }
