@@ -6,6 +6,8 @@ import com.graduationProject.authentication.repository.ResidentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class ResidentService {
 
@@ -16,7 +18,7 @@ public class ResidentService {
         this.residentRepository = residentRepository;
     }
 
-
+    @Transactional
     public void addResident(ResidentDto residentDto) {
         residentRepository.save(new Resident(residentDto));
     }

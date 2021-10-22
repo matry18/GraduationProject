@@ -30,7 +30,6 @@ public class CreateEmployee implements SagaParticipator<SagaEmployeeDto> {
         this.kafkaApi = kafkaApi;
     }
 
-    @Transactional
     @Override
     public void transact(SagaEmployeeDto sagaEmployeeDto) {
         try {

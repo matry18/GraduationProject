@@ -6,6 +6,8 @@ import com.graduationProject.authentication.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class EmployeeService {
 
@@ -15,7 +17,7 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-
+    @Transactional
     public void addEmployee(EmployeeDto employeeDto) {
         employeeRepository.save(new Employee(employeeDto));
     }

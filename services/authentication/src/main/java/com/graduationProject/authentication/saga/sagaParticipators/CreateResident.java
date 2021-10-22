@@ -32,7 +32,6 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
         this.kafkaApi = kafkaApi;
     }
 
-    @Transactional
     @Override
     public void transact(SagaResidentDto sagaResidentDto) {
         //if anything goes wrong it should publish to the revert topic
@@ -77,7 +76,9 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
                         sagaResidentDto.getResidentDto().getId(),
                         sagaResidentDto.getSagaId()));
             }
-            residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
+            if (residentService.residentExists(sagaResidentDto.getResidentDto().getId())) {
+                residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
+            }
             kafkaApi.publish(CreateResidentSagaRevert, new ObjectMapper()
                     .writeValueAsString(new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.SUCCESS)));
         } catch (Exception e) {
