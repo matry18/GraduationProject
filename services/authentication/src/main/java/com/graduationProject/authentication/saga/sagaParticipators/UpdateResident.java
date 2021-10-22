@@ -11,6 +11,8 @@ import com.graduationProject.authentication.repository.ResidentRepository;
 import com.graduationProject.authentication.saga.SagaParticipator;
 import com.graduationProject.authentication.topic.ResidentTopic;
 import com.graduationProject.authentication.type.SagaStatus;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +40,9 @@ public class UpdateResident implements SagaParticipator<SagaResidentDto> {
         SagaResponseDto sagaResponseDto;
        try {
            if (sagaResidentDto.getResidentDto().getFirstname().equals("updateFail")) {
-               throw new Exception();
+               throw new IllegalStateException(String.format("Could not update Resident with \n ID: %s \n SagaID: %s",
+                       sagaResidentDto.getResidentDto().getId(),
+                       sagaResidentDto.getSagaId()));
            }
            Resident resident = residentRepository.getById(sagaResidentDto.getResidentDto().getId());
            updateResident(resident, sagaResidentDto.getResidentDto());
@@ -46,6 +50,7 @@ public class UpdateResident implements SagaParticipator<SagaResidentDto> {
            sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SUCCESS);
        }catch (Exception e) {
            sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), FAILED);
+           sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
            e.printStackTrace();
        }
 
@@ -58,7 +63,9 @@ public class UpdateResident implements SagaParticipator<SagaResidentDto> {
         SagaResponseDto sagaResponseDto;
         try {
             if (sagaResidentDto.getResidentDto().getLastname().equals("updateFail")) {
-                throw new Exception();
+                throw new IllegalStateException(String.format("Could not revert update of Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId()));
             }
             Resident resident = residentRepository.getById(sagaResidentDto.getResidentDto().getId());
             updateResident(resident, sagaResidentDto.getResidentDto());
@@ -66,6 +73,7 @@ public class UpdateResident implements SagaParticipator<SagaResidentDto> {
             sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SUCCESS);
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
         }
         produceKafkaMessage(ResidentTopic.UpdateResidentSagaRevert, sagaResponseDto);

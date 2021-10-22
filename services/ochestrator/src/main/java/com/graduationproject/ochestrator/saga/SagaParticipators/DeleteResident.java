@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
+import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.DeleteResidentSagaBegin;
+import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.DeleteResidentSagaFailed;
 
 @Service
 public class DeleteResident implements SagaParticipator<ResidentDto> {
@@ -62,20 +63,16 @@ public class DeleteResident implements SagaParticipator<ResidentDto> {
         }
     }
 
-
     @Transactional
     public void transact(String sagaId) {
         //this will be run after a successful saga
         Resident resident = residentRepository.findResidentBySagaId(sagaId);
         residentRepository.deleteBySagaId(sagaId);
-        if (residentRepository.countByDepartment(resident.getDepartment()) == 0) {
-            departmentRepository.deleteBySagaId(sagaId);
-        }
     }
 
     @Override
     public void revert(String sagaId) {
-        SagaResidentDto sagaResidentDto = new SagaResidentDto( residentRepository.findResidentBySagaId(sagaId));
+        SagaResidentDto sagaResidentDto = new SagaResidentDto(residentRepository.findResidentBySagaId(sagaId));
         try {
             kafkaApi.publish(DeleteResidentSagaFailed, new ObjectMapper().writeValueAsString(sagaResidentDto));
         } catch (JsonProcessingException e) {

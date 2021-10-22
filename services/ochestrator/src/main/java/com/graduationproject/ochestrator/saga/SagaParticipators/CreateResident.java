@@ -67,10 +67,6 @@ public class CreateResident implements SagaParticipator<ResidentDto> {
         //this will be run after a successful saga
         Resident resident = residentRepository.findResidentBySagaId(sagaId);
         residentRepository.deleteBySagaId(sagaId);
-        if (residentRepository.countByDepartment(resident.getDepartment()) == 0) {
-            departmentRepository.deleteBySagaId(sagaId);
-        }
-
     }
 
     @Transactional

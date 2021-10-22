@@ -77,7 +77,7 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
     });
 
 
-    this.residentForm.get('department')?.setValue(this.data.resident.department);
+    this.residentForm.get('department')?.setValue(this.data?.resident?.department);
 
   }
 

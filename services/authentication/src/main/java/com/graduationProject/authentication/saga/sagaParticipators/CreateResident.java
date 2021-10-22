@@ -9,6 +9,7 @@ import com.graduationProject.authentication.kafka.KafkaApi;
 import com.graduationProject.authentication.saga.SagaParticipator;
 import com.graduationProject.authentication.service.ResidentService;
 import com.graduationProject.authentication.type.SagaStatus;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,22 +32,23 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
         this.kafkaApi = kafkaApi;
     }
 
-    @Transactional
     @Override
     public void transact(SagaResidentDto sagaResidentDto) {
         //if anything goes wrong it should publish to the revert topic
         try {
-
-            SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
-                    SagaStatus.SUCCESS);
             if (sagaResidentDto.getResidentDto().getUsername().equals("fail")) {
-                throw new Exception(); //this should trigger a revert of the saga.
+                throw new IllegalStateException(String.format("Could not create Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId())); //this should trigger a revert of the saga.
             }
             residentService.addResident(sagaResidentDto.getResidentDto());
+            SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
+                    SagaStatus.SUCCESS);
             kafkaApi.publish(CreateResidentSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
                     SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             try {
                 kafkaApi.publish(CreateResidentSagaDone, new ObjectMapper().writeValueAsString(sagaResponseDto));
             } catch (JsonProcessingException ex) {
@@ -70,20 +72,22 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
          */
         try {
             if (sagaResidentDto.getResidentDto().getPassword().equals("fail")) {
-                throw new Exception();
+                throw new IllegalStateException(String.format("Could not revert creation of Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId()));
             }
-
             if (residentService.residentExists(sagaResidentDto.getResidentDto().getId())) {
                 residentService.deleteResident(sagaResidentDto.getResidentDto().getId());
             }
-
             kafkaApi.publish(CreateResidentSagaRevert, new ObjectMapper()
                     .writeValueAsString(new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.SUCCESS)));
         } catch (Exception e) {
             e.printStackTrace();
             try {
+                SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.FAILED);
+                sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
                 kafkaApi.publish(CreateResidentSagaRevert, new ObjectMapper()
-                        .writeValueAsString(new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.FAILED)));
+                        .writeValueAsString(sagaResponseDto));
             } catch (JsonProcessingException ex) {
                 ex.printStackTrace();
             }

@@ -9,7 +9,7 @@ services:
       - MYSQL_USER=user
       - MYSQL_PASSWORD=pswd
     ports: 
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - bosted-volume:/var/lib/mysql
   authentication_db:

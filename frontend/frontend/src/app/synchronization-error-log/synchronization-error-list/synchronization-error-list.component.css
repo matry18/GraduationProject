@@ -1,0 +1,12 @@
+table {
+  width: 100%;
+
+}
+.custom-container {
+  height: 600px;
+  overflow-y: scroll;
+}
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}

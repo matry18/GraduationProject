@@ -4,14 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduationproject.ochestrator.dto.saga.SagaResponseDto;
 import com.graduationproject.ochestrator.saga.SagaParticipator;
-import com.graduationproject.ochestrator.topic.Topic;
 import com.graduationproject.ochestrator.type.SagaStatus;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.graduationproject.ochestrator.type.SagaStatus.FAILED;
 import static java.util.Objects.nonNull;
+
 
 public class ConsumerHelper<T> {
 
@@ -51,11 +53,11 @@ public class ConsumerHelper<T> {
     }
 
     public void sagaDone(String message, String topic) {
-        System.out.println(topic);
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
+            System.out.println(topic + " " + sagaResponseDto.getServiceName());
             addToServiceReplyMap(sagaResponseDto.getSagaId(), new SagaResponseDto(sagaResponseDto.getSagaId(),
-                    "bosted", SagaStatus.SUCCESS));
+                    "bosted", SagaStatus.SUCCESS,"")); //remember that this might have to be removed if the init saga does not come from Bosted. Could be that each consumer has the first index as the initializing service.
             addToServiceReplyMap(sagaResponseDto.getSagaId(), sagaResponseDto);
             if (sagaResponseDto.getSagaStatus() == FAILED) {
                 System.out.println(sagaResponseDto.getServiceName() + " FAILED on topic: " + topic);
@@ -63,29 +65,29 @@ public class ConsumerHelper<T> {
                 serviceReplies.remove(sagaResponseDto.getSagaId());
                 return;
             }
-            deleteResidentDtoWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
+            deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
 
     public void sagaRevert(String message, String topic) {
-        System.out.println(topic);
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
+            System.out.println(topic + " " + sagaResponseDto.getServiceName());
             addToServiceReplyMap(sagaResponseDto.getSagaId(), sagaResponseDto);
             if (sagaResponseDto.getSagaStatus() == FAILED) {
                 //todo: error handling for failed revert = human interaction/log
-                System.out.println("Revert failed on topic: " + topic);
+                System.out.println("Revert failed on topic: " + topic + "SagaService: " + sagaResponseDto.getServiceName());
                 return;
             }
-            deleteResidentDtoWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
+            deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
 
-    private void deleteResidentDtoWhenAllServiceTypesHasRepliedSuccess(String sagaId) {
+    private void deleteEntityWhenAllServiceTypesHasRepliedSuccess(String sagaId) {
         if (hasEveryServiceReplied(sagaId) && hasNoFailStatuses(serviceReplies.get(sagaId))) {
             sagaParticipator.transact(sagaId);
             serviceReplies.remove(sagaId);

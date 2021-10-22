@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @CrossOrigin("*")
 public class ResidentWebService {
 
-
     private final ResidentService residentService;
     private final ResidentRepository residentRepository;
 
@@ -26,7 +25,7 @@ public class ResidentWebService {
     }
 
     @GetMapping("bosted/citizen/{id}")
-    public ResidentDto getPerson(@PathVariable String id) {
+    public ResidentDto getCitizen(@PathVariable String id) {
         Resident resident = residentRepository.getById(id);
         return new ResidentDto(resident);
     }
@@ -34,7 +33,6 @@ public class ResidentWebService {
     @PostMapping("bosted/citizen")
     public ResidentDto createCitizen(@RequestBody ResidentDto residentDto) {
         residentService.addCitizen(residentDto);
-        System.out.println("Got message from frontend");
         return residentDto;
     }
 
