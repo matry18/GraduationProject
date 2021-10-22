@@ -1,7 +1,11 @@
 package com.graduationproject.ochestrator.webservices;
 
+import com.graduationproject.ochestrator.dto.saga.SagaEmployeeDto;
 import com.graduationproject.ochestrator.dto.saga.SagaResidentDto;
 import com.graduationproject.ochestrator.dto.saga.SagaResponseDto;
+import com.graduationproject.ochestrator.entities.Employee;
+import com.graduationproject.ochestrator.repository.EmployeeRepository;
+import com.graduationproject.ochestrator.service.EmployeeSagaService;
 import com.graduationproject.ochestrator.service.ResidentSagaService;
 import com.graduationproject.ochestrator.service.SagaResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +22,13 @@ public class SagaResponseWebService {
 
     private final SagaResponseService sagaResponseService;
     private final ResidentSagaService residentSagaService;
+    private final EmployeeSagaService employeeSagaService;
 
     @Autowired
-    public SagaResponseWebService(SagaResponseService sagaResponseService, ResidentSagaService residentSagaService) {
+    public SagaResponseWebService(SagaResponseService sagaResponseService, ResidentSagaService residentSagaService, EmployeeSagaService employeeSagaService) {
         this.sagaResponseService = sagaResponseService;
         this.residentSagaService = residentSagaService;
+        this.employeeSagaService = employeeSagaService;
     }
 
     @GetMapping("orchestrator/saga-responses")
@@ -40,4 +46,13 @@ public class SagaResponseWebService {
                 .collect(Collectors.toList());
         return sagaResidentDto;
     }
+
+    @GetMapping("orchestrator/saga-employees")
+    public List<SagaEmployeeDto> getAllSagaEmployees() {
+        List<SagaEmployeeDto> sagaEmployeeDto = employeeSagaService.fetchAllSagaEmployees().stream()
+                .map(SagaEmployeeDto::new)
+                .collect(Collectors.toList());
+        return sagaEmployeeDto;
+    }
+
 }
