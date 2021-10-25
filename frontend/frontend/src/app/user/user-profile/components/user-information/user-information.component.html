@@ -1,11 +1,11 @@
 <h1 >User information</h1>
   <mat-list role="list">
     <mat-list-item role="listitem">
-      <span><mat-icon>person</mat-icon> <span>full name</span></span>
+      <span><mat-icon>person</mat-icon> <span>{{currentUser?.firstname}} {{currentUser?.lastname}}</span></span>
     </mat-list-item>
     <mat-divider></mat-divider>
     <mat-list-item role="listitem">
-      <span><mat-icon>house</mat-icon><span>department</span></span>
+      <span><mat-icon>house</mat-icon><span>{{currentUser?.department.departmentName}}</span></span>
     </mat-list-item>
     <mat-divider></mat-divider>
     <mat-list-item role="listitem"><span><mat-icon>work_outline</mat-icon><span>Roles</span></span></mat-list-item>

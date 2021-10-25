@@ -65,7 +65,6 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
           department: [null, [Validators.required]]
         }
       );
-
     }
   }
 
