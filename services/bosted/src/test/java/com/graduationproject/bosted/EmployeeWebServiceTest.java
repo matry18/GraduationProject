@@ -21,10 +21,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Collections;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.web.servlet.function.RequestPredicates.accept;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(EmployeeWebService.class)
@@ -43,7 +46,6 @@ public class EmployeeWebServiceTest {
     private KafkaAPI kafkaAPI;
 
     private Employee employee;
-    private Employee employee2;
 
     @BeforeEach
     public void setup(){
@@ -79,5 +81,28 @@ public class EmployeeWebServiceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(employeeDto)));
     }
+
+    @Test
+    public void employeeWebserviceTest_deleteEmployee_shouldReturnOK() throws Exception {
+        employee = EmployeeFixture.createEmployee();
+        when(employeeService.deleteEmployee(any())).thenReturn(employee);
+        EmployeeDto employeeDto = new EmployeeDto(employee);
+        ObjectMapper objectMapper = new ObjectMapper();
+        RequestBuilder request = MockMvcRequestBuilders
+                .delete("/bosted/employees/{id}", "1234")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(employeeDto))
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string(objectMapper.writeValueAsString(employeeDto)));
+    }
+
+
+    @Test
+    public void employeeWebService_getAllEmployees_shouldReturnFoo() throws  Exception {
+        
+    }
+//    when(employeeService.getAllEmployees()).thenReturn(Collections.singletonList(employee));
 }
 

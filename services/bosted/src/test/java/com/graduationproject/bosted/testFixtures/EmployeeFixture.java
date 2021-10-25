@@ -19,35 +19,12 @@ public class EmployeeFixture {
     public static Employee createEmployee() {
         return builder().build();
     }
-    public static Employee create2Employee() {
-        return builder().build("6543",
-                "Magnus",
-                "Larsen",
-                "magus@mail.com",
-                "66998877",
-                createDepartment(),
-                "maglar",
-                "4321");
-    }
 
     public static EmployeeFixture builder() {
         return new EmployeeFixture();
     }
 
     public Employee build() {
-        Employee employee = new Employee();
-        employee.setId(id);
-        employee.setFirstname(firstName);
-        employee.setLastname(lastName);
-        employee.setEmail(email);
-        employee.setPhoneNumber(phoneNumber);
-        employee.setDepartment(department);
-        employee.setUsername(username);
-        employee.setPassword(password);
-        return employee;
-    }
-
-    public Employee build(String id, String firstName, String lastName, String email, String phoneNumber, Department department, String username, String password) {
         Employee employee = new Employee();
         employee.setId(id);
         employee.setFirstname(firstName);
