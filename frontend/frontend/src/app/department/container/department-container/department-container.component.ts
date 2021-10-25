@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {AuthenticationService} from "../../../shared-services/authentication.service";
 
 @Component({
   selector: 'app-department-container',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DepartmentContainerComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authenticationService: AuthenticationService) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    this.authenticationService.redirectIfNotAuthenticated();
   }
 
 }

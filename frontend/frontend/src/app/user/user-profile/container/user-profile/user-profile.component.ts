@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {CurrentUserState, EmployeeDto} from "../../../../typings";
+import {CurrentUserService} from "../../../../shared-services/current-user.service";
 
 @Component({
   selector: 'user-profile',
@@ -7,9 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserProfileComponent implements OnInit {
 
-  constructor() { }
+  public currentUser: any | EmployeeDto;
+  constructor(private currentUserService: CurrentUserService) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    this.currentUserService.globalStateChanged.subscribe((currentUserState: CurrentUserState) => {
+      this.currentUser = currentUserState.currentUser;
+    });
   }
-
 }

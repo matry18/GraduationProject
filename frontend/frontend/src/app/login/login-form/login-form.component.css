@@ -1,0 +1,23 @@
+body {
+/* add background image*/
+}
+mat-form-field {
+  display: block !important;
+  width:20%;
+ margin: auto;
+}
+
+ .login-form {
+  text-align: center !important;
+   align-content: center;
+
+}
+
+
+.form-submit-btn {
+  margin-left: 1%;
+}
+
+h1 {
+  text-align: center;
+}

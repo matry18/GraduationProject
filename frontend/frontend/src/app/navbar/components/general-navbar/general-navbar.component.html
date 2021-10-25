@@ -1,10 +1,7 @@
 <mat-toolbar color="primary">
-  <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-    <mat-icon>menu</mat-icon>
-  </button>
   <span routerLink="" class="clickable">POC Sensum <mat-icon>home</mat-icon></span>
   <span class="spacer"></span>
-  <button routerLink ="department"
+  <button *ngIf="loggedIn.getValue()"  routerLink ="department"
            [matTooltip]="'See departments'"
            mat-flat-button
            style="background: white; margin: 0px 10px">
@@ -12,26 +9,26 @@
   </button>
 
 
-  <add-user-dialog-button></add-user-dialog-button>
+  <add-user-dialog-button *ngIf="loggedIn.getValue()"></add-user-dialog-button>
 
   <button mat-icon-button routerLink="/synchronization-log">
-    <mat-icon [matTooltip]="'See synchronization log'">sync_problem</mat-icon>
+    <mat-icon  *ngIf="loggedIn.getValue()" [matTooltip]="'See synchronization log'">sync_problem</mat-icon>
   </button>
 
   <button mat-icon-button routerLink="/citizen">
-    <mat-icon [matTooltip]="'See citizens'">groups</mat-icon>
+    <mat-icon *ngIf="loggedIn.getValue()"  [matTooltip]="'See citizens'">groups</mat-icon>
   </button>
 
   <button mat-icon-button routerLink="/employee">
-    <mat-icon [matTooltip]="'See list of employees'">supervisor_account</mat-icon>
+    <mat-icon *ngIf="loggedIn.getValue()" [matTooltip]="'See list of employees'">supervisor_account</mat-icon>
   </button>
 
-  <td-user-profile [matTooltip]="'Profile'" name="daffy duck" email="daffy.duck@teradata.com">
+
+  <td-user-profile *ngIf="loggedIn.getValue(); else login" [matTooltip]="'Profile'" [name]="currentUser?.username" [email]="currentUser?.email">
     <ng-container td-user-info-list>
       <mat-list-item>
         <mat-icon matListAvatar>account_balance</mat-icon>
-        <span matLine>default</span>
-        <span matLine>organization</span>
+        <span matLine>{{currentUser?.department.departmentName}}</span>
       </mat-list-item>
     </ng-container>
     <ng-container td-user-action-list>
@@ -41,8 +38,17 @@
       </button>
       <button mat-list-item>
         <span matListAvatar></span>
-        <span matLine>Sign out</span>
+        <span matLine (click)="logout()">Sign out</span>
       </button>
     </ng-container>
   </td-user-profile>
 </mat-toolbar>
+
+<ng-template #login>
+  <button routerLink ="/login"
+          [matTooltip]="'login'"
+          mat-flat-button
+          style="background: white; margin: 0px 10px">
+    Login
+  </button>
+</ng-template>

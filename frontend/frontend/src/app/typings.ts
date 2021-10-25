@@ -51,3 +51,19 @@ export interface DepartmentDto {
   id: string,
   departmentName: string
 }
+
+export interface LoginDto {
+  employeeId: string;
+  username: string;
+  password: string;
+}
+
+
+
+export interface LoginState {
+  logged_in: boolean;
+}
+
+export interface CurrentUserState {
+  currentUser: EmployeeDto;
+}
