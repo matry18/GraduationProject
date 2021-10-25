@@ -83,6 +83,7 @@ import { DepartmentSelectorComponent } from './department/components/department-
 import { SynchronizationErrorListComponent } from './synchronization-error-log/synchronization-error-list/synchronization-error-list.component';
 import { SynchronizationLogContainerComponent } from './synchronization-error-log/synchronization-log-container/synchronization-log-container.component';
 import { FailedSynchronizationResidentListComponent } from './synchronization-error-log/failed-synchronization-resident-list/failed-synchronization-resident-list.component';
+import { FailedSynchronizationEmployeeListComponent} from "./synchronization-error-log/failed-synchronization-employee-list/failed-synchronization-employee-list.component";
 import {EmployeeCreateFormComponent} from "./employee/components/employee-create-form/employee-create-form.component";
 
 
@@ -109,7 +110,7 @@ import {EmployeeCreateFormComponent} from "./employee/components/employee-create
     SynchronizationErrorListComponent,
     SynchronizationLogContainerComponent,
     FailedSynchronizationResidentListComponent,
-
+    FailedSynchronizationEmployeeListComponent,
 
   ],
   imports: [

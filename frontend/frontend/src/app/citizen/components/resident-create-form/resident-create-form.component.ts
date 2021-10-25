@@ -67,18 +67,13 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
       );
 
     }
-
-
   }
 
   public ngOnInit(): void {
     this.departmentService.getAllDepartments().subscribe((departments: DepartmentDto[]) => {
       this.departments = departments;
     });
-
-
     this.residentForm.get('department')?.setValue(this.data?.resident?.department);
-
   }
 
   public submit(): void {
@@ -95,7 +90,6 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
           () => this.snackbarService.openFailedSnackBar()
         );
     }
-
   }
 
   public cancel() {
