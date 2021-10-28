@@ -1,1 +1,9 @@
-<h1 *ngIf="">HOME</h1>
+<!--<h1 >HOME</h1>-->
+<h1 class="mat-title, center" >Hello and welcome to the POC Sensum!</h1>
+<h3 class="center">{{introText}}</h3>
+
+<div style="display: flex; " >
+  <department-overview class="col-4"></department-overview>
+  <employee-overview class="col-4"></employee-overview>
+  <resident-overview class="col-4"></resident-overview>
+</div>

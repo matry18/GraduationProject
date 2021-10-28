@@ -18,4 +18,8 @@ export class DepartmentService {
   public getAllDepartments(): Observable<DepartmentDto[]> {
     return this.http.get<DepartmentDto[]>("http://localhost:8080/bosted/department");
   }
+
+  public getDepartmentCount(): Observable<number> {
+    return this.http.get<number>("http://localhost:8080/bosted/departmentCount");
+  }
 }

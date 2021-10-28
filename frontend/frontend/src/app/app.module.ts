@@ -86,6 +86,9 @@ import { FailedSynchronizationResidentListComponent } from './synchronization-er
 import { FailedSynchronizationEmployeeListComponent} from "./synchronization-error-log/failed-synchronization-employee-list/failed-synchronization-employee-list.component";
 import {EmployeeCreateFormComponent} from "./employee/components/employee-create-form/employee-create-form.component";
 import { LoginFormComponent } from './login/login-form/login-form.component';
+import { DepartmentOverviewComponent } from './homepage/components/department-overview/department-overview.component';
+import { EmployeeOverviewComponent } from './homepage/components/employee-overview/employee-overview.component';
+import { ResidentOverviewComponent } from './homepage/components/resident-overview/resident-overview.component';
 
 
 @NgModule({
@@ -113,6 +116,9 @@ import { LoginFormComponent } from './login/login-form/login-form.component';
     SynchronizationLogContainerComponent,
     FailedSynchronizationResidentListComponent,
     FailedSynchronizationEmployeeListComponent,
+    DepartmentOverviewComponent,
+    EmployeeOverviewComponent,
+    ResidentOverviewComponent,
 
   ],
   imports: [

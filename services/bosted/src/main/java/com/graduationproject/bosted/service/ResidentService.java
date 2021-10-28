@@ -65,4 +65,8 @@ public class ResidentService {
         deleteResident.initSaga(new ResidentDto(resident));
         return resident;
     }
+
+      public long getResidentCount() {
+        return this.residentRepository.count();
+    }
 }

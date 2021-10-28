@@ -26,4 +26,8 @@ public class DepartmentService {
     public List<Department> getAllDepartments() {
         return this.departmentRepository.findAll();
     }
+
+    public long getDepartmentCount() {
+        return this.departmentRepository.count();
+    }
 }
