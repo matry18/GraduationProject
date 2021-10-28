@@ -5,14 +5,14 @@
     <form [formGroup]="loginForm">
       <mat-form-field appearance="fill">
         <mat-label>Username</mat-label>
-        <input matInput placeholder="username" formControlName="username"/>
+        <input matInput placeholder="Username" formControlName="username"/>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password"/>
+        <input matInput placeholder="****" type="password" formControlName="password"/>
       </mat-form-field>
-      <button mat-raised-button class="mat-primary form-submit-btn" (click)="login()"  [disabled]="!this.loginForm.valid">Login</button>
-      <button mat-raised-button class="mat-warn form-submit-btn" (click)="cancel()">Cancel</button>
+      <button mat-raised-button class="mat-primary form-submit-btn" [matTooltip]="'Login'" (click)="login()"  [disabled]="!this.loginForm.valid">Login</button>
+      <button mat-raised-button class="mat-warn form-submit-btn" [matTooltip]="'Cancel login'"(click)="cancel()">Cancel</button>
     </form>
   </div>
 </ng-container>

@@ -36,7 +36,7 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
               private departmentService: DepartmentService) {
 
     this.isEditMode = this.data !== null && this.data !== undefined;
-    this.formText = this.isEditMode ? `Edit resident (${data.resident.firstname} ${data.resident.lastname})` : 'Create resident';
+    this.formText = this.isEditMode ? `Edit Resident (${data.resident.firstname} ${data.resident.lastname})` : 'Create Resident';
 
 
     if(!this.isEditMode) {

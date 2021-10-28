@@ -39,8 +39,8 @@
       <input matInput placeholder="****" type="password" formControlName="password"/>
     </mat-form-field>
 
-    <button mat-raised-button class="mat-primary form-submit-btn" [matTooltip]="'Create employee'" [mat-dialog-close] (click)="submit()"  [disabled]="!this.employeeForm.valid">Submit</button>
-    <button mat-raised-button class="mat-warn form-submit-btn" [matTooltip]="'Abort creation of employee'" (click)="cancel()">Cancel</button>
+    <button mat-raised-button class="mat-primary form-submit-btn" [matTooltip]="'Create Employee'" [mat-dialog-close] (click)="submit()"  [disabled]="!this.employeeForm.valid">Submit</button>
+    <button mat-raised-button class="mat-warn form-submit-btn" [matTooltip]="'Abort creation of Employee'" (click)="cancel()">Cancel</button>
   </form>
   </div>
 </ng-container>
@@ -49,12 +49,12 @@
   <form [formGroup]="employeeForm">
     <mat-form-field appearance="fill">
       <mat-label>First name</mat-label>
-      <input matInput placeholder="Firstname" formControlName="firstname"/>
+      <input matInput placeholder="First name" formControlName="firstname"/>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Last name</mat-label>
-      <input matInput placeholder="Lastname" formControlName="lastname"/>
+      <input matInput placeholder="Last name" formControlName="lastname"/>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
@@ -64,7 +64,7 @@
 
     <mat-form-field appearance="fill">
       <mat-label>Phone number</mat-label>
-      <input matInput placeholder="00000000" formControlName="phoneNumber"/>
+      <input matInput placeholder="00 00 00 00" formControlName="phoneNumber"/>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
@@ -73,7 +73,7 @@
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button class="mat-primary form-submit-btn" [matTooltip]="'Update employee'" [mat-dialog-close] (click)="submit()"  [disabled]="!this.employeeForm.valid">Submit</button>
+    <button mat-raised-button class="mat-primary form-submit-btn" [matTooltip]="'Update Employee'" [mat-dialog-close] (click)="submit()"  [disabled]="!this.employeeForm.valid">Submit</button>
     <button mat-raised-button class="mat-warn form-submit-btn" [matTooltip]="'Abort update'" (click)="cancel()">Cancel</button>
   </form>
 </ng-template>

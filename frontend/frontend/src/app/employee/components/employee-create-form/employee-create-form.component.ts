@@ -32,7 +32,7 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
               private departmentService: DepartmentService) {
 
     this.isEditMode = this.data !== null && this.data !== undefined;
-    this.formText = this.isEditMode ? `Edit employee (${data.employee.firstname} ${data.employee.lastname})` : 'Create employee';
+    this.formText = this.isEditMode ? `Edit Employee (${data.employee.firstname} ${data.employee.lastname})` : 'Create Employee';
 
     if(!this.isEditMode) {
       this.employeeForm = this.fb.group(
