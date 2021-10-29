@@ -15,3 +15,8 @@ table {
   font-size: 14px;
   width: 100%;
 }
+
+.space {
+  padding-left: 5px;
+  padding-right: 10px;
+}

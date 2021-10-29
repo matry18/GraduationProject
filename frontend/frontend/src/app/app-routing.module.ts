@@ -9,6 +9,7 @@ import {DepartmentContainerComponent} from "./department/container/department-co
 import {SynchronizationLogContainerComponent} from "./synchronization-error-log/synchronization-log-container/synchronization-log-container.component";
 import {LoginFormComponent} from "./login/login-form/login-form.component";
 import {AuthenticationRouteGuardService as AuthGuard} from "./shared-services/authentication-route-guard.service";
+import {RoleContainerComponent} from "./role/container/role-container/role-container.component";
 
 const routes: Routes = [];
 
@@ -20,8 +21,9 @@ const routes: Routes = [];
       {path: 'user/logged-in', component: UserProfileComponent, canActivate: [AuthGuard]},
       {path: 'citizen', component: ResidentListComponent, canActivate: [AuthGuard]},
       {path: 'login', component: LoginFormComponent},
-      {path: 'synchronization-log', component: SynchronizationLogContainerComponent, canActivate: [AuthGuard]},
+      {path: 'synchronization-log', component: SynchronizationLogContainerComponent, canActivate: [AuthGuard], data: {accessRights:['admin']}},
       {path: 'employee', component: EmployeeListComponent, canActivate: [AuthGuard]},
+      {path: 'roles', component: RoleContainerComponent, canActivate: [AuthGuard]},
       {path: '**', component: ErrorComponent},])
     ,],
   exports: [RouterModule]

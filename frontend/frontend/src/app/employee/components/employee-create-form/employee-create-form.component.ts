@@ -1,11 +1,12 @@
 import {Component, EventEmitter, Inject, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {DepartmentDto, EmployeeDto} from "../../../typings";
+import {DepartmentDto, EmployeeDto, RoleDto} from "../../../typings";
 import {Subscription} from "rxjs";
 import {EmployeeService} from "../../employee.service";
 import {SnackbarService} from "../../../snackbars/FormSubmission/snackbar.service";
 import {DepartmentService} from "../../../department/department.service";
+import {RoleService} from "../../../role/role.service";
 
 interface EmployeeData {
   employee: EmployeeDto
@@ -21,6 +22,7 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
   public formText: string ='';
   public isEditMode: boolean = false;
   public departments: DepartmentDto[] = [];
+  public roles: RoleDto[] = [];
   private subscription: Subscription | null = null;
 
   @Output() cancelEvent = new EventEmitter();
@@ -29,10 +31,11 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
               public dialogRef: MatDialogRef<EmployeeCreateFormComponent>,
               @Inject(MAT_DIALOG_DATA) public data: EmployeeData,
               private snackbarService: SnackbarService,
-              private departmentService: DepartmentService) {
+              private departmentService: DepartmentService,
+              private roleService: RoleService) {
 
     this.isEditMode = this.data !== null && this.data !== undefined;
-    this.formText = this.isEditMode ? `Edit employee (${data.employee.firstname} ${data.employee.lastname})` : 'Create employee';
+    this.formText = this.isEditMode ? `Edit Employee (${data.employee.firstname} ${data.employee.lastname})` : 'Create Employee';
 
     if(!this.isEditMode) {
       this.employeeForm = this.fb.group(
@@ -43,6 +46,7 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
           email: ["", [Validators.required, Validators.email]],
           phoneNumber: ["", Validators.required],
           department: ["", Validators.required],
+          roleDto:["", Validators.required],
           //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
           username: ["", Validators.required],
           password: ["", Validators.required],
@@ -56,7 +60,8 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
           lastname: [data.employee.lastname, Validators.required],
           email: [data.employee.email, [Validators.required, Validators.email]],
           phoneNumber: [data.employee.phoneNumber, Validators.required],
-          department: [null, [Validators.required]]
+          department: [null, [Validators.required]],
+          roleDto:["", Validators.required]
         }
       );
     }
@@ -66,7 +71,15 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
     this.departmentService.getAllDepartments().subscribe((departments: DepartmentDto[]) => {
       this.departments = departments;
       });
+
+    this.fetchRoles();
     this.employeeForm.get('department')?.setValue(this.data?.employee?.department);
+  }
+
+  private fetchRoles(): void {
+    this.roleService.getAllRoles().subscribe((roles: RoleDto[]) => {
+      this.roles = roles;
+    });
   }
 
   public submit(): void {
