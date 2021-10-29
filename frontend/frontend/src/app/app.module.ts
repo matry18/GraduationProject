@@ -89,6 +89,9 @@ import { LoginFormComponent } from './login/login-form/login-form.component';
 import { DepartmentOverviewComponent } from './homepage/components/department-overview/department-overview.component';
 import { EmployeeOverviewComponent } from './homepage/components/employee-overview/employee-overview.component';
 import { ResidentOverviewComponent } from './homepage/components/resident-overview/resident-overview.component';
+import { EmployeeBackedupComponent } from './homepage/components/employee-backedup/employee-backedup.component';
+import { ResidentBackedupComponent } from './homepage/components/resident-backedup/resident-backedup.component';
+import { SynchronizationErrorsComponent } from './synchronization-error-log/components/synchronization-errors/synchronization-errors.component';
 
 
 @NgModule({
@@ -119,6 +122,9 @@ import { ResidentOverviewComponent } from './homepage/components/resident-overvi
     DepartmentOverviewComponent,
     EmployeeOverviewComponent,
     ResidentOverviewComponent,
+    EmployeeBackedupComponent,
+    ResidentBackedupComponent,
+    SynchronizationErrorsComponent,
 
   ],
   imports: [

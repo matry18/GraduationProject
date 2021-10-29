@@ -30,4 +30,8 @@ export class EmployeeService {
     return this.http.get<number>("http://localhost:8080/bosted/employeeCount");
   }
 
+  public getBackedupEmployeesCount(): Observable<number> {
+    return this.http.get<number>("http://localhost:8088/orchestrator/employeesCount");
+  }
+
 }

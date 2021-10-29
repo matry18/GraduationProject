@@ -21,4 +21,8 @@ export class SynchronizationErrorLogService {
   public getAllFailedEmployeeSynchronization(): Observable<SagaEmployeeDto[]> {
     return this.http.get<SagaEmployeeDto[]>("http://localhost:8088/orchestrator/saga-employees");
   }
+
+  public getSynchronizationErrorCount(): Observable<number> {
+    return this.http.get<number>("http://localhost:8088/orchestrator/sagaResponseCount");
+  }
 }
