@@ -1,7 +1,9 @@
 package com.graduationProject.authentication.dto.saga;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.graduationProject.authentication.dto.EmployeeDto;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SagaEmployeeDto {
 
     private String sagaId;

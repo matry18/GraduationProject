@@ -1,6 +1,14 @@
 <mat-toolbar color="primary">
   <span routerLink="" class="clickable">POC Sensum <mat-icon>home</mat-icon></span>
   <span class="spacer"></span>
+
+  <button *ngIf="loggedIn.getValue()"  routerLink ="roles"
+          [matTooltip]="'See roles'"
+          mat-flat-button
+          style="background: white; margin: 0px 10px">
+    See roles
+  </button>
+
   <button *ngIf="loggedIn.getValue()"  routerLink ="department"
            [matTooltip]="'See departments'"
            mat-flat-button
@@ -8,11 +16,10 @@
     See departments
   </button>
 
+  <add-user-dialog-button *ngIf="loggedIn.getValue() && accessRightService.hasAccessRight(['create'])"></add-user-dialog-button>
 
-  <add-user-dialog-button *ngIf="loggedIn.getValue()"></add-user-dialog-button>
-
-  <button mat-icon-button routerLink="/synchronization-log">
-    <mat-icon  *ngIf="loggedIn.getValue()" [matTooltip]="'See synchronization log'">sync_problem</mat-icon>
+  <button *ngIf="loggedIn.getValue() && accessRightService.hasAccessRight(['admin'])" mat-icon-button routerLink="/synchronization-log">
+    <mat-icon [matTooltip]="'See synchronization log'">sync_problem</mat-icon>
   </button>
 
   <button mat-icon-button routerLink="/citizen">
@@ -23,12 +30,11 @@
     <mat-icon *ngIf="loggedIn.getValue()" [matTooltip]="'See list of employees'">supervisor_account</mat-icon>
   </button>
 
-
   <td-user-profile *ngIf="loggedIn.getValue(); else login" [matTooltip]="'Profile'" [name]="currentUser?.username" [email]="currentUser?.email">
     <ng-container td-user-info-list>
       <mat-list-item>
         <mat-icon matListAvatar>account_balance</mat-icon>
-        <span matLine>{{currentUser?.department.departmentName}}</span>
+        <span matLine>{{currentUser?.department?.departmentName}}</span>
       </mat-list-item>
     </ng-container>
     <ng-container td-user-action-list>

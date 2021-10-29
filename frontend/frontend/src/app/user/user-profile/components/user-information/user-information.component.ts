@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CurrentUserService} from "../../../../shared-services/current-user.service";
-import {CurrentUserState, EmployeeDto} from "../../../../typings";
+import {EmployeeDto} from "../../../../typings";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'user-information',
@@ -8,14 +9,18 @@ import {CurrentUserState, EmployeeDto} from "../../../../typings";
   styleUrls: ['./user-information.component.css']
 })
 export class UserInformationComponent implements OnInit {
-  public userInfo: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers'];
+  private currentUserSubject = new BehaviorSubject<any | EmployeeDto>(null);
   public currentUser: any | EmployeeDto;
-  constructor(private currentUserService: CurrentUserService) { }
+
+  constructor(private currentUserService: CurrentUserService) {
+  }
 
   public ngOnInit(): void {
-    this.currentUserService.globalStateChanged.subscribe((currentUserState: CurrentUserState) => {
-      this.currentUser = currentUserState.currentUser;
+    this.currentUserService.globalStateChanged.subscribe((state) => {
+      this.currentUserSubject.next(state.currentUser);
+      this.currentUser = this.currentUserSubject.getValue();
     });
+
   }
 
 }

@@ -1,0 +1,26 @@
+<ng-container>
+  <h1>Create Role</h1>
+  <!--<p>{{roleForm.value | json}}</p>
+  <p > selected: {{selectedAccessRights | json}}</p> -->
+  <form [formGroup]="roleForm" >
+
+    <mat-form-field appearance="fill">
+      <mat-label>Role name</mat-label>
+      <input matInput placeholder="Name of role" formControlName="name"/>
+    </mat-form-field>
+    <h4>Select access rights for role:</h4>
+    <ng-container>
+       <ng-container *ngFor="let accessRight of accessRights; let i = index">
+          <mat-checkbox class="accessRights"
+                        (click)="addOrRemoveFromSelectedArray(accessRight, i)"
+                        >
+            {{accessRight.name}}
+          </mat-checkbox>
+       </ng-container>
+    </ng-container>
+    <div class="btn-group-form">
+      <button mat-raised-button class="mat-primary form-submit-btn" [mat-dialog-close] (click)="submit()"  [disabled]="">submit</button>
+      <button mat-raised-button class="mat-warn form-submit-btn" (click)="cancel()">cancel</button>
+    </div>
+  </form>
+</ng-container>

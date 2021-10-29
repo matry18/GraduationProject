@@ -1,5 +1,6 @@
 <ng-container>
   <h1>{{formText}}</h1>
+<!--  {{employeeForm.value|json}}-->
   <div *ngIf="!isEditMode; else isEditModeForm">
   <form [formGroup]="employeeForm" >
     <mat-form-field appearance="fill">
@@ -28,6 +29,14 @@
         <mat-option *ngFor="let department of departments" [value]="department">{{department.departmentName}}</mat-option>
       </mat-select>
     </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Choose a role</mat-label>
+      <mat-select formControlName="roleDto">
+        <mat-option *ngFor="let role of roles" [value]="role">{{role.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
 
     <mat-form-field appearance="fill">
       <mat-label>Username</mat-label>

@@ -1,10 +1,24 @@
 <table mat-table [dataSource]="employeeList" class="mat-elevation-z8 demo-table">
-
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef> ID </th>
     <td mat-cell *matCellDef="let element" >
-      <button mat-icon-button (click)="deleteEmployee(element.id)" [matTooltipPosition]="'after'" matTooltip="Delete employee"><mat-icon color="warn" >delete</mat-icon></button>
-      <button mat-icon-button (click)="openEditDialog(element)"   [matTooltipPosition]="'after'" matTooltip="Edit employee" ><mat-icon color="primary" >edit</mat-icon></button>
+      <button mat-icon-button
+              (click)="deleteEmployee(element.id)"
+              [matTooltipPosition]="'after'"
+              [matTooltip]="!authorizationService.hasAccessRight(['delete', 'admin'])? 'Missing delete access right' :'Delete employee'">
+        <mat-icon [ngStyle]="{'color': !authorizationService.hasAccessRight(['delete', 'admin']) ? 'gray' :'#f44336'}" >
+          delete
+        </mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="openEditDialog(element)"
+              [matTooltipPosition]="'after'"
+              [matTooltip]="!authorizationService.hasAccessRight(['update', 'admin'])? 'Missing edit access right' :'Edit employee'"
+            >
+        <mat-icon color="primary"
+                  [ngStyle]="{'color': !authorizationService.hasAccessRight(['update', 'admin']) ? 'gray' :'#3f51b5'}">
+          edit
+        </mat-icon></button>
       {{element.id}}
     </td>
   </ng-container>
