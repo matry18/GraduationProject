@@ -17,12 +17,11 @@ export class AuthorizationService {
   }
 
   public hasAccessRight(accessRights: string[]): boolean {
-
+    accessRights.push("admin");
     console.log(accessRights);
     for (let i = 0; i< accessRights.length; i++) {
       if(this.currentUser.roleDto.accessRights.map((accessRight: AccessRightDto) => accessRight.name).includes(accessRights[i])) {
         accessRights = [];
-        console.log("I have access");
         return true;
       }
     }
