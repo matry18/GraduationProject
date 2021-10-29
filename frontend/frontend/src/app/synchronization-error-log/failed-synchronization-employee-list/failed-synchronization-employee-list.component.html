@@ -1,43 +1,43 @@
 <div class="custom-container">
   <h1> Employee </h1>
-  <table mat-table [dataSource]="sagaEmployees" class="mat-elevation-z8 demo-table">
+  <table mat-table [dataSource]="sagaEmployees" class="mat-elevation-z8 demo-table ">
     <ng-container matColumnDef="sagaId">
-      <th mat-header-cell *matHeaderCellDef> Saga ID </th>
-      <td mat-cell *matCellDef="let element" >
+      <th mat-header-cell *matHeaderCellDef class="space"> Saga ID </th>
+      <td mat-cell *matCellDef="let element" class="space">
         {{element.sagaId}}
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef> ID </th>
-      <td mat-cell *matCellDef="let element" >
+    <ng-container matColumnDef="id" class="space">
+      <th mat-header-cell *matHeaderCellDef class="space"> ID </th>
+      <td mat-cell *matCellDef="let element" class="space">
         {{element.employeeDto.id}}
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="firstname">
-      <th mat-header-cell *matHeaderCellDef>Firstname </th>
-      <td mat-cell *matCellDef="let element"> {{element.employeeDto.firstname}} </td>
+    <ng-container matColumnDef="firstname" >
+      <th mat-header-cell *matHeaderCellDef class="space"> First name </th>
+      <td mat-cell *matCellDef="let element" class="space"> {{element.employeeDto.firstname}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="lastname">
-      <th mat-header-cell *matHeaderCellDef>Lastname </th>
-      <td mat-cell *matCellDef="let element"> {{element.employeeDto.lastname}} </td>
+    <ng-container matColumnDef="lastname" >
+      <th mat-header-cell *matHeaderCellDef class="space"> Last name </th>
+      <td mat-cell *matCellDef="let element" class="space"> {{element.employeeDto.lastname}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="department">
-      <th mat-header-cell *matHeaderCellDef>Department</th>
-      <td mat-cell *matCellDef="let element"> {{element.employeeDto.department?.departmentName}} </td>
+    <ng-container matColumnDef="department" >
+      <th mat-header-cell *matHeaderCellDef class="space"> Department </th>
+      <td mat-cell *matCellDef="let element" class="space"> {{element.employeeDto.department?.departmentName}} </td>
     </ng-container>
 
     <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef>Email</th>
-      <td mat-cell *matCellDef="let element"> {{element.employeeDto.email}} </td>
+      <th mat-header-cell *matHeaderCellDef class="space"> Email </th>
+      <td mat-cell *matCellDef="let element" class="space"> {{element.employeeDto.email}} </td>
     </ng-container>
 
     <ng-container matColumnDef="phoneNumber">
-      <th mat-header-cell *matHeaderCellDef>Phone number</th>
-      <td mat-cell *matCellDef="let element"> {{element.employeeDto.phoneNumber}} </td>
+      <th mat-header-cell *matHeaderCellDef class="space"> Phone number </th>
+      <td mat-cell *matCellDef="let element" class="space"> {{element.employeeDto.phoneNumber}} </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
