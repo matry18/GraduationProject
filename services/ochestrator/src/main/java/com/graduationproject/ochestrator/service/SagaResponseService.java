@@ -33,4 +33,8 @@ public class SagaResponseService {
         return sagaResponseRepository.findAll();
     }
 
+    public long getSagaResponseCount() {
+        return this.sagaResponseRepository.count();
+    }
+
 }
