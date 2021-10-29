@@ -8,6 +8,4 @@ import {CurrentUserService} from "./shared-services/current-user.service";
 })
 export class AppComponent {
   title = 'frontend';
-
-
 }

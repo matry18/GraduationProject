@@ -53,4 +53,9 @@ public class ResidentWebService {
         return new ResidentDto(residentService.deleteCitizen(id));
     }
 
+    @GetMapping("bosted/residentCount")
+    public long getResidentCount() {
+        return this.residentService.getResidentCount();
+    }
+
 }

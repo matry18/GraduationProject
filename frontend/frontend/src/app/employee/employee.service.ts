@@ -25,4 +25,13 @@ export class EmployeeService {
   public editEmployee(employee: EmployeeDto): Observable<EmployeeDto> {
     return this.http.put<EmployeeDto>("http://localhost:8080/bosted/employees", employee);
   }
+
+  public getEmployeeCount(): Observable<number> {
+    return this.http.get<number>("http://localhost:8080/bosted/employeeCount");
+  }
+
+  public getBackedupEmployeesCount(): Observable<number> {
+    return this.http.get<number>("http://localhost:8088/orchestrator/employeesCount");
+  }
+
 }

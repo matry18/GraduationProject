@@ -54,4 +54,19 @@ public class SagaResponseWebService {
                 .collect(Collectors.toList());
         return sagaEmployeeDto;
     }
+
+    @GetMapping("orchestrator/employeesCount")
+    public long getEmployeesCount() {
+        return this.employeeSagaService.getEmployeesCount();
+    }
+
+    @GetMapping("orchestrator/residentsCount")
+    public long getResidentCount() {
+        return this.residentSagaService.getResidentCount();
+    }
+
+    @GetMapping("orchestrator/sagaResponseCount")
+    public long getSagaResponseCount() {
+        return this.sagaResponseService.getSagaResponseCount();
+    }
 }

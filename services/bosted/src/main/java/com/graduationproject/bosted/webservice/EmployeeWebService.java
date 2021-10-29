@@ -53,4 +53,9 @@ public class EmployeeWebService {
         return new EmployeeDto(employeeService.deleteEmployee(id));
     }
 
+    @GetMapping("bosted/employeeCount")
+    public long getEmployeeCount() {
+        return this.employeeService.getEmployeeCount();
+    }
+
 }

@@ -31,4 +31,9 @@ public class DepartmentWebService {
                 .map(DepartmentDto::new)
                 .collect(Collectors.toList());
     }
+
+    @GetMapping("bosted/departmentCount")
+    public long getDepartmentCount() {
+        return this.departmentService.getDepartmentCount();
+    }
 }

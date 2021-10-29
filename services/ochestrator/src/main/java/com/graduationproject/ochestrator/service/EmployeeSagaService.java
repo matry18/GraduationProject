@@ -21,4 +21,8 @@ public class EmployeeSagaService {
 public List<Employee> fetchAllSagaEmployees() {
         return employeeRepository.findAll();
     }
+
+    public long getEmployeesCount() {
+        return employeeRepository.count();
+    }
 }

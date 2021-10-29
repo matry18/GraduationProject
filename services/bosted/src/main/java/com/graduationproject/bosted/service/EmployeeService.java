@@ -63,4 +63,9 @@ public class EmployeeService {
         deleteEmployee.initSaga(new EmployeeDto(employee));
         return employee;
     }
+
+    public long getEmployeeCount() {
+        return this.employeeRepository.count();
+    }
+
 }

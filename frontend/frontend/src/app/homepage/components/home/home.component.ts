@@ -12,4 +12,6 @@ export class HomeComponent implements OnInit {
   public ngOnInit(): void {
   }
 
+  introText = `POC stands for Proof Of Concept,
+  and this system is therefore a proof of concept for the synchronizing mechanisms that could be implemented in the real Sensum system.`;
 }
