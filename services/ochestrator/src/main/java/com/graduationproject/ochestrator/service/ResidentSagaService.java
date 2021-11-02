@@ -24,4 +24,8 @@ public class ResidentSagaService {
     public List<Resident> fetchAllSagaResidents() {
         return residentRepository.findAll();
     }
+
+    public long getResidentCount() {
+        return this.residentRepository.count();
+    }
 }

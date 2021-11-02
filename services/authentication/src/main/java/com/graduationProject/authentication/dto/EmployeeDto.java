@@ -1,7 +1,8 @@
 package com.graduationProject.authentication.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.graduationProject.authentication.entity.Employee;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EmployeeDto {
 
     private String id;

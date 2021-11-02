@@ -1,0 +1,20 @@
+<body>
+<ng-container>
+  <h1>Login</h1>
+  <div class="login-form">
+    <form [formGroup]="loginForm">
+      <mat-form-field appearance="fill">
+        <mat-label>Username</mat-label>
+        <input matInput placeholder="Username" formControlName="username"/>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput placeholder="****" type="password" formControlName="password"/>
+      </mat-form-field>
+      <button mat-raised-button class="mat-primary form-submit-btn" [matTooltip]="'Login'" (click)="login()"  [disabled]="!this.loginForm.valid">Login</button>
+      <button mat-raised-button class="mat-warn form-submit-btn" [matTooltip]="'Cancel login'"(click)="cancel()">Cancel</button>
+    </form>
+  </div>
+</ng-container>
+<p *ngIf="invalidLoginAttempt" style="color: red">Invalid login credentials!</p>
+</body>

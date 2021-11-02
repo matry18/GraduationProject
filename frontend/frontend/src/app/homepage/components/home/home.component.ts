@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {AuthorizationService} from "../../../shared-services/authorization.service";
 
 @Component({
   selector: 'app-home',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(public authorizationService: AuthorizationService) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
 
+  introText = `POC stands for Proof Of Concept,
+  and this system is therefore a proof of concept for the synchronizing mechanisms that could be implemented in the real Sensum system.`;
 }

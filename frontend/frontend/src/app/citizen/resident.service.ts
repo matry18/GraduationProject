@@ -25,4 +25,11 @@ export class ResidentService {
   public editCitizen(resident: ResidentDto): Observable<ResidentDto> {
     return this.http.put<ResidentDto>("http://localhost:8080/bosted/citizen", resident);
   }
+  public getResidentCount(): Observable<number> {
+    return this.http.get<number>("http://localhost:8080/bosted/residentCount");
+  }
+
+  public getBackedupResidents(): Observable<number> {
+    return this.http.get<number>("http://localhost:8088/orchestrator/residentsCount");
+  }
 }

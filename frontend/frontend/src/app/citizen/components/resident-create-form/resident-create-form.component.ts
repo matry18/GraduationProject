@@ -36,7 +36,7 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
               private departmentService: DepartmentService) {
 
     this.isEditMode = this.data !== null && this.data !== undefined;
-    this.formText = this.isEditMode ? `Edit resident (${data.resident.firstname} ${data.resident.lastname})` : 'Create resident';
+    this.formText = this.isEditMode ? `Edit Resident (${data.resident.firstname} ${data.resident.lastname})` : 'Create Resident';
 
 
     if(!this.isEditMode) {
@@ -65,20 +65,14 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
           department: [null, [Validators.required]]
         }
       );
-
     }
-
-
   }
 
   public ngOnInit(): void {
     this.departmentService.getAllDepartments().subscribe((departments: DepartmentDto[]) => {
       this.departments = departments;
     });
-
-
     this.residentForm.get('department')?.setValue(this.data?.resident?.department);
-
   }
 
   public submit(): void {
@@ -95,7 +89,6 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
           () => this.snackbarService.openFailedSnackBar()
         );
     }
-
   }
 
   public cancel() {

@@ -2,15 +2,16 @@ package com.graduationproject.ochestrator.saga.SagaParticipators;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graduationproject.ochestrator.dto.DepartmentDto;
 import com.graduationproject.ochestrator.dto.EmployeeDto;
 import com.graduationproject.ochestrator.dto.saga.SagaEmployeeDto;
-import com.graduationproject.ochestrator.entities.Department;
 import com.graduationproject.ochestrator.entities.Employee;
 import com.graduationproject.ochestrator.kafka.KafkaApi;
+import com.graduationproject.ochestrator.repository.AccessRightRepository;
 import com.graduationproject.ochestrator.repository.DepartmentRepository;
 import com.graduationproject.ochestrator.repository.EmployeeRepository;
+import com.graduationproject.ochestrator.repository.RoleRepository;
 import com.graduationproject.ochestrator.saga.SagaParticipator;
+import com.graduationproject.ochestrator.service.EmployeeSagaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,19 +26,18 @@ public class CreateEmployee implements SagaParticipator<EmployeeDto> {
     private final EmployeeRepository employeeRepository;
     private final KafkaApi kafkaApi;
     private final DepartmentRepository departmentRepository;
+    private final RoleRepository roleRepository;
+    private final AccessRightRepository accessRightRepository;
+    private final EmployeeSagaService employeeSagaService;
 
     @Autowired
-    public CreateEmployee(EmployeeRepository employeeRepository, KafkaApi kafkaApi, DepartmentRepository departmentRepository) {
+    public CreateEmployee(EmployeeRepository employeeRepository, KafkaApi kafkaApi, DepartmentRepository departmentRepository, RoleRepository roleRepository, AccessRightRepository accessRightRepository, EmployeeSagaService employeeSagaService) {
         this.employeeRepository = employeeRepository;
         this.kafkaApi = kafkaApi;
         this.departmentRepository = departmentRepository;
-    }
-
-    @Transactional
-    public void saveDepartment(DepartmentDto departmentDto, String sagaId) {
-        Department department = new Department(departmentDto);
-        department.setSagaId(sagaId);
-        departmentRepository.save(department);
+        this.roleRepository = roleRepository;
+        this.accessRightRepository = accessRightRepository;
+        this.employeeSagaService = employeeSagaService;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class CreateEmployee implements SagaParticipator<EmployeeDto> {
     public void transact(EmployeeDto employeeDto) {
         //Create sagaId and the employee and sagaId to repo and publish Kafka
         String sagaId = UUID.randomUUID().toString();
-        saveDepartment(employeeDto.getDepartment(), sagaId);
+        employeeSagaService.setupEmployeeDataForTransaction(employeeDto, sagaId);
         Employee employee = employeeRepository.save(new Employee(employeeDto, sagaId)); //Creates the saga that will be used by the services when responding
         SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto(employee); // the dto that will be sent to the services so they know which saga they are part of
         ObjectMapper objectMapper = new ObjectMapper();
@@ -66,6 +66,7 @@ public class CreateEmployee implements SagaParticipator<EmployeeDto> {
         //this will be run after a successful saga
         Employee employee = employeeRepository.findEmployeeBySagaId(sagaId);
         employeeRepository.deleteBySagaId(sagaId);
+        employeeSagaService.deleteEmployeeDataForTransaction(sagaId);
     }
 
     @Transactional

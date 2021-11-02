@@ -24,8 +24,10 @@ public class EmployeeWebService {
     }
 
     @GetMapping("bosted/employees/{id}")
-    public EmployeeDto getPerson(@PathVariable String id) {
-        return new EmployeeDto(employeeRepository.getById(id));
+    public EmployeeDto getEmployee(@PathVariable String id) {
+        EmployeeDto employeeDto = new EmployeeDto(employeeRepository.getById(id));
+        employeeDto.setPassword(null); //no reason to send password.
+        return employeeDto;
     }
 
     @PostMapping("bosted/employees")
@@ -49,6 +51,11 @@ public class EmployeeWebService {
     @DeleteMapping("bosted/employees/{id}")
     public EmployeeDto deleteEmployee(@PathVariable String id) {
         return new EmployeeDto(employeeService.deleteEmployee(id));
+    }
+
+    @GetMapping("bosted/employeeCount")
+    public long getEmployeeCount() {
+        return this.employeeService.getEmployeeCount();
     }
 
 }

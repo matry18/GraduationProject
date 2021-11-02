@@ -12,6 +12,7 @@ public class EmployeeDto {
     private String email;
     private String phoneNumber;
     private DepartmentDto department;
+    private RoleDto roleDto;
     //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
     private String username;
     private String password;
@@ -31,6 +32,7 @@ public class EmployeeDto {
         this.firstname = employee.getFirstname();
         this.lastname = employee.getLastname();
         this.department = isNull(employee.getDepartment()) ? null : new DepartmentDto(employee.getDepartment());
+        this.roleDto = new RoleDto(employee.getRole());
         this.email = employee.getEmail();
         this.phoneNumber = employee.getPhoneNumber();
         this.username = employee.getUsername();
@@ -99,6 +101,10 @@ public class EmployeeDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public RoleDto getRoleDto() {
+        return roleDto;
     }
 
     @Override

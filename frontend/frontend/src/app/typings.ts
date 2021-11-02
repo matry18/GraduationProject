@@ -1,5 +1,4 @@
 
-
 export interface SagaResponseDto {
   sagaId: string;
   serviceName: string;
@@ -14,15 +13,15 @@ export enum SagaStatus {
 }
 
 export interface ResidentDto {
-  id: string,
-  firstname: string,
-  lastname: string,
-  email: string,
-  phoneNumber: string,
-  department: DepartmentDto,
+  id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phoneNumber: string;
+  department: DepartmentDto;
   //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
-  username: string,
-  password: string
+  username: string;
+  password: string;
 }
 
 export interface SagaResidentDto {
@@ -30,19 +29,50 @@ export interface SagaResidentDto {
   residentDto: ResidentDto;
 }
 
+export interface SagaEmployeeDto {
+  sagaId: string;
+  employeeDto: EmployeeDto;
+}
+
 export interface EmployeeDto {
-  id: string,
-  firstname: string,
-  lastname: string,
-  email: string,
-  phoneNumber: string,
-  department: DepartmentDto,
+  id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phoneNumber: string;
+  roleDto: RoleDto;
+  department: DepartmentDto;
   //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
-  username: string,
-  password: string
+  username: string;
+  password: string;
 }
 
 export interface DepartmentDto {
-  id: string,
-  departmentName: string
+  id: string;
+  departmentName: string;
+}
+
+export interface LoginDto {
+  employeeId: string;
+  username: string;
+  password: string;
+}
+
+export interface RoleDto {
+  id: string;
+  name: string;
+  accessRights: AccessRightDto[];
+}
+
+export interface AccessRightDto {
+  id: string;
+  name: string;
+}
+
+export interface LoginState {
+  logged_in: boolean;
+}
+
+export interface CurrentUserState {
+  currentUser: EmployeeDto;
 }

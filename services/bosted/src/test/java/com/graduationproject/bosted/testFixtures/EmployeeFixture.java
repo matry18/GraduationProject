@@ -2,8 +2,10 @@ package com.graduationproject.bosted.testFixtures;
 
 import com.graduationproject.bosted.entity.Department;
 import com.graduationproject.bosted.entity.Employee;
+import com.graduationproject.bosted.entity.Role;
 
 import static com.graduationproject.bosted.testFixtures.DepartmentFixture.createDepartment;
+import static com.graduationproject.bosted.testFixtures.RoleFixture.createRole;
 
 public class EmployeeFixture {
 
@@ -13,21 +15,12 @@ public class EmployeeFixture {
     private String email = "rasmus@mail.dk";
     private String phoneNumber = "66554433";
     private Department department = createDepartment();
+    private Role role = createRole();
     private String username = "Raller";
     private String password = "1234";
 
     public static Employee createEmployee() {
         return builder().build();
-    }
-    public static Employee create2Employee() {
-        return builder().build("6543",
-                "Magnus",
-                "Larsen",
-                "magus@mail.com",
-                "66998877",
-                createDepartment(),
-                "maglar",
-                "4321");
     }
 
     public static EmployeeFixture builder() {
@@ -44,19 +37,7 @@ public class EmployeeFixture {
         employee.setDepartment(department);
         employee.setUsername(username);
         employee.setPassword(password);
-        return employee;
-    }
-
-    public Employee build(String id, String firstName, String lastName, String email, String phoneNumber, Department department, String username, String password) {
-        Employee employee = new Employee();
-        employee.setId(id);
-        employee.setFirstname(firstName);
-        employee.setLastname(lastName);
-        employee.setEmail(email);
-        employee.setPhoneNumber(phoneNumber);
-        employee.setDepartment(department);
-        employee.setUsername(username);
-        employee.setPassword(password);
+        employee.setRole(role);
         return employee;
     }
 

@@ -3,6 +3,7 @@ package com.graduationproject.bosted.service;
 import com.graduationproject.bosted.dto.EmployeeDto;
 import com.graduationproject.bosted.entity.Department;
 import com.graduationproject.bosted.entity.Employee;
+import com.graduationproject.bosted.entity.Role;
 import com.graduationproject.bosted.repository.EmployeeRepository;
 import com.graduationproject.bosted.saga.SagaInitiators.CreateEmployee;
 import com.graduationproject.bosted.saga.SagaInitiators.DeleteEmployee;
@@ -34,7 +35,9 @@ public class EmployeeService {
         employeeDto.setId(UUID.randomUUID().toString());
         Employee employee = employeeRepository.save(new Employee(employeeDto));
         createEmployee.initSaga(new EmployeeDto(employee));
+        //TODO: find ud af hvorfor at sagaen ikke fejler når Authentication servicen fejler da den ikke kender til roles.
     }
+
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
@@ -49,6 +52,7 @@ public class EmployeeService {
         employee.setDepartment(new Department(employeeDto.getDepartment()));
         employee.setEmail(employeeDto.getEmail());
         employee.setPhoneNumber(employeeDto.getPhoneNumber());
+        employee.setRole(new Role(employeeDto.getRoleDto()));
         employeeRepository.save(employee);
         EmployeeDto newEmployeeDto = new EmployeeDto(employee);
         updateEmployee.initSaga(oldEmployeeDto, newEmployeeDto);
@@ -61,4 +65,9 @@ public class EmployeeService {
         deleteEmployee.initSaga(new EmployeeDto(employee));
         return employee;
     }
+
+    public long getEmployeeCount() {
+        return this.employeeRepository.count();
+    }
+
 }

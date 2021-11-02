@@ -20,6 +20,7 @@
     "@angular/platform-browser": "~12.0.1",
     "@angular/platform-browser-dynamic": "~12.0.1",
     "@angular/router": "~12.0.1",
+    "@codewithdan/observable-store": "^2.2.13",
     "@covalent/core": "^3.1.1",
     "@covalent/dynamic-forms": "^3.1.1",
     "@covalent/echarts": "^3.1.1",

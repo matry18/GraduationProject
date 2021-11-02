@@ -1,0 +1,12 @@
+.example-card {
+  max-width: 100%;
+  background: #f6f6f6;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  font-size: 100px;
+  padding: 50px;
+  color: #3f51b5;
+  font-weight: bold;
+}

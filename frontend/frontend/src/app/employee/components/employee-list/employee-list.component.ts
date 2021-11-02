@@ -4,7 +4,7 @@ import {EmployeeService} from "../../../employee/employee.service";
 import {MatDialog} from "@angular/material/dialog";
 import {SnackbarService} from "../../../snackbars/FormSubmission/snackbar.service";
 import {EmployeeCreateFormComponent} from "../../../employee/components/employee-create-form/employee-create-form.component"
-import {MatTableDataSource} from "@angular/material/table";
+import {AuthorizationService} from "../../../shared-services/authorization.service";
 
 @Component({
   selector: 'employee-list',
@@ -17,7 +17,10 @@ export class EmployeeListComponent implements OnInit {
 
   displayedColumns = ['id', 'firstname', 'lastname', 'department', 'email', 'phoneNumber'];
 
-  constructor(private enployeeService: EmployeeService, private dialog: MatDialog, private snackbarService: SnackbarService) { }
+  constructor(private enployeeService: EmployeeService,
+              private dialog: MatDialog,
+              private snackbarService: SnackbarService,
+              public authorizationService: AuthorizationService) { }
 
   ngOnInit(): void {
     this.fetchAllEmployees();
@@ -30,6 +33,9 @@ export class EmployeeListComponent implements OnInit {
   }
 
   public deleteEmployee(employeeId: string): void {
+    if(!this.authorizationService.hasAccessRight(['delete','admin'])) {
+      return;
+    }
     this.enployeeService.deleteEmployee(employeeId).subscribe(
       ()=> {
         this.fetchAllEmployees();
@@ -40,6 +46,9 @@ export class EmployeeListComponent implements OnInit {
   }
 
   public openEditDialog(employeeDto: EmployeeDto): void {
+    if(!this.authorizationService.hasAccessRight(['update','admin'])) {
+      return;
+    }
     this.dialog.open(EmployeeCreateFormComponent,{
       data: {employee: employeeDto}});
     this.dialog.afterAllClosed.subscribe(() =>

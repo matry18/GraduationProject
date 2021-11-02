@@ -3,7 +3,8 @@ table {
 
 }
 .custom-container {
-  height: 600px;
+  min-height: 100px;
+  max-height: 600px;
   overflow-y: scroll;
 }
 .mat-form-field {

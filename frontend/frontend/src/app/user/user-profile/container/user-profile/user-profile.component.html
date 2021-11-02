@@ -9,7 +9,7 @@
         </a>
       </div>
       <div class="media-body va-m">
-        <h2 class="media-heading">User Full Name
+        <h2 class="media-heading">
 
         </h2>
         <p class="lead"></p>
@@ -33,21 +33,21 @@
                 <mat-icon>smartphone</mat-icon>
               </td>
               <td>Mobile number</td>
-              <td>+45 12 34 56 78</td>
+              <td>{{currentUser?.phoneNumber}}</td>
             </tr>
-            <tr>
+           <!-- <tr>
               <td>
                 <mat-icon>home</mat-icon>
               </td>
               <td>Address</td>
               <td>Odense</td>
-            </tr>
+            </tr> -->
             <tr>
               <td>
                 <mat-icon>email</mat-icon>
               </td>
               <td>Email</td>
-              <td>www.test@test.com</td>
+              <td>{{currentUser?.email}}</td>
             </tr>
             </tbody>
           </table>

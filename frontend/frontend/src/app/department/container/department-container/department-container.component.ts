@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {AuthorizationService} from "../../../shared-services/authorization.service";
 
 @Component({
   selector: 'app-department-container',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DepartmentContainerComponent implements OnInit {
 
-  constructor() { }
+  constructor(public authorizationService: AuthorizationService) {
+  }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
 
 }

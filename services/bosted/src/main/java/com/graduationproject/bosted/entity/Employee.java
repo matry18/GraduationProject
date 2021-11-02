@@ -11,6 +11,9 @@ public class Employee extends User {
     @Id
     private String id;
 
+    @ManyToOne
+    private Role role;
+
     private String firstname;
 
     private String lastname;
@@ -34,6 +37,7 @@ public class Employee extends User {
         this.Email = employeeDto.getEmail();
         this.phoneNumber = employeeDto.getPhoneNumber();
         this.department = new Department(employeeDto.getDepartment());
+        this.role = new Role(employeeDto.getRoleDto());
         //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
         this.username = employeeDto.getUsername();
         this.password = employeeDto.getPassword();
@@ -44,6 +48,9 @@ public class Employee extends User {
 
     }
 
+    public Role getRole() {
+        return role;
+    }
 
     public String getFirstname() {
         return firstname;
@@ -107,6 +114,10 @@ public class Employee extends User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
