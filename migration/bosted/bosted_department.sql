@@ -1,0 +1,1 @@
+INSERT INTO bosted.department (id, department_name) VALUES ('249d2a0b-426e-44ea-84fe-f0625b0c0887', 'Admin department');

@@ -18,9 +18,8 @@ export class AuthorizationService {
 
   public hasAccessRight(accessRights: string[]): boolean {
     accessRights.push("admin");
-    console.log(accessRights);
     for (let i = 0; i< accessRights.length; i++) {
-      if(this.currentUser.roleDto.accessRights.map((accessRight: AccessRightDto) => accessRight.name).includes(accessRights[i])) {
+      if(this.currentUser?.roleDto?.accessRights.map((accessRight: AccessRightDto) => accessRight.name).includes(accessRights[i])) {
         accessRights = [];
         return true;
       }
@@ -33,9 +32,9 @@ export class AuthorizationService {
     return roleNames?.includes(this.currentUser?.roleDto?.name);
   }
 
-  public redirectIfRoleIsMissing(roleNames: Array<string>): void {
-    if(!this.hasRole(roleNames)) {
-      this.router.navigate(["/"]);
+  public redirectIfAccessRightIsMissing(accessRights: Array<string>): void {
+    if(!this.hasAccessRight(accessRights)) {
+      this.router.navigate(['']);
     }
   }
 

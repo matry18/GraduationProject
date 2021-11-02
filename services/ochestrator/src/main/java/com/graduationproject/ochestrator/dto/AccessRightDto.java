@@ -1,13 +1,17 @@
 package com.graduationproject.ochestrator.dto;
 
+import com.graduationproject.ochestrator.entities.AccessRight;
+
 public class AccessRightDto {
     private String id;
     private String name;
 
-
+    public AccessRightDto(AccessRight accessRight) {
+        this.id = accessRight.getId();
+        this.name = accessRight.getName();
+    }
 
     public AccessRightDto() {
-
     }
 
     public String getId() {

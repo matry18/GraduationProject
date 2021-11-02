@@ -32,6 +32,7 @@ public class EmployeeDto {
         this.firstname = employee.getFirstname();
         this.lastname = employee.getLastname();
         this.department = isNull(employee.getDepartment()) ? null : new DepartmentDto(employee.getDepartment());
+        this.roleDto = new RoleDto(employee.getRole());
         this.email = employee.getEmail();
         this.phoneNumber = employee.getPhoneNumber();
         this.username = employee.getUsername();

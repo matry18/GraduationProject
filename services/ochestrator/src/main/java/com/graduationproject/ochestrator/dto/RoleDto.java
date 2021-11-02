@@ -1,11 +1,22 @@
 package com.graduationproject.ochestrator.dto;
 
+import com.graduationproject.ochestrator.entities.Role;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RoleDto {
     private String id;
     private String name;
     private List<AccessRightDto> accessRights;
+
+    public RoleDto(Role role) {
+        this.id = role.getId();
+        this.name = role.getName();
+        this.accessRights = role.getAccessRights().stream()
+                .map(AccessRightDto::new)
+                .collect(Collectors.toList());
+    }
 
     public RoleDto() {
 

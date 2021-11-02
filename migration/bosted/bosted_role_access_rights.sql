@@ -1,0 +1,1 @@
+INSERT INTO bosted.role_access_rights (role_id, access_rights_id) VALUES ('ffdff574-c124-4629-9032-dc922a575ef3', '1');

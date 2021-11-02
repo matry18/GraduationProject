@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {SynchronizationErrorLogService} from "../../synchronization-error-log.service";
+import {SynchronizationErrorLogService} from "../../../synchronization-error-log/synchronization-error-log.service";
 
 @Component({
   selector: 'synchronization-errors',

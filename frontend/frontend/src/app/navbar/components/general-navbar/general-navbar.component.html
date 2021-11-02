@@ -2,7 +2,7 @@
   <span routerLink="" class="clickable">POC Sensum <mat-icon>home</mat-icon></span>
   <span class="spacer"></span>
 
-  <button *ngIf="loggedIn.getValue()"  routerLink ="roles"
+  <button *ngIf="loggedIn.getValue() && accessRightService.hasAccessRight(['admin'])" routerLink ="roles"
           [matTooltip]="'See roles'"
           mat-flat-button
           style="background: white; margin: 0px 10px">
@@ -38,15 +38,15 @@
       </mat-list-item>
     </ng-container>
     <ng-container td-user-action-list>
-      <button mat-list-item>
+      <button mat-list-item routerLink="user/logged-in">
         <mat-icon matListAvatar class="icons">face</mat-icon>
         <span matListAvatar></span>
-        <span matLine routerLink="user/logged-in" [matTooltip]="'Show profile'">Go to profile</span>
+        <span matLine [matTooltip]="'Show profile'">Go to profile</span>
       </button>
-      <button mat-list-item>
+      <button mat-list-item (click)="logout()" >
         <mat-icon matListAvatar class="icons">power_settings_new</mat-icon>
         <span matListAvatar></span>
-        <span matLine (click)="logout()" [matTooltip]="'Log out'">Sign out</span>
+        <span matLine [matTooltip]="'Log out'">Sign out</span>
       </button>
     </ng-container>
   </td-user-profile>

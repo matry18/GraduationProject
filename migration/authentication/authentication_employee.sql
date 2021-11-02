@@ -1,0 +1,1 @@
+INSERT INTO authentication.employee (id, password, username) VALUES ('463bb843-c1b7-4573-b78d-c7adcbac486f', '$2a$10$WkurfslYKS6PEMUhMskCxuqleGYXb1hy4GZCxx/i8mvSesteJX91K', 'admin');
