@@ -3,6 +3,7 @@ package com.graduationproject.bosted.service;
 import com.graduationproject.bosted.dto.EmployeeDto;
 import com.graduationproject.bosted.entity.Department;
 import com.graduationproject.bosted.entity.Employee;
+import com.graduationproject.bosted.entity.Role;
 import com.graduationproject.bosted.repository.EmployeeRepository;
 import com.graduationproject.bosted.saga.SagaInitiators.CreateEmployee;
 import com.graduationproject.bosted.saga.SagaInitiators.DeleteEmployee;
@@ -51,6 +52,7 @@ public class EmployeeService {
         employee.setDepartment(new Department(employeeDto.getDepartment()));
         employee.setEmail(employeeDto.getEmail());
         employee.setPhoneNumber(employeeDto.getPhoneNumber());
+        employee.setRole(new Role(employeeDto.getRoleDto()));
         employeeRepository.save(employee);
         EmployeeDto newEmployeeDto = new EmployeeDto(employee);
         updateEmployee.initSaga(oldEmployeeDto, newEmployeeDto);

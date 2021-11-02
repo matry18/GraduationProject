@@ -1,16 +1,20 @@
-package com.graduationproject.bosted.entity;
+package com.graduationproject.ochestrator.entities;
 
-import com.graduationproject.bosted.dto.RoleDto;
+import com.graduationproject.ochestrator.dto.RoleDto;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
 public class Role {
+
+    @Column(unique=true)
+    private String sagaId;
+
     @Id
     private String id;
 
@@ -43,15 +47,11 @@ public class Role {
         return accessRights;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getSagaId() {
+        return sagaId;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAccessRights(List<AccessRight> accessRights) {
-        this.accessRights = accessRights;
+    public void setSagaId(String sagaId) {
+        this.sagaId = sagaId;
     }
 }

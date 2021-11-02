@@ -2,8 +2,10 @@ package com.graduationproject.bosted.testFixtures;
 
 import com.graduationproject.bosted.entity.Department;
 import com.graduationproject.bosted.entity.Employee;
+import com.graduationproject.bosted.entity.Role;
 
 import static com.graduationproject.bosted.testFixtures.DepartmentFixture.createDepartment;
+import static com.graduationproject.bosted.testFixtures.RoleFixture.createRole;
 
 public class EmployeeFixture {
 
@@ -13,6 +15,7 @@ public class EmployeeFixture {
     private String email = "rasmus@mail.dk";
     private String phoneNumber = "66554433";
     private Department department = createDepartment();
+    private Role role = createRole();
     private String username = "Raller";
     private String password = "1234";
 
@@ -34,6 +37,7 @@ public class EmployeeFixture {
         employee.setDepartment(department);
         employee.setUsername(username);
         employee.setPassword(password);
+        employee.setRole(role);
         return employee;
     }
 

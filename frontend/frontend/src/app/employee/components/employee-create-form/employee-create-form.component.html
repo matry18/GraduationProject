@@ -82,6 +82,13 @@
       </mat-select>
     </mat-form-field>
 
+    <mat-form-field appearance="fill">
+      <mat-label>Choose a role</mat-label>
+      <mat-select formControlName="roleDto">
+        <mat-option *ngFor="let role of roles" [value]="role">{{role.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <button mat-raised-button class="mat-primary form-submit-btn" [matTooltip]="'Update Employee'" [mat-dialog-close] (click)="submit()"  [disabled]="!this.employeeForm.valid">Submit</button>
     <button mat-raised-button class="mat-warn form-submit-btn" [matTooltip]="'Abort update'" (click)="cancel()">Cancel</button>
   </form>

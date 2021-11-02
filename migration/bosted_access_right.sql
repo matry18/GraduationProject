@@ -1,0 +1,1 @@
+INSERT INTO bosted.access_right (id, name) VALUES ('1', 'admin');

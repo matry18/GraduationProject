@@ -22,6 +22,9 @@ public class Employee {
     private String phoneNumber;
 
     @ManyToOne
+    private Role role;
+
+    @ManyToOne
     private Department department;
 
     private String username;
@@ -36,6 +39,7 @@ public class Employee {
         this.email = employeeDto.getEmail();
         this.phoneNumber = employeeDto.getPhoneNumber();
         this.department = new Department(employeeDto.getDepartment());
+        this.role = new Role(employeeDto.getRoleDto());
         //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
         this.username = employeeDto.getUsername();
         this.password = employeeDto.getPassword();
@@ -114,6 +118,10 @@ public class Employee {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     @Override
