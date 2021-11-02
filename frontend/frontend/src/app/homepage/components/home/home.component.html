@@ -6,11 +6,13 @@
   <employee-overview class="col-4"></employee-overview>
   <resident-overview class="col-4"></resident-overview>
 </div>
-<h1 class="mat-title, center" style="padding-top: 20px;" >Hello system admin and welcome to the synchronization overview</h1>
-<h3 class="center">This section is only for system admins</h3>
-<div style="display: flex;">
-  <employee-backedup class="col-4"></employee-backedup>
-  <resident-backedup class="col-4"></resident-backedup>
-  <synchronization-errors class="col-4"></synchronization-errors>
-</div>
 
+<ng-container *ngIf="authorizationService.hasAccessRight(['admin'])">
+  <h1 class="mat-title, center" style="padding-top: 20px;" >Hello system admin and welcome to the synchronization overview</h1>
+  <h3 class="center">This section is only for system admins</h3>
+  <div style="display: flex;">
+    <employee-backedup class="col-4"></employee-backedup>
+    <resident-backedup class="col-4"></resident-backedup>
+    <synchronization-errors class="col-4"></synchronization-errors>
+  </div>
+</ng-container>

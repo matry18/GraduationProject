@@ -116,6 +116,10 @@ public class Employee extends User {
         this.id = id;
     }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
         public String toString() {
             return "Employee{" +

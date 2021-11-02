@@ -23,7 +23,7 @@ const routes: Routes = [];
       {path: 'login', component: LoginFormComponent},
       {path: 'synchronization-log', component: SynchronizationLogContainerComponent, canActivate: [AuthGuard], data: {accessRights:['admin']}},
       {path: 'employee', component: EmployeeListComponent, canActivate: [AuthGuard]},
-      {path: 'roles', component: RoleContainerComponent, canActivate: [AuthGuard]},
+      {path: 'roles', component: RoleContainerComponent, canActivate: [AuthGuard], data: {accessRights:['admin']}},
       {path: '**', component: ErrorComponent},])
     ,],
   exports: [RouterModule]
