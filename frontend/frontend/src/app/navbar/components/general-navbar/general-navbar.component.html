@@ -33,18 +33,20 @@
   <td-user-profile *ngIf="loggedIn.getValue(); else login" [matTooltip]="'Profile'" [name]="currentUser?.username" [email]="currentUser?.email">
     <ng-container td-user-info-list>
       <mat-list-item>
-        <mat-icon matListAvatar>account_balance</mat-icon>
+        <mat-icon matListAvatar class="icons">account_balance</mat-icon>
         <span matLine>{{currentUser?.department?.departmentName}}</span>
       </mat-list-item>
     </ng-container>
     <ng-container td-user-action-list>
       <button mat-list-item>
+        <mat-icon matListAvatar class="icons">face</mat-icon>
         <span matListAvatar></span>
-        <span matLine routerLink="user/logged-in">Go to profile</span>
+        <span matLine routerLink="user/logged-in" [matTooltip]="'Show profile'">Go to profile</span>
       </button>
       <button mat-list-item>
+        <mat-icon matListAvatar class="icons">power_settings_new</mat-icon>
         <span matListAvatar></span>
-        <span matLine (click)="logout()">Sign out</span>
+        <span matLine (click)="logout()" [matTooltip]="'Log out'">Sign out</span>
       </button>
     </ng-container>
   </td-user-profile>
