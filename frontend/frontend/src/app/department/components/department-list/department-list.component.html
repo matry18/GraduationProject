@@ -1,1 +1,10 @@
-<p>department-list works!</p>
+<h1 class="left-space">List of Departments</h1>
+<table mat-table [dataSource]="departmentList" class="mat-elevation-z8 ">
+  <ng-container matColumnDef="departmentName">
+    <th mat-header-cell *matHeaderCellDef >Department name </th>
+    <td mat-cell *matCellDef="let element" >{{element.departmentName}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
