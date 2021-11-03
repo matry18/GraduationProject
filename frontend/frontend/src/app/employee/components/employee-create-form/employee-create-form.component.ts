@@ -7,6 +7,7 @@ import {EmployeeService} from "../../employee.service";
 import {SnackbarService} from "../../../snackbars/FormSubmission/snackbar.service";
 import {DepartmentService} from "../../../department/department.service";
 import {RoleService} from "../../../role/role.service";
+import {AuthorizationService} from "../../../shared-services/authorization.service";
 
 interface EmployeeData {
   employee: EmployeeDto
@@ -22,7 +23,7 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
   public formText: string ='';
   public isEditMode: boolean = false;
   public departments: DepartmentDto[] = [];
-  public roles: RoleDto[] = [];
+  public roles:Array<RoleDto> = new Array<RoleDto>();
   private subscription: Subscription | null = null;
 
   @Output() cancelEvent = new EventEmitter();
@@ -32,7 +33,8 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
               @Inject(MAT_DIALOG_DATA) public data: EmployeeData,
               private snackbarService: SnackbarService,
               private departmentService: DepartmentService,
-              private roleService: RoleService) {
+              private roleService: RoleService,
+              private authorizationService: AuthorizationService) {
 
     this.isEditMode = this.data !== null && this.data !== undefined;
     this.formText = this.isEditMode ? `Edit Employee (${data.employee.firstname} ${data.employee.lastname})` : 'Create Employee';
@@ -79,6 +81,9 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
   private fetchRoles(): void {
     this.roleService.getAllRoles().subscribe((roles: RoleDto[]) => {
       this.roles = roles;
+      if(!this.authorizationService.hasRole(['admin'])) {
+        this.roles = this.roles.filter(role => role.name !== 'admin');
+      }
     });
   }
 
