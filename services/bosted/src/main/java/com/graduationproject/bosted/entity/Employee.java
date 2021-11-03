@@ -27,9 +27,6 @@ public class Employee extends User {
 
     private String username;
 
-    private String password;
-
-
     public Employee(EmployeeDto employeeDto) {
         this.id = employeeDto.getId();
         this.firstname = employeeDto.getFirstname();
@@ -40,7 +37,6 @@ public class Employee extends User {
         this.role = new Role(employeeDto.getRoleDto());
         //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
         this.username = employeeDto.getUsername();
-        this.password = employeeDto.getPassword();
 
     }
 
@@ -100,14 +96,6 @@ public class Employee extends User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getId() {
         return id;
     }
@@ -130,7 +118,6 @@ public class Employee extends User {
                     ", phoneNumber='" + phoneNumber + '\'' +
                     ", department=" + department +
                     ", username='" + username + '\'' +
-                    ", password='" + password + '\'' +
                     '}';
         }
 }

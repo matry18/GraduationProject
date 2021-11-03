@@ -17,7 +17,7 @@ public class EmployeeFixture {
     private Department department = createDepartment();
     private Role role = createRole();
     private String username = "Raller";
-    private String password = "1234";
+
 
     public static Employee createEmployee() {
         return builder().build();
@@ -36,7 +36,7 @@ public class EmployeeFixture {
         employee.setPhoneNumber(phoneNumber);
         employee.setDepartment(department);
         employee.setUsername(username);
-        employee.setPassword(password);
+
         employee.setRole(role);
         return employee;
     }
@@ -76,8 +76,4 @@ public class EmployeeFixture {
         return this;
     }
 
-    public EmployeeFixture setPassword(String password) {
-        this.password = password;
-        return this;
-    }
 }

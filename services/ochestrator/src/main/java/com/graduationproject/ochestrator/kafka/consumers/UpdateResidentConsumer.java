@@ -39,14 +39,6 @@ public class UpdateResidentConsumer {
 
     @KafkaListener(topics = UpdateResidentSagaInit, groupId = GROUP_ID)
     public void consumeUpdateResidentSagaInit(String message) {
-        try {
-            SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
-            if (sagaResponseDto.getSagaStatus().equals(SagaStatus.FAILED)) {
-                sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
         consumerHelper.initUpdateSaga(message, UpdateResidentSagaInit);
     }
 

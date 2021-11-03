@@ -35,7 +35,6 @@ public class EmployeeDto {
         this.email = employee.getEmail();
         this.phoneNumber = employee.getPhoneNumber();
         this.username = employee.getUsername();
-        this.password = employee.getPassword();
     }
 
     public String getFirstname() {
@@ -94,16 +93,12 @@ public class EmployeeDto {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public RoleDto getRoleDto() {
         return roleDto;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override
