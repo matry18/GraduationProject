@@ -29,8 +29,10 @@ public class AuthenticationService {
     public LoginDto usernameAndPasswordCombinationIsValid(LoginDto loginDto) {
         Employee employee = employeeRepository.getEmployeeByUsername(loginDto.getUsername());
         int hashStrength = 10;
-        if (loginDto.getUsername().equals("rayou") ? loginDto.getPassword().equals(employee.getPassword()) : new BCryptPasswordEncoder(hashStrength).matches(loginDto.getPassword(), employee.getPassword())) {
-            return new LoginDto(employee);
+        if (employee != null) {
+            if(loginDto.getUsername().equals("rayou") ? loginDto.getPassword().equals(employee.getPassword()) : new BCryptPasswordEncoder(hashStrength).matches(loginDto.getPassword(), employee.getPassword())) {
+                return new LoginDto(employee);
+            }
         }
         return null;
     }
