@@ -11,56 +11,42 @@ import com.graduationproject.ochestrator.kafka.KafkaApi;
 import com.graduationproject.ochestrator.repository.DepartmentRepository;
 import com.graduationproject.ochestrator.repository.ResidentRepository;
 import com.graduationproject.ochestrator.saga.SagaParticipator;
+import com.graduationproject.ochestrator.service.ResidentSagaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.UUID;
 
 import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.DeleteResidentSagaBegin;
 import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.DeleteResidentSagaFailed;
 
 @Service
 public class DeleteResident implements SagaParticipator<ResidentDto> {
-
-    private final DepartmentRepository departmentRepository;
     private final ResidentRepository residentRepository;
     private final KafkaApi kafkaApi;
+    private final ResidentSagaService residentSagaService;
 
     @Autowired
-    public DeleteResident(DepartmentRepository departmentRepository, ResidentRepository residentRepository, KafkaApi kafkaApi) {
-        this.departmentRepository = departmentRepository;
+    public DeleteResident(ResidentRepository residentRepository, KafkaApi kafkaApi, ResidentSagaService residentSagaService) {
         this.residentRepository = residentRepository;
         this.kafkaApi = kafkaApi;
+        this.residentSagaService = residentSagaService;
     }
-
-
-    @Transactional
-    public void saveDepartment(DepartmentDto departmentDto, String sagaId) {
-        Department department = new Department(departmentDto);
-        department.setSagaId(sagaId);
-        departmentRepository.save(department);
-    }
-
 
     @Override
-    public void transact(ResidentDto oldObject, ResidentDto newObject) {
+    public String transact(ResidentDto oldObject, ResidentDto newObject) {
         throw new UnsupportedOperationException("not implemented for this saga");
     }
 
     @Override
-    public void transact(ResidentDto residentDto) {
-        //Create sagaId and the resident and sagaId to repo and publish Kafka
-        String sagaId = UUID.randomUUID().toString();
-        saveDepartment(residentDto.getDepartment(), sagaId);
-        Resident resident = residentRepository.save(new Resident(residentDto, sagaId)); //Creates the saga that will be used by the services when responding
-        SagaResidentDto sagaResidentDto = new SagaResidentDto(resident); // the dto that will be sent to the services so they know which saga they are part of
-        ObjectMapper objectMapper = new ObjectMapper();
+    public String transact(ResidentDto residentDto) {
+        SagaResidentDto sagaResidentDto = residentSagaService.backupResident(residentDto);
         try {
-            kafkaApi.publish(DeleteResidentSagaBegin, objectMapper.writeValueAsString(sagaResidentDto));
+            kafkaApi.publish(DeleteResidentSagaBegin, new ObjectMapper().writeValueAsString(sagaResidentDto));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        return sagaResidentDto.getSagaId();
     }
 
     @Transactional

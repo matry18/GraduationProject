@@ -22,10 +22,12 @@ import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.*;
 public class DeleteEmployeeConsumer {
     private static final String GROUP_ID = "orchestrator";
     private ConsumerHelper<EmployeeDto> consumerHelper;
-    private static final List<String> services = new ArrayList<>( //Remember that it is not always every service participating in each saga
+    private final static String BOSTED_SERVICE_NAME = "bosted";
+    private final static String AUTHENTICATION_SERVICE_NAME = "authentication";
+    private static final List<String> services = new ArrayList<>(
             Arrays.asList(
-                    "bosted",
-                    "authentication"
+                    BOSTED_SERVICE_NAME,
+                    AUTHENTICATION_SERVICE_NAME
             )
     );
 
@@ -38,7 +40,7 @@ public class DeleteEmployeeConsumer {
 
     @KafkaListener(topics = DeleteEmployeeSagaInit, groupId = GROUP_ID)
     public void consumeDeleteEmployeeSagaInit(String message) {
-        consumerHelper.initSaga(message, DeleteEmployeeSagaInit);
+        consumerHelper.initSaga(message, DeleteEmployeeSagaInit, BOSTED_SERVICE_NAME);
     }
 
     @KafkaListener(topics = DeleteEmployeeSagaDone, groupId = GROUP_ID)

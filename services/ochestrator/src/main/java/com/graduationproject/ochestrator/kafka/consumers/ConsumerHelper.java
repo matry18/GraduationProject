@@ -22,15 +22,13 @@ public class ConsumerHelper<T> {
     private final List<String> services;
     private Class<T> typeParameterClass;
 
-
     public ConsumerHelper(SagaParticipator<T> sagaParticipator, List<String> services, Class<T> typeParameterClass) {
         this.sagaParticipator = sagaParticipator;
         this.services = services;
         this.typeParameterClass = typeParameterClass;
     }
 
-    public void initSaga(String message, String topic) {
-
+    public void initSaga(String message, String topic, String initServiceName) {
         T object = null;
         try {
             object = new ObjectMapper().readValue(message, typeParameterClass);
@@ -38,15 +36,19 @@ public class ConsumerHelper<T> {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        sagaParticipator.transact(object);
+        String sagaId = sagaParticipator.transact(object);
+        addToServiceReplyMap(sagaId, new SagaResponseDto(sagaId,
+                initServiceName, SagaStatus.SUCCESS, ""));
     }
 
-    public void initUpdateSaga(String message, String topic) {
+    public void initUpdateSaga(String message, String topic, String initServiceName) {
         System.out.println(topic);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             List<T> updateDto = objectMapper.readValue(message, objectMapper.getTypeFactory().constructCollectionType(List.class, typeParameterClass));
-            sagaParticipator.transact(updateDto.get(0), updateDto.get(1));
+            String sagaId = sagaParticipator.transact(updateDto.get(0), updateDto.get(1));
+            addToServiceReplyMap(sagaId, new SagaResponseDto(sagaId,
+                    initServiceName, SagaStatus.SUCCESS, ""));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -56,8 +58,6 @@ public class ConsumerHelper<T> {
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
             System.out.println(topic + " " + sagaResponseDto.getServiceName());
-            addToServiceReplyMap(sagaResponseDto.getSagaId(), new SagaResponseDto(sagaResponseDto.getSagaId(),
-                    "bosted", SagaStatus.SUCCESS,"")); //remember that this might have to be removed if the init saga does not come from Bosted. Could be that each consumer has the first index as the initializing service.
             addToServiceReplyMap(sagaResponseDto.getSagaId(), sagaResponseDto);
             if (sagaResponseDto.getSagaStatus() == FAILED) {
                 System.out.println(sagaResponseDto.getServiceName() + " FAILED on topic: " + topic);
@@ -104,7 +104,6 @@ public class ConsumerHelper<T> {
             sagaResponses.add(sagaResponseDto);
             serviceReplies.put(sagaId, sagaResponses);
         }
-
         // serviceReplies.computeIfAbsent(sagaId, k -> new ArrayList<>()).add(sagaResponseDto);
     }
 
