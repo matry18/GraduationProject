@@ -9,6 +9,7 @@ import com.graduationProject.authentication.entity.Employee;
 import com.graduationProject.authentication.kafka.KafkaApi;
 import com.graduationProject.authentication.repository.EmployeeRepository;
 import com.graduationProject.authentication.saga.SagaParticipator;
+import com.graduationProject.authentication.service.EmployeeService;
 import com.graduationProject.authentication.topic.EmployeeTopic;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,13 @@ public class UpdateEmployee implements SagaParticipator<SagaEmployeeDto> {
 
     private final EmployeeRepository employeeRepository;
     private final KafkaApi kafkaApi;
+    private final EmployeeService employeeService;
 
     @Autowired
-    public UpdateEmployee(EmployeeRepository employeeRepository, KafkaApi kafkaApi) {
+    public UpdateEmployee(EmployeeRepository employeeRepository, KafkaApi kafkaApi, EmployeeService employeeService) {
         this.employeeRepository = employeeRepository;
         this.kafkaApi = kafkaApi;
+        this.employeeService = employeeService;
     }
 
     @Transactional
@@ -41,9 +44,7 @@ public class UpdateEmployee implements SagaParticipator<SagaEmployeeDto> {
                         sagaEmployeeDto.getEmployeeDto().getId(),
                         sagaEmployeeDto.getSagaId()));
             }
-            Employee employee = employeeRepository.getById(sagaEmployeeDto.getEmployeeDto().getId());
-            updateEmployee(employee, sagaEmployeeDto.getEmployeeDto());
-            employeeRepository.save(employee);
+            employeeService.addEmployee(sagaEmployeeDto.getEmployeeDto());
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), SUCCESS);
         }catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), FAILED);

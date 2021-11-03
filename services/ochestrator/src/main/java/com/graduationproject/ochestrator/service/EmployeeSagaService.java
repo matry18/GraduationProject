@@ -28,14 +28,16 @@ public class EmployeeSagaService {
     private final DepartmentRepository departmentRepository;
     private final RoleRepository roleRepository;
     private final AccessRightRepository accessRightRepository;
+    private final SagaResponseService sagaResponseService;
 
     @Autowired
-    public EmployeeSagaService(KafkaApi kafkaApi, EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, RoleRepository roleRepository, AccessRightRepository accessRightRepository) {
+    public EmployeeSagaService(KafkaApi kafkaApi, EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, RoleRepository roleRepository, AccessRightRepository accessRightRepository, SagaResponseService sagaResponseService) {
         this.kafkaApi = kafkaApi;
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
         this.roleRepository = roleRepository;
         this.accessRightRepository = accessRightRepository;
+        this.sagaResponseService = sagaResponseService;
     }
 
     public List<Employee> fetchAllSagaEmployees() {
@@ -68,6 +70,10 @@ public class EmployeeSagaService {
     }
 
     public SagaEmployeeDto backupEmployee(EmployeeDto employeeDto) {
+        if (employeeRepository.existsById(employeeDto.getId())) {
+            throw new IllegalStateException("You should not change an already backed up Entity " +
+                    "- a synchronization issue has happened prior to this and needs to be handled first");
+        }
         String sagaId = UUID.randomUUID().toString();
         setupEmployeeDataForTransaction(employeeDto, sagaId);
         Employee employee = employeeRepository.save(new Employee(employeeDto, sagaId)); //Creates the saga that will be used by the services when responding
