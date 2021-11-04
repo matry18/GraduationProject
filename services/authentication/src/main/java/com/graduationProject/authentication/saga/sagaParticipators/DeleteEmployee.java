@@ -32,7 +32,7 @@ public class DeleteEmployee implements SagaParticipator<SagaEmployeeDto> {
     public void transact(SagaEmployeeDto sagaEmployeeDto) {
         SagaResponseDto sagaResponseDto;
         try {
-            if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("neverDelete") || sagaEmployeeDto.getEmployeeDto().getUsername().equals("bFailRevert")) {
+            if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("neverDelete") || sagaEmployeeDto.getEmployeeDto().getUsername().equals("bFailRevert") || sagaEmployeeDto.getEmployeeDto().getUsername().equals("neverDelete2")) {
                 throw new IllegalStateException(String.format("Could not delete Employee with \n ID: %s \n SagaID: %s",
                         sagaEmployeeDto.getEmployeeDto().getId(),
                         sagaEmployeeDto.getSagaId()));
@@ -52,7 +52,7 @@ public class DeleteEmployee implements SagaParticipator<SagaEmployeeDto> {
     public void revert(SagaEmployeeDto sagaEmployeeDto) {
         SagaResponseDto sagaResponseDto;
         try {
-            if (sagaEmployeeDto.getEmployeeDto().getPassword().equals("neverDelete")) {
+            if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("neverDelete2")) {
                 throw new IllegalStateException(String.format("Could not revert deletion of Employee with \n ID: %s \n SagaID: %s",
                         sagaEmployeeDto.getEmployeeDto().getId(),
                         sagaEmployeeDto.getSagaId()));

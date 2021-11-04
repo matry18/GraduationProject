@@ -34,7 +34,7 @@ public class CreateEmployee implements SagaParticipator<SagaEmployeeDto> {
     @Override
     public void transact(SagaEmployeeDto sagaEmployeeDto) {
         try {
-            if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("fail")) {
+            if ((sagaEmployeeDto.getEmployeeDto().getUsername().equals("fail")) || (sagaEmployeeDto.getEmployeeDto().getUsername().equals("failfail"))) {
                 throw new IllegalStateException(String.format("Could not create Employee with \n ID: %s \n SagaID: %s",
                         sagaEmployeeDto.getEmployeeDto().getId(),
                         sagaEmployeeDto.getSagaId()));
@@ -59,7 +59,7 @@ public class CreateEmployee implements SagaParticipator<SagaEmployeeDto> {
     @Override
     public void revert(SagaEmployeeDto sagaEmployeeDto) {
         try {
-            if (nonNull(sagaEmployeeDto.getEmployeeDto().getPassword()) && sagaEmployeeDto.getEmployeeDto().getPassword().equals("fail")) {
+            if (nonNull(sagaEmployeeDto.getEmployeeDto().getUsername()) && sagaEmployeeDto.getEmployeeDto().getUsername().equals("failfail")) {
                 throw new IllegalStateException(String.format("Could not revert creation of Employee with \n ID: %s \n SagaID: %s",
                         sagaEmployeeDto.getEmployeeDto().getId(),
                         sagaEmployeeDto.getSagaId()));

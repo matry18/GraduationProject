@@ -36,7 +36,7 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
     public void transact(SagaResidentDto sagaResidentDto) {
         //if anything goes wrong it should publish to the revert topic
         try {
-            if (sagaResidentDto.getResidentDto().getUsername().equals("fail")) {
+            if (sagaResidentDto.getResidentDto().getUsername().equals("fail") || (sagaResidentDto.getResidentDto().getUsername().equals("failfail"))) {
                 throw new IllegalStateException(String.format("Could not create Resident with \n ID: %s \n SagaID: %s",
                         sagaResidentDto.getResidentDto().getId(),
                         sagaResidentDto.getSagaId())); //this should trigger a revert of the saga.
@@ -71,7 +71,7 @@ public class CreateResident implements SagaParticipator<SagaResidentDto> {
         Update: the saga participator should revert the entity to the state it had before.
          */
         try {
-            if (sagaResidentDto.getResidentDto().getPassword().equals("fail")) {
+            if (sagaResidentDto.getResidentDto().getUsername().equals("failfail")) {
                 throw new IllegalStateException(String.format("Could not revert creation of Resident with \n ID: %s \n SagaID: %s",
                         sagaResidentDto.getResidentDto().getId(),
                         sagaResidentDto.getSagaId()));
