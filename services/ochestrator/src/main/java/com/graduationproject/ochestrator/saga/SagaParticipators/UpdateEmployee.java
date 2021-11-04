@@ -13,22 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.UUID;
 
 import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.UpdateEmployeeSagaBegin;
 import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.UpdateEmployeeSagaFailed;
 
 @Service
 public class UpdateEmployee implements SagaParticipator<EmployeeDto> {
-
-
     private final EmployeeRepository employeeRepository;
     private final KafkaApi kafkaApi;
     private final EmployeeSagaService employeeSagaService;
 
     @Autowired
     public UpdateEmployee(EmployeeRepository employeeRepository, KafkaApi kafkaApi, EmployeeSagaService employeeSagaService) {
-
         this.employeeRepository = employeeRepository;
         this.kafkaApi = kafkaApi;
         this.employeeSagaService = employeeSagaService;
@@ -36,22 +32,20 @@ public class UpdateEmployee implements SagaParticipator<EmployeeDto> {
 
     @Transactional
     @Override
-    public void transact(EmployeeDto oldEmployee, EmployeeDto newEmployee) {
-        //Create sagaId and the employee and sagaId to repo and publish Kafka
-        String sagaId = UUID.randomUUID().toString();
-        employeeSagaService.setupEmployeeDataForTransaction(oldEmployee, sagaId);
-        employeeRepository.save(new Employee(oldEmployee, sagaId)); //Creates the saga that will be used by the services when responding
-        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto(new Employee(newEmployee, sagaId)); // the dto that will be sent to the services so they know which saga they are part of
-        ObjectMapper objectMapper = new ObjectMapper();
+    public String transact(EmployeeDto oldEmployee, EmployeeDto newEmployee) {
+        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto(
+                new Employee(newEmployee, employeeSagaService.backupEmployee(oldEmployee).getSagaId())
+        );
         try {
-            kafkaApi.publish(UpdateEmployeeSagaBegin, objectMapper.writeValueAsString(sagaEmployeeDto));
+            kafkaApi.publish(UpdateEmployeeSagaBegin, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        return sagaEmployeeDto.getSagaId();
     }
 
     @Override
-    public void transact(EmployeeDto employeeDto) {
+    public String transact(EmployeeDto employeeDto) {
         throw new UnsupportedOperationException("This method cannot be used for update Saga!");
     }
 
@@ -69,7 +63,6 @@ public class UpdateEmployee implements SagaParticipator<EmployeeDto> {
     @Transactional
     public void transact(String sagaId) {
         //this will be run after a successful saga
-        Employee employee = employeeRepository.findEmployeeBySagaId(sagaId);
         employeeRepository.deleteBySagaId(sagaId);
         employeeSagaService.deleteEmployeeDataForTransaction(sagaId);
     }

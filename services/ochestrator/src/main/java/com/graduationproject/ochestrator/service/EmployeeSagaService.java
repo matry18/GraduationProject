@@ -4,6 +4,7 @@ import com.graduationproject.ochestrator.dto.AccessRightDto;
 import com.graduationproject.ochestrator.dto.DepartmentDto;
 import com.graduationproject.ochestrator.dto.EmployeeDto;
 import com.graduationproject.ochestrator.dto.RoleDto;
+import com.graduationproject.ochestrator.dto.saga.SagaEmployeeDto;
 import com.graduationproject.ochestrator.entities.AccessRight;
 import com.graduationproject.ochestrator.entities.Department;
 import com.graduationproject.ochestrator.entities.Employee;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EmployeeSagaService {
@@ -63,6 +65,13 @@ public class EmployeeSagaService {
         Role role = new Role(roleDto);
         role.setSagaId(sagaId);
         roleRepository.save(role);
+    }
+
+    public SagaEmployeeDto backupEmployee(EmployeeDto employeeDto) {
+        String sagaId = UUID.randomUUID().toString();
+        setupEmployeeDataForTransaction(employeeDto, sagaId);
+        Employee employee = employeeRepository.save(new Employee(employeeDto, sagaId)); //Creates the saga that will be used by the services when responding
+        return new SagaEmployeeDto(employee);
     }
 
     @Transactional

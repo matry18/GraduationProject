@@ -22,10 +22,12 @@ public class CreateEmployeeConsumer {
     private static final String GROUP_ID = "orchestrator";
     private ConsumerHelper<EmployeeDto> consumerHelper;
     private final SagaResponseRepository sagaResponseRepository;
+    private final static String BOSTED_SERVICE_NAME = "bosted";
+    private final static String AUTHENTICATION_SERVICE_NAME = "authentication";
     private static final List<String> services = new ArrayList<>(
             Arrays.asList(
-                    "bosted",
-                    "authentication"
+                    BOSTED_SERVICE_NAME,
+                    AUTHENTICATION_SERVICE_NAME
             )
     );
 
@@ -37,7 +39,7 @@ public class CreateEmployeeConsumer {
 
     @KafkaListener(topics = CreateEmployeeSagaInit, groupId = GROUP_ID)
     public void consumeCreateEmployeeSagaInit(String message) {
-        consumerHelper.initSaga(message, CreateEmployeeSagaInit);
+        consumerHelper.initSaga(message, CreateEmployeeSagaInit, BOSTED_SERVICE_NAME);
     }
 
     @KafkaListener(topics = CreateEmployeeSagaDone, groupId = GROUP_ID)
