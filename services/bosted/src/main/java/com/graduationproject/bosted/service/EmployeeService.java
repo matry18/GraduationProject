@@ -33,9 +33,9 @@ public class EmployeeService {
 
     public void addEmployee(EmployeeDto employeeDto) {
         employeeDto.setId(UUID.randomUUID().toString());
+        employeeDto.hashPassword();
         employeeRepository.save(new Employee(employeeDto));
         createEmployee.initSaga(employeeDto);
-        //TODO: find ud af hvorfor at sagaen ikke fejler når Authentication servicen fejler da den ikke kender til roles.
     }
 
 
