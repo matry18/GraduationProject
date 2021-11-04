@@ -37,6 +37,10 @@ public class ResidentSagaService {
     }
 
     public SagaResidentDto backupResident(ResidentDto residentDto) {
+        if (residentRepository.existsById(residentDto.getId())) {
+            throw new IllegalStateException("You should not change an already backed up Entity " +
+                    "- a synchronization issue has happened prior to this and needs to be handled first");
+        }
         String sagaId = UUID.randomUUID().toString();
         saveDepartment(residentDto.getDepartment(), sagaId);
         Resident resident = residentRepository.save(new Resident(residentDto, sagaId)); //Creates the saga that will be used by the services when responding
