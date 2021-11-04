@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 
 import static com.graduationProject.authentication.topic.EmployeeTopic.CreateEmployeeSagaDone;
 import static com.graduationProject.authentication.topic.EmployeeTopic.CreateEmployeeSagaRevert;
+import static java.util.Objects.nonNull;
 
 @Service
 public class CreateEmployee implements SagaParticipator<SagaEmployeeDto> {
@@ -58,7 +59,7 @@ public class CreateEmployee implements SagaParticipator<SagaEmployeeDto> {
     @Override
     public void revert(SagaEmployeeDto sagaEmployeeDto) {
         try {
-            if (sagaEmployeeDto.getEmployeeDto().getPassword().equals("fail")) {
+            if (nonNull(sagaEmployeeDto.getEmployeeDto().getPassword()) && sagaEmployeeDto.getEmployeeDto().getPassword().equals("fail")) {
                 throw new IllegalStateException(String.format("Could not revert creation of Employee with \n ID: %s \n SagaID: %s",
                         sagaEmployeeDto.getEmployeeDto().getId(),
                         sagaEmployeeDto.getSagaId()));
