@@ -13,11 +13,18 @@ mat-form-field {
 
 }
 
-
 .form-submit-btn {
   margin-left: 1%;
 }
 
 h1 {
   text-align: center;
+  padding-top: 1%;
+}
+
+.invalidCredentials {
+  display: flex;
+  justify-content: center;
+  color: red;
+  padding-top: 1%;
 }

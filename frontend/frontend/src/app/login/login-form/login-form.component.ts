@@ -49,11 +49,12 @@ export class LoginFormComponent implements OnInit {
   }
 
   private wasCredentialsNotValid(): void {
-    this.invalidLoginAttempt =  !this.authenticationService.isAuthenticated();
+    this.invalidLoginAttempt =  this.authenticationService.getLoginFailed();
   }
 
   public cancel(): void {
     this.loginForm.reset();
+    this.authenticationService.setLoginFailed(false);
     this.invalidLoginAttempt = false;
   }
 

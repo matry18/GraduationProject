@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <span routerLink="" class="clickable">POC Sensum <mat-icon>home</mat-icon></span>
+  <span routerLink="" class="clickable" [matTooltip]="'Homepage'" >POC Sensum <mat-icon>home</mat-icon></span>
   <span class="spacer"></span>
 
   <button *ngIf="loggedIn.getValue() && accessRightService.hasAccessRight(['admin'])" routerLink ="roles"
