@@ -1,7 +1,6 @@
 package com.graduationproject.bosted.testFixtures;
 
 import com.graduationproject.bosted.entity.AccessRight;
-import com.graduationproject.bosted.entity.Role;
 
 public class AccessRightFixture {
 
