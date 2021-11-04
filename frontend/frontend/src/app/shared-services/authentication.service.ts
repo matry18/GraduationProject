@@ -15,6 +15,7 @@ export class AuthenticationService extends ObservableStore<LoginState> {
   private username: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(this.getUsernameFromLocalStorage());
   private userRole: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(this.getUserRoleFromLocalStorage());
   private employeeId: string | null = localStorage.getItem("employeeId");
+  private loginFailed: boolean = false;
 
   constructor(private http: HttpClient, private router: Router, private currentUserService: CurrentUserService) {
     super({logStateChanges: true, trackStateHistory: true});
@@ -37,9 +38,11 @@ export class AuthenticationService extends ObservableStore<LoginState> {
         this.username.next(this.getUsernameFromLocalStorage());
         this.router.navigate(["/"]);
         //set roles
+        this.loginFailed = false;
         return true;
       } else {
         this.router.navigate(["/login"]);
+        this.loginFailed = true;
         return false;
       }
     });
@@ -78,6 +81,14 @@ export class AuthenticationService extends ObservableStore<LoginState> {
 
   private getUserRoleFromLocalStorage(): string | null {
     return localStorage.getItem("userRole");
+  }
+
+  public getLoginFailed(): boolean {
+    return this.loginFailed;
+  }
+
+  public setLoginFailed(showLoginFail : boolean): void {
+    this.loginFailed = showLoginFail;
   }
 
 }
