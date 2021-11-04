@@ -24,8 +24,6 @@ public class Resident extends User{
 
     private String username;
 
-    private String password;
-
 
     public Resident(ResidentDto residentDto) {
         this.id = residentDto.getId();
@@ -36,7 +34,7 @@ public class Resident extends User{
         this.department = new Department(residentDto.getDepartment());
         //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
         this.username = residentDto.getUsername();
-        this.password = residentDto.getPassword();
+
     }
 
     public Resident() {
@@ -100,14 +98,6 @@ public class Resident extends User{
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     @Override
     public String toString() {
         return "Resident{" +
@@ -118,7 +108,6 @@ public class Resident extends User{
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", department=" + department +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

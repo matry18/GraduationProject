@@ -34,8 +34,8 @@ public class ResidentService {
 
     public void addCitizen(ResidentDto residentDto) {
         residentDto.setId(UUID.randomUUID().toString());
-        Resident resident = residentRepository.save(new Resident(residentDto));
-        createResident.initSaga(new ResidentDto(resident));
+        residentRepository.save(new Resident(residentDto));
+        createResident.initSaga(residentDto);
     }
 
 

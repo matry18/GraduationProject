@@ -3,7 +3,6 @@ package com.graduationproject.bosted.dto;
 import com.graduationproject.bosted.entity.Resident;
 
 import static java.util.Objects.isNull;
-
 public class ResidentDto {
     private String id;
     private String firstname;
@@ -35,7 +34,6 @@ public class ResidentDto {
         this.email = resident.getEmail();
         this.phoneNumber = resident.getPhoneNumber();
         this.username = resident.getUsername();
-        this.password = resident.getPassword();
     }
 
     public String getFirstname() {
@@ -96,10 +94,6 @@ public class ResidentDto {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override
