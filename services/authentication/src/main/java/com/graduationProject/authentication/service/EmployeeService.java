@@ -22,9 +22,6 @@ public class EmployeeService {
 
     @Transactional
     public void addEmployee(EmployeeDto employeeDto) {
-        int hashStrength = 10;
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(hashStrength);
-        employeeDto.setPassword(passwordEncoder.encode(employeeDto.getPassword()));
         employeeRepository.save(new Employee(employeeDto));
     }
 

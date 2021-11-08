@@ -25,7 +25,7 @@ public class DeleteEmployeeConsumer {
     @KafkaListener(topics = DeleteEmployeeSagaBegin, groupId = GROUP_ID)
     public void consumeCreateEmployeeSagaBegin(String message) {
         try {
-            System.out.println(GROUP_ID+ " " +DeleteEmployeeSagaBegin);
+            System.out.println(GROUP_ID + " " + DeleteEmployeeSagaBegin);
             SagaEmployeeDto sagaEmployeeDto = new ObjectMapper().readValue(message, SagaEmployeeDto.class);
             deleteEmployee.transact(sagaEmployeeDto);
         } catch (JsonProcessingException e) {
@@ -33,9 +33,10 @@ public class DeleteEmployeeConsumer {
         }
     }
 
-    @KafkaListener(topics =  DeleteEmployeeSagaFailed, groupId = GROUP_ID)
+    @KafkaListener(topics = DeleteEmployeeSagaFailed, groupId = GROUP_ID)
     public void consumeCreateEmployeeSagaFailed(String message) {
-        try {     System.out.println(GROUP_ID+ " " +DeleteEmployeeSagaFailed);
+        try {
+            System.out.println(GROUP_ID + " " + DeleteEmployeeSagaFailed);
             SagaEmployeeDto sagaEmployeeDto = new ObjectMapper().readValue(message, SagaEmployeeDto.class);
             deleteEmployee.revert(sagaEmployeeDto);
         } catch (JsonProcessingException e) {

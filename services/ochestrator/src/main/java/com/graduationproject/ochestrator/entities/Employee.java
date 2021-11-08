@@ -5,8 +5,10 @@ import com.graduationproject.ochestrator.dto.EmployeeDto;
 import javax.persistence.*;
 
 @Entity
+@IdClass(EmployeeKey.class)
 public class Employee {
 
+    @Id
     @Column(unique=true)
     private String sagaId;
 
@@ -122,6 +124,10 @@ public class Employee {
 
     public Role getRole() {
         return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override

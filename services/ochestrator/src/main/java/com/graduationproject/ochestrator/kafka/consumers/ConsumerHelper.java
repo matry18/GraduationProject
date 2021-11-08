@@ -28,7 +28,7 @@ public class ConsumerHelper<T> {
         this.typeParameterClass = typeParameterClass;
     }
 
-    public void initSaga(String message, String topic, String initServiceName) {
+    public String initSaga(String message, String topic, String initServiceName) {
         T object = null;
         try {
             object = new ObjectMapper().readValue(message, typeParameterClass);
@@ -39,6 +39,7 @@ public class ConsumerHelper<T> {
         String sagaId = sagaParticipator.transact(object);
         addToServiceReplyMap(sagaId, new SagaResponseDto(sagaId,
                 initServiceName, SagaStatus.SUCCESS, ""));
+        return sagaId;
     }
 
     public void initUpdateSaga(String message, String topic, String initServiceName) {

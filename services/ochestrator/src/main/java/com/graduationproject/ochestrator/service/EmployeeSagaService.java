@@ -70,10 +70,10 @@ public class EmployeeSagaService {
     }
 
     public SagaEmployeeDto backupEmployee(EmployeeDto employeeDto) {
-        if (employeeRepository.existsById(employeeDto.getId())) {
+       /* if (employeeRepository.existsById(employeeDto.getId())) {
             throw new IllegalStateException("You should not change an already backed up Entity " +
                     "- a synchronization issue has happened prior to this and needs to be handled first");
-        }
+        } */
         String sagaId = UUID.randomUUID().toString();
         setupEmployeeDataForTransaction(employeeDto, sagaId);
         Employee employee = employeeRepository.save(new Employee(employeeDto, sagaId)); //Creates the saga that will be used by the services when responding
@@ -87,6 +87,7 @@ public class EmployeeSagaService {
     }
 
     public void deleteEmployeeDataForTransaction(String sagaId) {
+        /*
         if (employeeRepository.existsEmployeeByRole(roleRepository.findBySagaId(sagaId))) {
             return;
         }
@@ -95,6 +96,6 @@ public class EmployeeSagaService {
             return;
         }
         roleRepository.deleteBySagaId(sagaId);
-        accessRightRepository.deleteBySagaId(sagaId);
+        accessRightRepository.deleteBySagaId(sagaId);*/
     }
 }
