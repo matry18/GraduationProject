@@ -11,6 +11,7 @@ import com.graduationproject.ochestrator.type.SagaStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.*;
 
@@ -22,6 +23,7 @@ public class CreateEmployeeConsumer {
     private static final String GROUP_ID = "orchestrator";
     private ConsumerHelper<EmployeeDto> consumerHelper;
     private final SagaResponseRepository sagaResponseRepository;
+    private final static String ORCHESTRATOR_SERVICE_NAME = "orchestrator";
     private final static String BOSTED_SERVICE_NAME = "bosted";
     private final static String AUTHENTICATION_SERVICE_NAME = "authentication";
     private static final List<String> services = new ArrayList<>(
@@ -39,20 +41,29 @@ public class CreateEmployeeConsumer {
 
     @KafkaListener(topics = CreateEmployeeSagaInit, groupId = GROUP_ID)
     public void consumeCreateEmployeeSagaInit(String message) {
-        consumerHelper.initSaga(message, CreateEmployeeSagaInit, BOSTED_SERVICE_NAME);
+        String sagaId = "not set";
+        try {
+            sagaId = consumerHelper.initSaga(message, CreateEmployeeSagaInit, BOSTED_SERVICE_NAME);
+        } catch (Exception e) {
+            sagaResponseRepository.save(new SagaResponse(new SagaResponseDto(sagaId, ORCHESTRATOR_SERVICE_NAME, SagaStatus.FAILED, ExceptionUtils.getStackTrace(e))));
+        }
     }
 
     @KafkaListener(topics = CreateEmployeeSagaDone, groupId = GROUP_ID)
     public void consumeCreateEmployeeSagaDone(String message) {
+        String sagaId = "not set";
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
+            sagaId = sagaResponseDto.getSagaId();
             if (sagaResponseDto.getSagaStatus().equals(SagaStatus.FAILED)) {
                 sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
             }
-        } catch (JsonProcessingException e) {
+            consumerHelper.sagaDone(message, CreateEmployeeSagaDone);
+        } catch (Exception e) {
             e.printStackTrace();
+            sagaResponseRepository.save(new SagaResponse(new SagaResponseDto(sagaId, ORCHESTRATOR_SERVICE_NAME, SagaStatus.FAILED, ExceptionUtils.getStackTrace(e))));
         }
-        consumerHelper.sagaDone(message, CreateEmployeeSagaDone);
+
     }
 
     @KafkaListener(topics = CreateEmployeeSagaRevert, groupId = GROUP_ID)

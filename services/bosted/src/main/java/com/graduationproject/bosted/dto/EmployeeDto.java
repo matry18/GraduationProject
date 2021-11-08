@@ -1,6 +1,8 @@
 package com.graduationproject.bosted.dto;
 
 import com.graduationproject.bosted.entity.Employee;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static java.util.Objects.isNull;
 
@@ -35,6 +37,7 @@ public class EmployeeDto {
         this.email = employee.getEmail();
         this.phoneNumber = employee.getPhoneNumber();
         this.username = employee.getUsername();
+        this.password = employee.getPassword();
     }
 
     public String getFirstname() {
@@ -99,6 +102,12 @@ public class EmployeeDto {
 
     public String getPassword() {
         return password;
+    }
+
+    public void hashPassword() {
+        int hashStrength = 10;
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(hashStrength);
+        password = passwordEncoder.encode(password);
     }
 
     @Override

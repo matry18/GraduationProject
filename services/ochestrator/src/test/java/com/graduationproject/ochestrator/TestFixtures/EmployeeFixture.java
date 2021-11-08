@@ -17,6 +17,7 @@ public class EmployeeFixture {
     private Department department = createDepartment();
     private Role role = createRole();
     private String username = "Raller";
+    private String password = "pswd";
     private String sagaId = "1234";
 
 
@@ -37,7 +38,8 @@ public class EmployeeFixture {
         employee.setPhoneNumber(phoneNumber);
         employee.setDepartment(department);
         employee.setUsername(username);
-
+        employee.setPassword(password);
+        employee.setSagaId(sagaId);
         employee.setRole(role);
         return employee;
     }

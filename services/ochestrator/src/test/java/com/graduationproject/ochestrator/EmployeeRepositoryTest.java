@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.graduationproject.ochestrator.TestFixtures.EmployeeFixture.createEmployee;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 

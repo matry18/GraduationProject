@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import static com.graduationProject.authentication.topic.EmployeeTopic.DeleteEmployeeSagaDone;
 import static com.graduationProject.authentication.topic.EmployeeTopic.DeleteEmployeeSagaRevert;
+import static java.util.Objects.nonNull;
 
 
 @Service

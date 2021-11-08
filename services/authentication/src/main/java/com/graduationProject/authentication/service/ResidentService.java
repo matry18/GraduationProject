@@ -22,9 +22,6 @@ public class ResidentService {
 
     @Transactional
     public void addResident(ResidentDto residentDto) {
-        int hashStrength = 10;
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(hashStrength);
-        residentDto.setPassword(passwordEncoder.encode(residentDto.getPassword()));
         residentRepository.save(new Resident(residentDto));
     }
 
