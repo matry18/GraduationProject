@@ -30,7 +30,7 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
     public void transact(SagaResidentDto sagaResidentDto) {
         SagaResponseDto sagaResponseDto;
         try {
-            if (sagaResidentDto.getResidentDto().getUsername().equals("neverDelete") || sagaResidentDto.getResidentDto().getUsername().equals("bFailRevert")) {
+            if (sagaResidentDto.getResidentDto().getUsername().equals("neverDelete") || sagaResidentDto.getResidentDto().getUsername().equals("bFailRevert") || sagaResidentDto.getResidentDto().getUsername().equals("neverDelete2")) {
                 throw new IllegalStateException(String.format("Could not delete Resident with \n ID: %s \n SagaID: %s",
                         sagaResidentDto.getResidentDto().getId(),
                         sagaResidentDto.getSagaId()));
@@ -51,7 +51,7 @@ public class DeleteResident implements SagaParticipator<SagaResidentDto> {
     public void revert(SagaResidentDto sagaResidentDto) {
         SagaResponseDto sagaResponseDto;
         try {
-            if (sagaResidentDto.getResidentDto().getPassword().equals("neverDelete") ) {
+            if (sagaResidentDto.getResidentDto().getUsername().equals("neverDelete2") ) {
                 throw new IllegalStateException(String.format("Could not revert deletion of Resident with \n ID: %s \n SagaID: %s",
                         sagaResidentDto.getResidentDto().getId(),
                         sagaResidentDto.getSagaId()));

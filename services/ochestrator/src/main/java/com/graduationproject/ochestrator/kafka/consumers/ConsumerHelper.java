@@ -42,50 +42,56 @@ public class ConsumerHelper<T> {
         return sagaId;
     }
 
-    public void initUpdateSaga(String message, String topic, String initServiceName) {
+    public String initUpdateSaga(String message, String topic, String initServiceName) {
         System.out.println(topic);
         ObjectMapper objectMapper = new ObjectMapper();
+        String sagaId = "";
         try {
             List<T> updateDto = objectMapper.readValue(message, objectMapper.getTypeFactory().constructCollectionType(List.class, typeParameterClass));
-            String sagaId = sagaParticipator.transact(updateDto.get(0), updateDto.get(1));
+            sagaId = sagaParticipator.transact(updateDto.get(0), updateDto.get(1));
             addToServiceReplyMap(sagaId, new SagaResponseDto(sagaId,
                     initServiceName, SagaStatus.SUCCESS, ""));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        return sagaId;
     }
 
-    public void sagaDone(String message, String topic) {
+    public String sagaDone(String message, String topic) {
+        String sagaId = "";
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
+            sagaId = sagaResponseDto.getSagaId();
             System.out.println(topic + " " + sagaResponseDto.getServiceName());
             addToServiceReplyMap(sagaResponseDto.getSagaId(), sagaResponseDto);
             if (sagaResponseDto.getSagaStatus() == FAILED) {
                 System.out.println(sagaResponseDto.getServiceName() + " FAILED on topic: " + topic);
                 sagaParticipator.revert(sagaResponseDto.getSagaId());
                 serviceReplies.remove(sagaResponseDto.getSagaId());
-                return;
             }
             deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        return sagaId;
     }
 
-    public void sagaRevert(String message, String topic) {
+    public String sagaRevert(String message, String topic) {
+        String sagaId = "";
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
+            sagaId = sagaResponseDto.getSagaId();
             System.out.println(topic + " " + sagaResponseDto.getServiceName());
             addToServiceReplyMap(sagaResponseDto.getSagaId(), sagaResponseDto);
             if (sagaResponseDto.getSagaStatus() == FAILED) {
                 //todo: error handling for failed revert = human interaction/log
                 System.out.println("Revert failed on topic: " + topic + "SagaService: " + sagaResponseDto.getServiceName());
-                return;
             }
             deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        return sagaId;
     }
 
     private void deleteEntityWhenAllServiceTypesHasRepliedSuccess(String sagaId) {

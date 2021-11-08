@@ -2,16 +2,18 @@ package com.graduationproject.ochestrator.saga.SagaParticipators;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graduationproject.ochestrator.dto.DepartmentDto;
 import com.graduationproject.ochestrator.dto.ResidentDto;
 import com.graduationproject.ochestrator.dto.saga.SagaResidentDto;
-import com.graduationproject.ochestrator.entities.Department;
+import com.graduationproject.ochestrator.dto.saga.SagaResponseDto;
 import com.graduationproject.ochestrator.entities.Resident;
+import com.graduationproject.ochestrator.entities.SagaResponse;
 import com.graduationproject.ochestrator.kafka.KafkaApi;
-import com.graduationproject.ochestrator.repository.DepartmentRepository;
 import com.graduationproject.ochestrator.repository.ResidentRepository;
+import com.graduationproject.ochestrator.repository.SagaResponseRepository;
 import com.graduationproject.ochestrator.saga.SagaParticipator;
 import com.graduationproject.ochestrator.service.ResidentSagaService;
+import com.graduationproject.ochestrator.type.SagaStatus;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +27,14 @@ public class DeleteResident implements SagaParticipator<ResidentDto> {
     private final ResidentRepository residentRepository;
     private final KafkaApi kafkaApi;
     private final ResidentSagaService residentSagaService;
+    private final SagaResponseRepository sagaResponseRepository;
 
     @Autowired
-    public DeleteResident(ResidentRepository residentRepository, KafkaApi kafkaApi, ResidentSagaService residentSagaService) {
+    public DeleteResident(ResidentRepository residentRepository, KafkaApi kafkaApi, ResidentSagaService residentSagaService, SagaResponseRepository sagaResponseRepository) {
         this.residentRepository = residentRepository;
         this.kafkaApi = kafkaApi;
         this.residentSagaService = residentSagaService;
+        this.sagaResponseRepository = sagaResponseRepository;
     }
 
     @Override
@@ -42,18 +46,30 @@ public class DeleteResident implements SagaParticipator<ResidentDto> {
     public String transact(ResidentDto residentDto) {
         SagaResidentDto sagaResidentDto = residentSagaService.backupResident(residentDto);
         try {
+            if (sagaResidentDto.getResidentDto().getUsername().equals("deletefail")) {
+                throw new IllegalStateException(String.format("Could not delete Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId()));
+            }
             kafkaApi.publish(DeleteResidentSagaBegin, new ObjectMapper().writeValueAsString(sagaResidentDto));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
+                    SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
+            sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
         }
         return sagaResidentDto.getSagaId();
     }
 
     @Transactional
     public void transact(String sagaId) {
-        //this will be run after a successful saga
-        Resident resident = residentRepository.findResidentBySagaId(sagaId);
-        residentRepository.deleteBySagaId(sagaId);
+        try {
+            //this will be run after a successful saga
+            Resident resident = residentRepository.findResidentBySagaId(sagaId);
+            residentRepository.deleteBySagaId(sagaId);
+        } catch (Exception e) {
+            handleException(e, sagaId);
+        }
     }
 
     @Override
@@ -61,8 +77,14 @@ public class DeleteResident implements SagaParticipator<ResidentDto> {
         SagaResidentDto sagaResidentDto = new SagaResidentDto(residentRepository.findResidentBySagaId(sagaId));
         try {
             kafkaApi.publish(DeleteResidentSagaFailed, new ObjectMapper().writeValueAsString(sagaResidentDto));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            handleException(e, sagaId);
         }
+    }
+
+    private void handleException(Exception e, String sagaId) {
+        SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaId, SagaStatus.FAILED);
+        sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
+        sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
     }
 }
