@@ -45,24 +45,23 @@ public class ConsumerHelper<T> {
     public String initUpdateSaga(String message, String topic, String initServiceName) {
         System.out.println(topic);
         ObjectMapper objectMapper = new ObjectMapper();
-        String returnSagaId = "";
+        String sagaId = "";
         try {
             List<T> updateDto = objectMapper.readValue(message, objectMapper.getTypeFactory().constructCollectionType(List.class, typeParameterClass));
-            String sagaId = sagaParticipator.transact(updateDto.get(0), updateDto.get(1));
+            sagaId = sagaParticipator.transact(updateDto.get(0), updateDto.get(1));
             addToServiceReplyMap(sagaId, new SagaResponseDto(sagaId,
                     initServiceName, SagaStatus.SUCCESS, ""));
-            returnSagaId = sagaId;
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return returnSagaId;
+        return sagaId;
     }
 
     public String sagaDone(String message, String topic) {
-        String returnSagaId = "";
+        String sagaId = "";
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
-            returnSagaId = sagaResponseDto.getSagaId();
+            sagaId = sagaResponseDto.getSagaId();
             System.out.println(topic + " " + sagaResponseDto.getServiceName());
             addToServiceReplyMap(sagaResponseDto.getSagaId(), sagaResponseDto);
             if (sagaResponseDto.getSagaStatus() == FAILED) {
@@ -74,7 +73,7 @@ public class ConsumerHelper<T> {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return returnSagaId;
+        return sagaId;
     }
 
     public String sagaRevert(String message, String topic) {
