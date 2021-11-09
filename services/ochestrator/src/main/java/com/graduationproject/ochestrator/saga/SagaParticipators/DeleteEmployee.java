@@ -18,8 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.DeleteEmployeeSagaBegin;
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.DeleteEmployeeSagaFailed;
+import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.*;
 
 @Service
 public class DeleteEmployee implements SagaParticipator<EmployeeDto> {
@@ -44,19 +43,25 @@ public class DeleteEmployee implements SagaParticipator<EmployeeDto> {
     @Transactional
     @Override
     public String transact(EmployeeDto employeeDto) {
-        SagaEmployeeDto sagaEmployeeDto = employeeSagaService.backupEmployee(employeeDto);
+        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto("not set", employeeDto);
         try {
             if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("faildelete")) {
-                throw new IllegalStateException(String.format("Could not delete Employee with \n ID: %s \n SagaID: %s",
+                throw new IllegalStateException(String.format("Could not backup or broadcast Employee with \n ID: %s \n SagaID: %s",
                         sagaEmployeeDto.getEmployeeDto().getId(),
                         sagaEmployeeDto.getSagaId()));
             }
+            sagaEmployeeDto = employeeSagaService.backupEmployee(employeeDto);
             kafkaApi.publish(DeleteEmployeeSagaBegin, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(),
                     SagaStatus.FAILED);
             sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
+            try {
+                kafkaApi.publish(DeleteEmployeeSagaInitRevert, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
         }
         return sagaEmployeeDto.getSagaId();
     }

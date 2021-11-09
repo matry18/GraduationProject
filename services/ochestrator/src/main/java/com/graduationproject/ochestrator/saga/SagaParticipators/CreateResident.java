@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.CreateResidentSagaBegin;
-import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.CreateResidentSagaFailed;
+import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
 public class CreateResident implements SagaParticipator<ResidentDto> {
@@ -47,19 +46,25 @@ public class CreateResident implements SagaParticipator<ResidentDto> {
     public String transact(ResidentDto residentDto) {
         //Create sagaId and the resident and sagaId to repo and publish Kafka
         // the dto that will be sent to the services so they know which saga they are part of
-        SagaResidentDto sagaResidentDto = residentSagaService.backupResident(residentDto);
+        SagaResidentDto sagaResidentDto = new SagaResidentDto("not set", residentDto);
         try {
             if (residentDto.getUsername().equals("failcreate")) {
-                throw new IllegalStateException(String.format("Could not create Resident with \n ID: %s \n SagaID: %s",
+                throw new IllegalStateException(String.format("Could not backup or broadcast Resident with \n ID: %s \n SagaID: %s",
                         sagaResidentDto.getResidentDto().getId(),
-                        sagaResidentDto.getSagaId()));
+                        "not set"));
             }
+            sagaResidentDto = residentSagaService.backupResident(residentDto);
             kafkaApi.publish(CreateResidentSagaBegin, new ObjectMapper().writeValueAsString(sagaResidentDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
                     SagaStatus.FAILED);
             sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
+            try {
+                kafkaApi.publish(CreateResidentSagaInitRevert, new ObjectMapper().writeValueAsString(sagaResidentDto));
+            } catch (JsonProcessingException a) {
+                a.printStackTrace();
+            }
         }
         return sagaResidentDto.getSagaId();
     }

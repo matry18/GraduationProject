@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import static com.graduationproject.bosted.topic.EmployeeTopics.UpdateEmployeeSagaFailed;
+import static com.graduationproject.bosted.topic.EmployeeTopics.*;
 
 @Service
 public class UpdateEmployeeConsumer {
@@ -21,7 +21,15 @@ public class UpdateEmployeeConsumer {
 
     @KafkaListener(topics = UpdateEmployeeSagaFailed, groupId = GROUP_ID)
     public void consumeCreateEmployeeSagaFailed(String message) {
-        System.out.println(GROUP_ID + " " + UpdateEmployeeSagaFailed);
+        revertSaga(message);
+    }
+
+    @KafkaListener(topics = UpdateEmployeeSagaInitRevert, groupId = GROUP_ID)
+    public void consumeUpdateEmployeeSagaInitRevert(String message) {
+       revertSaga(message);
+    }
+
+    private void revertSaga(String message) {
         try {
             SagaEmployeeDto sagaEmployeeDto = new ObjectMapper().readValue(message, SagaEmployeeDto.class);
             updateEmployee.revert(sagaEmployeeDto.getEmployeeDto(), sagaEmployeeDto.getSagaId());

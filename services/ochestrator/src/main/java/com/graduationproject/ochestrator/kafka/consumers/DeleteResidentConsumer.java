@@ -20,17 +20,20 @@ import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
 public class DeleteResidentConsumer {
-    private static final String GROUP_ID = "orchestrator";
+
     private ConsumerHelper<ResidentDto> consumerHelper;
+
+    private final SagaResponseRepository sagaResponseRepository;
+
     private final static String BOSTED_SERVICE_NAME = "bosted";
     private final static String AUTHENTICATION_SERVICE_NAME = "authentication";
+    private static final String GROUP_ID = "orchestrator";
     private static final List<String> services = new ArrayList<>(
             Arrays.asList(
                     BOSTED_SERVICE_NAME,
                     AUTHENTICATION_SERVICE_NAME
             )
     );
-    private final SagaResponseRepository sagaResponseRepository;
     @Autowired
     public DeleteResidentConsumer(DeleteResident deleteResident, SagaResponseRepository sagaResponseRepository) {
         consumerHelper = new ConsumerHelper<>(deleteResident, services, ResidentDto.class);
