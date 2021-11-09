@@ -19,6 +19,9 @@ import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 @Service
 public class CreateResidentConsumer {
     private static final String GROUP_ID = "orchestrator";
+
+    private final SagaResponseRepository sagaResponseRepository;
+
     private ConsumerHelper<ResidentDto> consumerHelper;
     private final static String BOSTED_SERVICE_NAME = "bosted";
     private final static String AUTHENTICATION_SERVICE_NAME = "authentication";
@@ -28,7 +31,6 @@ public class CreateResidentConsumer {
                     AUTHENTICATION_SERVICE_NAME
             )
     );
-    private final SagaResponseRepository sagaResponseRepository;
 
     @Autowired
     public CreateResidentConsumer(CreateResident createResident, SagaResponseRepository sagaResponseRepository) {

@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import static com.graduationproject.bosted.topic.ResidentTopics.DeleteResidentSagaFailed;
 import static com.graduationproject.bosted.topic.ResidentTopics.UpdateResidentSagaFailed;
+import static com.graduationproject.bosted.topic.ResidentTopics.UpdateResidentSagaInitRevert;
 
 @Service
 public class UpdateResidentConsumer {
@@ -25,8 +25,15 @@ public class UpdateResidentConsumer {
 
     @KafkaListener(topics = UpdateResidentSagaFailed, groupId = GROUP_ID)
     public void consumeCreateResidentSagaFailed(String message) {
-        System.out.println(GROUP_ID + " " + UpdateResidentSagaFailed);
-        //will be sent by the orchestrator and bosted should call its revert method for the saga
+        revertSaga(message);
+    }
+
+    @KafkaListener(topics = UpdateResidentSagaInitRevert, groupId = GROUP_ID)
+    public void comsumeUpdateResidentSagaInitRevert(String message) {
+        revertSaga(message);
+    }
+
+    private void revertSaga(String message) {
         try {
             SagaResidentDto sagaResidentDto = new ObjectMapper().readValue(message, SagaResidentDto.class);
             updateResident.revert(sagaResidentDto.getResidentDto(), sagaResidentDto.getSagaId());
@@ -34,6 +41,4 @@ public class UpdateResidentConsumer {
             e.printStackTrace();
         }
     }
-
-
 }

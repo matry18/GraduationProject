@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.UpdateEmployeeSagaBegin;
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.UpdateEmployeeSagaFailed;
+import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.*;
 
 @Service
 public class UpdateEmployee implements SagaParticipator<EmployeeDto> {
@@ -40,20 +39,26 @@ public class UpdateEmployee implements SagaParticipator<EmployeeDto> {
     @Transactional
     @Override
     public String transact(EmployeeDto oldEmployee, EmployeeDto newEmployee) {
-        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto(
-                new Employee(newEmployee, employeeSagaService.backupEmployee(oldEmployee).getSagaId())
-        );
+        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto("not set", oldEmployee);
         try {
             if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("updatefailo")) {
-                throw new IllegalStateException(String.format("Could not update Employee with \n ID: % \n SagaID: %s",
+                throw new IllegalStateException(String.format("Could not backup or broadcast Employee with \n ID: %s \n SagaID: %s",
                         sagaEmployeeDto.getEmployeeDto().getId(),
                         sagaEmployeeDto.getSagaId()));
             }
+            sagaEmployeeDto = new SagaEmployeeDto(
+                    new Employee(newEmployee, employeeSagaService.backupEmployee(oldEmployee).getSagaId())
+            );
             kafkaApi.publish(UpdateEmployeeSagaBegin, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(), SagaStatus.FAILED);
             sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
+            try {
+                kafkaApi.publish(UpdateEmployeeSagaInitRevert, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
         }
         return sagaEmployeeDto.getSagaId();
     }

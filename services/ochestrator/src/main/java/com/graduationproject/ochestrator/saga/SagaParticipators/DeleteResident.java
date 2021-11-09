@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.DeleteResidentSagaBegin;
-import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.DeleteResidentSagaFailed;
+import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
 public class DeleteResident implements SagaParticipator<ResidentDto> {
@@ -44,19 +43,25 @@ public class DeleteResident implements SagaParticipator<ResidentDto> {
 
     @Override
     public String transact(ResidentDto residentDto) {
-        SagaResidentDto sagaResidentDto = residentSagaService.backupResident(residentDto);
+        SagaResidentDto sagaResidentDto = new SagaResidentDto("not set", residentDto);
         try {
             if (sagaResidentDto.getResidentDto().getUsername().equals("deletefail")) {
-                throw new IllegalStateException(String.format("Could not delete Resident with \n ID: %s \n SagaID: %s",
+                throw new IllegalStateException(String.format("Could not backup or broadcast Resident with \n ID: %s \n SagaID: %s",
                         sagaResidentDto.getResidentDto().getId(),
                         sagaResidentDto.getSagaId()));
             }
+            sagaResidentDto = residentSagaService.backupResident(residentDto);
             kafkaApi.publish(DeleteResidentSagaBegin, new ObjectMapper().writeValueAsString(sagaResidentDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(),
                     SagaStatus.FAILED);
             sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
+            try {
+                kafkaApi.publish(DeleteResidentSagaInitRevert, new ObjectMapper().writeValueAsString(sagaResidentDto));
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
         }
         return sagaResidentDto.getSagaId();
     }

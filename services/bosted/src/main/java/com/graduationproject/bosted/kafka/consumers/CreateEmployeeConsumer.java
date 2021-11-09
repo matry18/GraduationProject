@@ -9,6 +9,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import static com.graduationproject.bosted.topic.EmployeeTopics.CreateEmployeeSagaFailed;
+import static com.graduationproject.bosted.topic.EmployeeTopics.CreateEmployeeSagaInitRevert;
 
 @Service
 public class CreateEmployeeConsumer {
@@ -22,6 +23,15 @@ public class CreateEmployeeConsumer {
 
     @KafkaListener(topics = CreateEmployeeSagaFailed, groupId = GROUP_ID)
     public void consumeCreateEmployeeSagaFailed(String message) {
+       revertSaga(message);
+    }
+
+    @KafkaListener(topics = CreateEmployeeSagaInitRevert, groupId = GROUP_ID)
+    public void consumeCreateEmployeeSagaInitRevert(String message) {
+       revertSaga(message);
+}
+
+    public void revertSaga(String message) {
         try {
             SagaEmployeeDto sagaEmployeeDto = new ObjectMapper().readValue(message, SagaEmployeeDto.class);
             createEmployee.revert(sagaEmployeeDto.getEmployeeDto(), sagaEmployeeDto.getSagaId());
@@ -29,5 +39,4 @@ public class CreateEmployeeConsumer {
             e.printStackTrace();
         }
     }
-
 }

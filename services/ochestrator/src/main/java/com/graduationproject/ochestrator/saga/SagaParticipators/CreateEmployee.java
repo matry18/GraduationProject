@@ -1,5 +1,6 @@
 package com.graduationproject.ochestrator.saga.SagaParticipators;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduationproject.ochestrator.dto.EmployeeDto;
 import com.graduationproject.ochestrator.dto.saga.SagaEmployeeDto;
@@ -17,8 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.CreateEmployeeSagaBegin;
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.CreateEmployeeSagaFailed;
+import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.*;
 
 @Service
 public class CreateEmployee implements SagaParticipator<EmployeeDto> {
@@ -43,19 +43,25 @@ public class CreateEmployee implements SagaParticipator<EmployeeDto> {
     @Transactional
     @Override
     public String transact(EmployeeDto employeeDto) {
-        SagaEmployeeDto sagaEmployeeDto = employeeSagaService.backupEmployee(employeeDto);
+        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto("not set", employeeDto);
         try {
-            if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("failcreate")) {
-                throw new IllegalStateException(String.format("Could not create Employee with \n ID: %s \n SagaID: %s",
-                        sagaEmployeeDto.getEmployeeDto().getId(),
-                        sagaEmployeeDto.getSagaId()));
+            if (employeeDto.getUsername().equals("failcreate")) {
+                throw new IllegalStateException(String.format("Could not backup or broadcast Employee with \n ID: %s \n SagaID: %s",
+                        employeeDto.getId(),
+                        "not set"));
             }
+            sagaEmployeeDto = employeeSagaService.backupEmployee(employeeDto);
             kafkaApi.publish(CreateEmployeeSagaBegin, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(),
                     SagaStatus.FAILED);
             sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
+            try {
+                kafkaApi.publish(CreateEmployeeSagaInitRevert, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
         }
         return sagaEmployeeDto.getSagaId();
     }

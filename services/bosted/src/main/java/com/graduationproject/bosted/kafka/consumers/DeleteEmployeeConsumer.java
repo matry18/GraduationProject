@@ -9,6 +9,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import static com.graduationproject.bosted.topic.EmployeeTopics.DeleteEmployeeSagaFailed;
+import static com.graduationproject.bosted.topic.EmployeeTopics.DeleteEmployeeSagaInitRevert;
 
 @Service
 public class DeleteEmployeeConsumer {
@@ -23,7 +24,16 @@ public class DeleteEmployeeConsumer {
 
     @KafkaListener(topics = DeleteEmployeeSagaFailed, groupId = GROUP_ID)
     public void consumeCreateEmployeeSagaFailed(String message) {
-        System.out.println(GROUP_ID + " " + DeleteEmployeeSagaFailed);
+        try {
+            SagaEmployeeDto sagaEmployeeDto = new ObjectMapper().readValue(message, SagaEmployeeDto.class);
+            deleteEmployee.revert(sagaEmployeeDto.getEmployeeDto(), sagaEmployeeDto.getSagaId());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @KafkaListener(topics = DeleteEmployeeSagaInitRevert, groupId = GROUP_ID)
+    public void consumeDeleteEmployeeSagaInitRevert(String message) {
         try {
             SagaEmployeeDto sagaEmployeeDto = new ObjectMapper().readValue(message, SagaEmployeeDto.class);
             deleteEmployee.revert(sagaEmployeeDto.getEmployeeDto(), sagaEmployeeDto.getSagaId());

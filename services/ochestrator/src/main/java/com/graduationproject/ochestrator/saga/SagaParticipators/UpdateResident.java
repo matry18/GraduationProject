@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.UpdateResidentSagaBegin;
-import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.UpdateResidentSagaFailed;
+import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
 public class UpdateResident implements SagaParticipator<ResidentDto> {
@@ -39,19 +38,26 @@ public class UpdateResident implements SagaParticipator<ResidentDto> {
 
     @Override
     public String transact(ResidentDto oldResident, ResidentDto newResident) {
-        SagaResidentDto sagaResidentDto = new SagaResidentDto(
-                new Resident(newResident, residentSagaService.backupResident(oldResident).getSagaId())
-        );
-        try { if (sagaResidentDto.getResidentDto().getUsername().equals("updatefailo")) {
-            throw new IllegalStateException(String.format("Could not update Resident with \n ID: %s \n SagaID: %s",
-                    sagaResidentDto.getResidentDto().getId(),
-                    sagaResidentDto.getSagaId()));
-        }
+        SagaResidentDto sagaResidentDto = new SagaResidentDto("not set", oldResident);
+        try {
+            if (sagaResidentDto.getResidentDto().getUsername().equals("updatefailo")) {
+                throw new IllegalStateException(String.format("Could not backup or broadcast Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId()));
+            }
+            sagaResidentDto = new SagaResidentDto(
+                    new Resident(newResident, residentSagaService.backupResident(oldResident).getSagaId())
+            );
             kafkaApi.publish(UpdateResidentSagaBegin, new ObjectMapper().writeValueAsString(sagaResidentDto));
         } catch (Exception e) {
             SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.FAILED);
             sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
             sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
+            try {
+                kafkaApi.publish(UpdateResidentSagaInitRevert, new ObjectMapper().writeValueAsString(sagaResidentDto));
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
         }
         return sagaResidentDto.getSagaId();
     }
@@ -73,7 +79,7 @@ public class UpdateResident implements SagaParticipator<ResidentDto> {
 
     @Transactional
     public void transact(String sagaId) {
-        try{
+        try {
             //this will be run after a successful saga
             residentRepository.deleteBySagaId(sagaId);
         } catch (Exception e) {
