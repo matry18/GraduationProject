@@ -1,1 +1,0 @@
-INSERT INTO bosted.employee (id, email, firstname, lastname, password, phone_number, username, department_id, role_id) VALUES ('463bb843-c1b7-4573-b78d-c7adcbac486f', 'admin@admin.com', 'Admin', 'Admin', 'admin', '10101010', 'admin', '249d2a0b-426e-44ea-84fe-f0625b0c0887', 'ffdff574-c124-4629-9032-dc922a575ef3');

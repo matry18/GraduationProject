@@ -11,6 +11,7 @@ import com.graduationproject.ochestrator.type.SagaStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,11 +42,13 @@ public class DeleteResidentConsumer {
     }
 
     @KafkaListener(topics = DeleteResidentSagaInit, groupId = GROUP_ID)
+    @Transactional
     public void consumeDeleteResidentSagaInit(String message) {
         consumerHelper.initSaga(message, DeleteResidentSagaInit, BOSTED_SERVICE_NAME);
     }
 
     @KafkaListener(topics = DeleteResidentSagaDone, groupId = GROUP_ID)
+    @Transactional
     public void consumeDeleteResidentSagaDone(String message) {
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
@@ -59,6 +62,7 @@ public class DeleteResidentConsumer {
     }
 
     @KafkaListener(topics = DeleteResidentSagaRevert, groupId = GROUP_ID)
+    @Transactional
     public void consumeDeleteResidentSagaRevert(String message) {
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);

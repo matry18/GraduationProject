@@ -17,8 +17,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-
 import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
@@ -40,7 +38,7 @@ public class UpdateResident implements SagaParticipator<ResidentDto> {
     public String transact(ResidentDto oldResident, ResidentDto newResident) {
         SagaResidentDto sagaResidentDto = new SagaResidentDto("not set", oldResident);
         try {
-            if (sagaResidentDto.getResidentDto().getUsername().equals("updatefailo")) {
+            if (newResident.getUsername().equals("updatefailo")) {
                 throw new IllegalStateException(String.format("Could not backup or broadcast Resident with \n ID: %s \n SagaID: %s",
                         sagaResidentDto.getResidentDto().getId(),
                         sagaResidentDto.getSagaId()));
@@ -77,7 +75,6 @@ public class UpdateResident implements SagaParticipator<ResidentDto> {
         }
     }
 
-    @Transactional
     public void transact(String sagaId) {
         try {
             //this will be run after a successful saga

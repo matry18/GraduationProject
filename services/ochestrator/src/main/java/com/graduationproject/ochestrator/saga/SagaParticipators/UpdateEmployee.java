@@ -41,7 +41,7 @@ public class UpdateEmployee implements SagaParticipator<EmployeeDto> {
     public String transact(EmployeeDto oldEmployee, EmployeeDto newEmployee) {
         SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto("not set", oldEmployee);
         try {
-            if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("updatefailo")) {
+            if (newEmployee.getUsername().equals("updatefailo")) {
                 throw new IllegalStateException(String.format("Could not backup or broadcast Employee with \n ID: %s \n SagaID: %s",
                         sagaEmployeeDto.getEmployeeDto().getId(),
                         sagaEmployeeDto.getSagaId()));

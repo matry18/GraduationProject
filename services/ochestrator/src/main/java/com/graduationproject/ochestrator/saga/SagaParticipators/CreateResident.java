@@ -17,8 +17,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-
 import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
@@ -41,7 +39,6 @@ public class CreateResident implements SagaParticipator<ResidentDto> {
         throw new UnsupportedOperationException("not implemented for this saga");
     }
 
-    @Transactional
     @Override
     public String transact(ResidentDto residentDto) {
         //Create sagaId and the resident and sagaId to repo and publish Kafka
@@ -69,7 +66,6 @@ public class CreateResident implements SagaParticipator<ResidentDto> {
         return sagaResidentDto.getSagaId();
     }
 
-    @Transactional
     public void transact(String sagaId) {
         try {
             //this will be run after a successful saga
@@ -79,7 +75,6 @@ public class CreateResident implements SagaParticipator<ResidentDto> {
         }
     }
 
-    @Transactional
     @Override
     public void revert(String sagaId) {
         SagaResidentDto sagaResidentDto = new SagaResidentDto(residentRepository.findResidentBySagaId(sagaId));

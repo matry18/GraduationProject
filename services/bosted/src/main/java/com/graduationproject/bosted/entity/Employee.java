@@ -30,16 +30,16 @@ public class Employee extends User {
     private String password;
 
     public Employee(EmployeeDto employeeDto) {
-        this.id = employeeDto.getId();
-        this.firstname = employeeDto.getFirstname();
-        this.lastname = employeeDto.getLastname();
-        this.Email = employeeDto.getEmail();
-        this.phoneNumber = employeeDto.getPhoneNumber();
-        this.department = new Department(employeeDto.getDepartment());
-        this.role = new Role(employeeDto.getRoleDto());
-        //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
-        this.username = employeeDto.getUsername();
-        this.password = employeeDto.getPassword();
+            this.id = employeeDto.getId();
+            this.firstname = employeeDto.getFirstname();
+            this.lastname = employeeDto.getLastname();
+            this.Email = employeeDto.getEmail();
+            this.phoneNumber = employeeDto.getPhoneNumber();
+            this.department = new Department(employeeDto.getDepartment());
+            this.role = new Role(employeeDto.getRoleDto());
+            //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
+            this.username = employeeDto.getUsername();
+            this.password = employeeDto.getPassword();
 
     }
 

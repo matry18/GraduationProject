@@ -17,8 +17,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-
 import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
@@ -66,7 +64,6 @@ public class DeleteResident implements SagaParticipator<ResidentDto> {
         return sagaResidentDto.getSagaId();
     }
 
-    @Transactional
     public void transact(String sagaId) {
         try {
             //this will be run after a successful saga

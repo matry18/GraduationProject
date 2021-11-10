@@ -56,9 +56,7 @@ public class UpdateEmployee implements SagaInitiator<EmployeeDto> {
     public void revert(EmployeeDto employeeDto, String sagaId) {
         SagaResponseDto sagaResponseDto;
         try {
-            Employee employee = employeeRepository.getById(employeeDto.getId());
-            updateEmployee(employee, employeeDto);
-            employeeRepository.save(employee);
+            employeeRepository.save(new Employee(employeeDto));
             sagaResponseDto = new SagaResponseDto(sagaId, SUCCESS);
         } catch (Exception e) {
             sagaResponseDto = new SagaResponseDto(sagaId, FAILED);
@@ -66,15 +64,6 @@ public class UpdateEmployee implements SagaInitiator<EmployeeDto> {
             e.printStackTrace();
         }
         produceKafkaMessage(UpdateEmployeeSagaRevert, sagaResponseDto);
-    }
-
-    private void updateEmployee(Employee employee, EmployeeDto employeeDto) {
-        employee.setFirstname(employeeDto.getFirstname());
-        employee.setLastname(employee.getLastname());
-        employee.setDepartment(new Department(employeeDto.getDepartment()));
-        employee.setEmail(employeeDto.getEmail());
-        employee.setPhoneNumber(employee.getPhoneNumber());
-        employee.setUsername(employeeDto.getUsername());
     }
 
     private void produceKafkaMessage(String employeeTopic, SagaResponseDto sagaResponseDto) {
