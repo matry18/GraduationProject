@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduationproject.ochestrator.dto.EmployeeDto;
 import com.graduationproject.ochestrator.dto.saga.SagaEmployeeDto;
 import com.graduationproject.ochestrator.dto.saga.SagaResponseDto;
+import com.graduationproject.ochestrator.entities.Employee;
 import com.graduationproject.ochestrator.entities.SagaResponse;
 import com.graduationproject.ochestrator.kafka.KafkaApi;
 import com.graduationproject.ochestrator.repository.EmployeeRepository;
@@ -16,7 +17,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 
 import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.*;
 
@@ -40,7 +40,6 @@ public class CreateEmployee implements SagaParticipator<EmployeeDto> {
         throw new UnsupportedOperationException("Not implemented for this Saga!");
     }
 
-    @Transactional
     @Override
     public String transact(EmployeeDto employeeDto) {
         SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto("not set", employeeDto);
@@ -66,7 +65,6 @@ public class CreateEmployee implements SagaParticipator<EmployeeDto> {
         return sagaEmployeeDto.getSagaId();
     }
 
-    @Transactional
     public void transact(String sagaId) {
         try {
             //this will be run after a successful saga
@@ -77,10 +75,12 @@ public class CreateEmployee implements SagaParticipator<EmployeeDto> {
         }
     }
 
-    @Transactional
     @Override
     public void revert(String sagaId) {
-        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto(employeeRepository.findEmployeeBySagaId(sagaId));
+        System.out.println("TRIED REVERTING EMPLOYEE WITH SAGA ID: " + sagaId);
+        Employee employee = employeeRepository.findEmployeeBySagaId(sagaId);
+        System.out.println("GOT EMPLOYEE WITH SAGA ID: " + employee.getSagaId());
+        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto(employee);
         try {
             kafkaApi.publish(CreateEmployeeSagaFailed, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
         } catch (Exception e) {

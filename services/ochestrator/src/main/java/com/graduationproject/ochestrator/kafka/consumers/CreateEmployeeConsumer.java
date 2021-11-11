@@ -12,6 +12,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,9 @@ public class CreateEmployeeConsumer {
     }
 
     @KafkaListener(topics = CreateEmployeeSagaInit, groupId = GROUP_ID)
+    @Transactional
     public void consumeCreateEmployeeSagaInit(String message) {
+        System.out.println("CREATE EMPLOYEE INIT");
         String sagaId = "not set";
         try {
             sagaId = consumerHelper.initSaga(message, CreateEmployeeSagaInit, BOSTED_SERVICE_NAME);
@@ -54,6 +57,7 @@ public class CreateEmployeeConsumer {
     }
 
     @KafkaListener(topics = CreateEmployeeSagaDone, groupId = GROUP_ID)
+    @Transactional
     public void consumeCreateEmployeeSagaDone(String message) {
         String sagaId = "not set";
         try {
@@ -71,6 +75,7 @@ public class CreateEmployeeConsumer {
     }
 
     @KafkaListener(topics = CreateEmployeeSagaRevert, groupId = GROUP_ID)
+    @Transactional
     public void consumeCreateEmployeeSagaRevert(String message) {
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);

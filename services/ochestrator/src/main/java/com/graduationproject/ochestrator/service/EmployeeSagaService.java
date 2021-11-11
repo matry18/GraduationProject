@@ -16,8 +16,9 @@ import com.graduationproject.ochestrator.repository.EmployeeRepository;
 import com.graduationproject.ochestrator.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,6 +70,7 @@ public class EmployeeSagaService {
         roleRepository.save(role);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public SagaEmployeeDto backupEmployee(EmployeeDto employeeDto) {
        /* if (employeeRepository.existsById(employeeDto.getId())) {
             throw new IllegalStateException("You should not change an already backed up Entity " +
@@ -77,6 +79,7 @@ public class EmployeeSagaService {
         String sagaId = UUID.randomUUID().toString();
         setupEmployeeDataForTransaction(employeeDto, sagaId);
         Employee employee = employeeRepository.save(new Employee(employeeDto, sagaId)); //Creates the saga that will be used by the services when responding
+        employeeRepository.flush();
         return new SagaEmployeeDto(employee);
     }
 

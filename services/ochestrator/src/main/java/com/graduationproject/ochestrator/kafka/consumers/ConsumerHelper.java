@@ -37,8 +37,10 @@ public class ConsumerHelper<T> {
             e.printStackTrace();
         }
         String sagaId = sagaParticipator.transact(object);
-        addToServiceReplyMap(sagaId, new SagaResponseDto(sagaId,
-                initServiceName, SagaStatus.SUCCESS, ""));
+        SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaId,
+                initServiceName, SagaStatus.SUCCESS, "");
+        addToServiceReplyMap(sagaId, sagaResponseDto);
+        deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
         return sagaId;
     }
 
@@ -68,8 +70,9 @@ public class ConsumerHelper<T> {
                 System.out.println(sagaResponseDto.getServiceName() + " FAILED on topic: " + topic);
                 sagaParticipator.revert(sagaResponseDto.getSagaId());
                 serviceReplies.remove(sagaResponseDto.getSagaId());
+            } else {
+                deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
             }
-            deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -86,8 +89,10 @@ public class ConsumerHelper<T> {
             if (sagaResponseDto.getSagaStatus() == FAILED) {
                 //todo: error handling for failed revert = human interaction/log
                 System.out.println("Revert failed on topic: " + topic + "SagaService: " + sagaResponseDto.getServiceName());
+                serviceReplies.remove(sagaResponseDto.getSagaId());
+            } else {
+                deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
             }
-            deleteEntityWhenAllServiceTypesHasRepliedSuccess(sagaResponseDto.getSagaId());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -96,12 +101,14 @@ public class ConsumerHelper<T> {
 
     private void deleteEntityWhenAllServiceTypesHasRepliedSuccess(String sagaId) {
         if (hasEveryServiceReplied(sagaId) && hasNoFailStatuses(serviceReplies.get(sagaId))) {
+            System.out.println("DELETED SAGA BACKUP WITH ID: " + sagaId);
             sagaParticipator.transact(sagaId);
             serviceReplies.remove(sagaId);
         }
     }
 
     private void addToServiceReplyMap(String sagaId, SagaResponseDto sagaResponseDto) {
+        System.out.println("SAGA ID: " + sagaId + "\n Service name: " + sagaResponseDto.getServiceName());
         if (serviceReplies.containsKey(sagaId)) {
             if (!serviceReplies.get(sagaId).contains(sagaResponseDto)) {
                 serviceReplies.get(sagaId).add(sagaResponseDto);
@@ -115,10 +122,12 @@ public class ConsumerHelper<T> {
     }
 
     private boolean hasNoFailStatuses(List<SagaResponseDto> sagaResponseDtos) {
+        System.out.println("hasNoFailStatuses: " + (sagaResponseDtos.stream().noneMatch(sagaResponse -> sagaResponse.getSagaStatus().equals(FAILED))));
         return sagaResponseDtos.stream().noneMatch(sagaResponse -> sagaResponse.getSagaStatus().equals(FAILED));
     }
 
     private boolean hasEveryServiceReplied(String sagaId) {
+        System.out.println("HasEveryService replied: " + (nonNull(serviceReplies.get(sagaId)) && serviceReplies.get(sagaId).size() == services.size()));
         return nonNull(serviceReplies.get(sagaId)) && serviceReplies.get(sagaId).size() == services.size();
     }
 }

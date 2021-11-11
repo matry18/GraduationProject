@@ -10,8 +10,9 @@ import com.graduationproject.ochestrator.repository.DepartmentRepository;
 import com.graduationproject.ochestrator.repository.ResidentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,11 +37,12 @@ public class ResidentSagaService {
         departmentRepository.save(department);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public SagaResidentDto backupResident(ResidentDto residentDto) {
-        if (residentRepository.existsById(residentDto.getId())) {
+        /*if (residentRepository.existsById(residentDto.getId())) {
             throw new IllegalStateException("You should not change an already backed up Entity " +
                     "- a synchronization issue has happened prior to this and needs to be handled first");
-        }
+        } */
         String sagaId = UUID.randomUUID().toString();
         saveDepartment(residentDto.getDepartment(), sagaId);
         Resident resident = residentRepository.save(new Resident(residentDto, sagaId)); //Creates the saga that will be used by the services when responding
