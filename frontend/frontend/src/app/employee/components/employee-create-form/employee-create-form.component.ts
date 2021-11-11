@@ -46,7 +46,7 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
           firstname: ["", Validators.required],
           lastname: ["", Validators.required],
           email: ["", [Validators.required, Validators.email]],
-          phoneNumber: ["", Validators.required],
+          phoneNumber: ["", [Validators.required, Validators.pattern('[- +()0-9]+')]],
           department: ["", Validators.required],
           roleDto:["", Validators.required],
           //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
@@ -61,7 +61,7 @@ export class EmployeeCreateFormComponent implements OnInit, OnDestroy {
           firstname: [data.employee.firstname, Validators.required],
           lastname: [data.employee.lastname, Validators.required],
           email: [data.employee.email, [Validators.required, Validators.email]],
-          phoneNumber: [data.employee.phoneNumber, Validators.required],
+          phoneNumber: [data.employee.phoneNumber, [Validators.required, Validators.pattern('[- +()0-9]+')]],
           department: [null, [Validators.required]],
           roleDto:["", Validators.required]
         }
