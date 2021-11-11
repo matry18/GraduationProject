@@ -5,9 +5,8 @@
       <mat-label>Department name</mat-label>
       <input matInput placeholder="Name of department" formControlName="departmentName"/>
     </mat-form-field>
-
-    <button mat-raised-button class="mat-primary form-submit-btn" [mat-dialog-close] (click)="submit()"  [disabled]="">submit</button>
-    <button mat-raised-button class="mat-warn form-submit-btn" (click)="cancel()">cancel</button>
+    <button mat-raised-button class="mat-primary form-submit-btn" [mat-dialog-close] [matTooltip]="'Create Department'" (click)="submit()"  [disabled]="">Submit</button>
+    <button mat-raised-button class="mat-warn form-submit-btn" [matTooltip]="'Abort creation of Department'"(click)="cancel()">Cancel</button>
   </form>
 </ng-container>
 

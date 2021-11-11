@@ -21,8 +21,6 @@ public class ResidentFixture {
 
     private String username = "JohnDoe";
 
-    private String password = "secretPassword";
-
     public static Resident createResident() {
         return builder().build();
     }
@@ -40,7 +38,6 @@ public class ResidentFixture {
         resident.setPhoneNumber(phoneNumber);
         resident.setDepartment(department);
         resident.setUsername(username);
-        resident.setPassword(password);
         return resident;
     }
 
@@ -79,8 +76,4 @@ public class ResidentFixture {
         return this;
     }
 
-    public ResidentFixture setPassword(String password) {
-        this.password = password;
-        return this;
-    }
 }

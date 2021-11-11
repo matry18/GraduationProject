@@ -13,6 +13,11 @@ public class SagaEmployeeDto {
         this.employeeDto = new EmployeeDto(employee);
     }
 
+    public SagaEmployeeDto(String sagaId, EmployeeDto employeeDto) {
+        this.sagaId = sagaId;
+        this.employeeDto = employeeDto;
+    }
+
     public String getSagaId() {
         return sagaId;
     }

@@ -11,6 +11,7 @@ import com.graduationproject.ochestrator.type.SagaStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -19,14 +20,19 @@ import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 @Service
 public class CreateResidentConsumer {
     private static final String GROUP_ID = "orchestrator";
+
+    private final SagaResponseRepository sagaResponseRepository;
+
     private ConsumerHelper<ResidentDto> consumerHelper;
-    private static final List<String> services = new ArrayList<>( //Remember that it is not always every service participating in each saga
+    private final static String BOSTED_SERVICE_NAME = "bosted";
+    private final static String AUTHENTICATION_SERVICE_NAME = "authentication";
+    private static final List<String> services = new ArrayList<>(
             Arrays.asList(
-                    "bosted",
-                    "authentication"
+                    BOSTED_SERVICE_NAME,
+                    AUTHENTICATION_SERVICE_NAME
             )
     );
-    private final SagaResponseRepository sagaResponseRepository;
+
     @Autowired
     public CreateResidentConsumer(CreateResident createResident, SagaResponseRepository sagaResponseRepository) {
         consumerHelper = new ConsumerHelper<>(createResident, services, ResidentDto.class);
@@ -34,11 +40,13 @@ public class CreateResidentConsumer {
     }
 
     @KafkaListener(topics = CreateResidentSagaInit, groupId = GROUP_ID)
+    @Transactional
     public void consumeCreateResidentSagaInit(String message) {
-        consumerHelper.initSaga(message, CreateResidentSagaInit);
+        consumerHelper.initSaga(message, CreateResidentSagaInit, BOSTED_SERVICE_NAME);
     }
 
     @KafkaListener(topics = CreateResidentSagaDone, groupId = GROUP_ID)
+    @Transactional
     public void consumeCreateResidentSagaDone(String message) {
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
@@ -52,6 +60,7 @@ public class CreateResidentConsumer {
     }
 
     @KafkaListener(topics = CreateResidentSagaRevert, groupId = GROUP_ID)
+    @Transactional
     public void consumeCreateResidentSagaRevert(String message) {
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);

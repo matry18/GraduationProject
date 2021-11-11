@@ -2,63 +2,66 @@ package com.graduationproject.ochestrator.saga.SagaParticipators;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graduationproject.ochestrator.dto.DepartmentDto;
 import com.graduationproject.ochestrator.dto.ResidentDto;
 import com.graduationproject.ochestrator.dto.saga.SagaResidentDto;
-import com.graduationproject.ochestrator.entities.Department;
+import com.graduationproject.ochestrator.dto.saga.SagaResponseDto;
 import com.graduationproject.ochestrator.entities.Resident;
+import com.graduationproject.ochestrator.entities.SagaResponse;
 import com.graduationproject.ochestrator.kafka.KafkaApi;
-import com.graduationproject.ochestrator.repository.DepartmentRepository;
 import com.graduationproject.ochestrator.repository.ResidentRepository;
+import com.graduationproject.ochestrator.repository.SagaResponseRepository;
 import com.graduationproject.ochestrator.saga.SagaParticipator;
+import com.graduationproject.ochestrator.service.ResidentSagaService;
+import com.graduationproject.ochestrator.type.SagaStatus;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.UUID;
-
-import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.UpdateResidentSagaBegin;
-import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.UpdateResidentSagaFailed;
+import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
 public class UpdateResident implements SagaParticipator<ResidentDto> {
-
-    private final DepartmentRepository departmentRepository;
     private final ResidentRepository residentRepository;
     private final KafkaApi kafkaApi;
+    private final ResidentSagaService residentSagaService;
+    private final SagaResponseRepository sagaResponseRepository;
 
     @Autowired
-    public UpdateResident(DepartmentRepository departmentRepository, ResidentRepository residentRepository, KafkaApi kafkaApi) {
-        this.departmentRepository = departmentRepository;
+    public UpdateResident(ResidentRepository residentRepository, KafkaApi kafkaApi, ResidentSagaService residentSagaService, SagaResponseRepository sagaResponseRepository) {
         this.residentRepository = residentRepository;
         this.kafkaApi = kafkaApi;
+        this.residentSagaService = residentSagaService;
+        this.sagaResponseRepository = sagaResponseRepository;
     }
-
-    @Transactional
-    public void saveDepartment(DepartmentDto departmentDto, String sagaId) {
-        Department department = new Department(departmentDto);
-        department.setSagaId(sagaId);
-        departmentRepository.save(department);
-    }
-
 
     @Override
-    public void transact(ResidentDto oldResident, ResidentDto newResident) {
-        //Create sagaId and the resident and sagaId to repo and publish Kafka
-        String sagaId = UUID.randomUUID().toString();
-        saveDepartment(oldResident.getDepartment(), sagaId);
-        residentRepository.save(new Resident(oldResident, sagaId)); //Creates the saga that will be used by the services when responding
-        SagaResidentDto sagaResidentDto = new SagaResidentDto(new Resident(newResident, sagaId)); // the dto that will be sent to the services so they know which saga they are part of
-        ObjectMapper objectMapper = new ObjectMapper();
+    public String transact(ResidentDto oldResident, ResidentDto newResident) {
+        SagaResidentDto sagaResidentDto = new SagaResidentDto("not set", oldResident);
         try {
-            kafkaApi.publish(UpdateResidentSagaBegin, objectMapper.writeValueAsString(sagaResidentDto));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            if (newResident.getUsername().equals("updatefailo")) {
+                throw new IllegalStateException(String.format("Could not backup or broadcast Resident with \n ID: %s \n SagaID: %s",
+                        sagaResidentDto.getResidentDto().getId(),
+                        sagaResidentDto.getSagaId()));
+            }
+            sagaResidentDto = new SagaResidentDto(
+                    new Resident(newResident, residentSagaService.backupResident(oldResident).getSagaId())
+            );
+            kafkaApi.publish(UpdateResidentSagaBegin, new ObjectMapper().writeValueAsString(sagaResidentDto));
+        } catch (Exception e) {
+            SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaResidentDto.getSagaId(), SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
+            sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
+            try {
+                kafkaApi.publish(UpdateResidentSagaInitRevert, new ObjectMapper().writeValueAsString(sagaResidentDto));
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
         }
+        return sagaResidentDto.getSagaId();
     }
 
     @Override
-    public void transact(ResidentDto residentDto) {
+    public String transact(ResidentDto residentDto) {
         throw new UnsupportedOperationException("this method cannot be used for update saga");
     }
 
@@ -67,15 +70,23 @@ public class UpdateResident implements SagaParticipator<ResidentDto> {
         SagaResidentDto sagaResidentDto = new SagaResidentDto(residentRepository.findResidentBySagaId(sagaId));
         try {
             kafkaApi.publish(UpdateResidentSagaFailed, new ObjectMapper().writeValueAsString(sagaResidentDto));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            handleException(e, sagaId);
         }
     }
 
-    @Transactional
     public void transact(String sagaId) {
-        //this will be run after a successful saga
-        Resident resident = residentRepository.findResidentBySagaId(sagaId);
-        residentRepository.deleteBySagaId(sagaId);
+        try {
+            //this will be run after a successful saga
+            residentRepository.deleteBySagaId(sagaId);
+        } catch (Exception e) {
+            handleException(e, sagaId);
+        }
+    }
+
+    private void handleException(Exception e, String sagaId) {
+        SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaId, SagaStatus.FAILED);
+        sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
+        sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
     }
 }

@@ -30,9 +30,9 @@ public class CreateEmployee implements SagaInitiator<EmployeeDto> {
 
     @Override
     public void initSaga(EmployeeDto employeeDto) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println("BOSTED CREATE SAGA INIT");
         try {
-            kafkaAPI.publish(CreateEmployeeSagaInit, objectMapper.writeValueAsString(employeeDto));
+            kafkaAPI.publish(CreateEmployeeSagaInit, new ObjectMapper().writeValueAsString(employeeDto));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

@@ -5,8 +5,10 @@ import com.graduationproject.ochestrator.dto.ResidentDto;
 import javax.persistence.*;
 
 @Entity
+@IdClass(ResidentKey.class)
 public class Resident {
 
+    @Id
     @Column(unique=true)
     private String sagaId;
 

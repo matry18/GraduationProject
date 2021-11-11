@@ -54,4 +54,16 @@ public class Role {
     public void setSagaId(String sagaId) {
         this.sagaId = sagaId;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAccessRights(List<AccessRight> accessRights) {
+        this.accessRights = accessRights;
+    }
 }

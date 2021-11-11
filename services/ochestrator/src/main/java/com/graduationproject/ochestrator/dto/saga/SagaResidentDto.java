@@ -13,6 +13,11 @@ public class SagaResidentDto {
         this.residentDto = new ResidentDto(resident);
     }
 
+    public SagaResidentDto(String sagaId, ResidentDto residentDto) {
+        this.sagaId = sagaId;
+        this.residentDto = residentDto;
+    }
+
     public String getSagaId() {
         return sagaId;
     }

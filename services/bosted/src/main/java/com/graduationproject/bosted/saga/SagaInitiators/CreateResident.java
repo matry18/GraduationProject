@@ -29,9 +29,8 @@ public class CreateResident implements SagaInitiator<ResidentDto> {
 
     @Override
     public void initSaga(ResidentDto residentDto) { // begins the Create Resident Saga which is published to the CreateResidentSagaInit topic
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            kafkaAPI.publish(CreateResidentSagaInit, objectMapper.writeValueAsString(residentDto));
+            kafkaAPI.publish(CreateResidentSagaInit, new ObjectMapper().writeValueAsString(residentDto));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

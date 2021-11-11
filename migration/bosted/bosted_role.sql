@@ -1,1 +1,0 @@
-INSERT INTO bosted.role (id, name) VALUES ('ffdff574-c124-4629-9032-dc922a575ef3', 'admin');

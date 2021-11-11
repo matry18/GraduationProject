@@ -1,9 +1,10 @@
 package com.graduationproject.bosted.dto;
 
 import com.graduationproject.bosted.entity.Resident;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static java.util.Objects.isNull;
-
 public class ResidentDto {
     private String id;
     private String firstname;
@@ -35,7 +36,12 @@ public class ResidentDto {
         this.email = resident.getEmail();
         this.phoneNumber = resident.getPhoneNumber();
         this.username = resident.getUsername();
-        this.password = resident.getPassword();
+    }
+
+    public void hashPassword() {
+        int hashStrength = 10;
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(hashStrength);
+        password = passwordEncoder.encode(password);
     }
 
     public String getFirstname() {
@@ -96,10 +102,6 @@ public class ResidentDto {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override

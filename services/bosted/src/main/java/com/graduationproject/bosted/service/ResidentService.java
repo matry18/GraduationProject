@@ -34,10 +34,10 @@ public class ResidentService {
 
     public void addCitizen(ResidentDto residentDto) {
         residentDto.setId(UUID.randomUUID().toString());
-        Resident resident = residentRepository.save(new Resident(residentDto));
-        createResident.initSaga(new ResidentDto(resident));
+        residentDto.hashPassword();
+        residentRepository.save(new Resident(residentDto));
+        createResident.initSaga(residentDto);
     }
-
 
     public List<Resident> getAllCitizen() {
         return residentRepository.findAll();

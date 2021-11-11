@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import static com.graduationproject.bosted.topic.ResidentTopics.CreateResidentSagaFailed;
 import static com.graduationproject.bosted.topic.ResidentTopics.DeleteResidentSagaFailed;
+import static com.graduationproject.bosted.topic.ResidentTopics.DeleteResidentSagaInitRevert;
 
 @Service
 public class DeleteResidentConsumer {
@@ -25,7 +25,15 @@ public class DeleteResidentConsumer {
 
     @KafkaListener(topics = DeleteResidentSagaFailed, groupId = GROUP_ID)
     public void consumeCreateResidentSagaFailed(String message) {
-        System.out.println(GROUP_ID+ " " +DeleteResidentSagaFailed);
+        revertSaga(message);
+    }
+
+    @KafkaListener(topics = DeleteResidentSagaInitRevert, groupId = GROUP_ID)
+    public void consumeDeleteResidentSagaInitRevert(String message) {
+        revertSaga(message);
+    }
+
+    private void revertSaga(String message) {
         //will be sent by the orchestrator and bosted should call its revert method for the saga
         try {
             SagaResidentDto sagaResidentDto = new ObjectMapper().readValue(message, SagaResidentDto.class);
@@ -33,7 +41,5 @@ public class DeleteResidentConsumer {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
     }
-
 }

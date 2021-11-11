@@ -21,13 +21,17 @@ import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.*;
 @Service
 public class UpdateEmployeeConsumer {
 
-    private static final String GROUP_ID = "orchestrator";
     private ConsumerHelper<EmployeeDto> consumerHelper;
+
     private final SagaResponseRepository sagaResponseRepository;
-    private static final List<String> services = new ArrayList<>( //Remember that it is not always every service participating in each saga
+
+    private static final String GROUP_ID = "orchestrator";
+    private final static String BOSTED_SERVICE_NAME = "bosted";
+    private final static String AUTHENTICATION_SERVICE_NAME = "authentication";
+    private static final List<String> services = new ArrayList<>(
             Arrays.asList(
-                    "bosted",
-                    "authentication"
+                    BOSTED_SERVICE_NAME,
+                    AUTHENTICATION_SERVICE_NAME
             )
     );
 
@@ -39,7 +43,7 @@ public class UpdateEmployeeConsumer {
 
     @KafkaListener(topics = UpdateEmployeeSagaInit, groupId = GROUP_ID)
     public void consumeUpdateEmployeeSagaInit(String message) {
-        consumerHelper.initUpdateSaga(message, UpdateEmployeeSagaInit);
+        consumerHelper.initUpdateSaga(message, UpdateEmployeeSagaInit, BOSTED_SERVICE_NAME);
     }
 
     @KafkaListener(topics = UpdateEmployeeSagaDone, groupId = GROUP_ID)

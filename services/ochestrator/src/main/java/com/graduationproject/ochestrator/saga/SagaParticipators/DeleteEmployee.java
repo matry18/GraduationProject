@@ -4,67 +4,77 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduationproject.ochestrator.dto.EmployeeDto;
 import com.graduationproject.ochestrator.dto.saga.SagaEmployeeDto;
-import com.graduationproject.ochestrator.entities.Employee;
+import com.graduationproject.ochestrator.dto.saga.SagaResponseDto;
+import com.graduationproject.ochestrator.entities.SagaResponse;
 import com.graduationproject.ochestrator.kafka.KafkaApi;
-import com.graduationproject.ochestrator.repository.DepartmentRepository;
 import com.graduationproject.ochestrator.repository.EmployeeRepository;
+import com.graduationproject.ochestrator.repository.SagaResponseRepository;
 import com.graduationproject.ochestrator.saga.SagaParticipator;
 import com.graduationproject.ochestrator.service.EmployeeSagaService;
+import com.graduationproject.ochestrator.type.SagaStatus;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.UUID;
 
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.DeleteEmployeeSagaBegin;
-import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.DeleteEmployeeSagaFailed;
+import static com.graduationproject.ochestrator.topic.employee.EmployeeTopics.*;
 
 @Service
 public class DeleteEmployee implements SagaParticipator<EmployeeDto> {
-
-    private final DepartmentRepository departmentRepository;
     private final EmployeeRepository employeeRepository;
     private final KafkaApi kafkaApi;
     private final EmployeeSagaService employeeSagaService;
+    private final SagaResponseRepository sagaResponseRepository;
 
     @Autowired
-    public DeleteEmployee(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository, KafkaApi kafkaApi, EmployeeSagaService employeeSagaService) {
-        this.departmentRepository = departmentRepository;
+    public DeleteEmployee(EmployeeRepository employeeRepository, KafkaApi kafkaApi, EmployeeSagaService employeeSagaService, SagaResponseRepository sagaResponseRepository) {
         this.employeeRepository = employeeRepository;
         this.kafkaApi = kafkaApi;
         this.employeeSagaService = employeeSagaService;
+        this.sagaResponseRepository = sagaResponseRepository;
     }
 
-
-
-
     @Override
-    public void transact(EmployeeDto oldEmployeeDto, EmployeeDto newEmployeeDto) {
+    public String transact(EmployeeDto oldEmployeeDto, EmployeeDto newEmployeeDto) {
         throw new UnsupportedOperationException("Not implemented for this saga!");
     }
 
     @Transactional
     @Override
-    public void transact(EmployeeDto employeeDto) {
-        //Create sagaId and the employee and sagaId to repo and publish Kafka
-        String sagaId = UUID.randomUUID().toString();
-        employeeSagaService.setupEmployeeDataForTransaction(employeeDto, sagaId);
-        Employee employee = employeeRepository.save(new Employee(employeeDto, sagaId)); //Creates the saga that will be used by the services when responding
-        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto(employee); // the dto that will be sent to the services so they know which saga they are part of
-        ObjectMapper objectMapper = new ObjectMapper();
+    public String transact(EmployeeDto employeeDto) {
+        SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto("not set", employeeDto);
         try {
-            kafkaApi.publish(DeleteEmployeeSagaBegin, objectMapper.writeValueAsString(sagaEmployeeDto));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            if (sagaEmployeeDto.getEmployeeDto().getUsername().equals("faildelete")) {
+                throw new IllegalStateException(String.format("Could not backup or broadcast Employee with \n ID: %s \n SagaID: %s",
+                        sagaEmployeeDto.getEmployeeDto().getId(),
+                        sagaEmployeeDto.getSagaId()));
+            }
+            sagaEmployeeDto = employeeSagaService.backupEmployee(employeeDto);
+            kafkaApi.publish(DeleteEmployeeSagaBegin, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
+        } catch (Exception e) {
+            SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaEmployeeDto.getSagaId(),
+                    SagaStatus.FAILED);
+            sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
+            sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
+            try {
+                kafkaApi.publish(DeleteEmployeeSagaInitRevert, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
         }
+        return sagaEmployeeDto.getSagaId();
     }
 
     @Transactional
     public void transact(String sagaId) {
-        //this will be run after a successful saga
-        Employee employee = employeeRepository.findEmployeeBySagaId(sagaId);
-        employeeRepository.deleteBySagaId(sagaId);
-        employeeSagaService.deleteEmployeeDataForTransaction(sagaId);
+        try {
+            //this will be run after a successful saga
+            employeeRepository.deleteBySagaId(sagaId);
+            employeeSagaService.deleteEmployeeDataForTransaction(sagaId);
+        } catch (Exception e) {
+         handleException(e, sagaId);
+        }
     }
 
     @Transactional
@@ -73,8 +83,13 @@ public class DeleteEmployee implements SagaParticipator<EmployeeDto> {
         SagaEmployeeDto sagaEmployeeDto = new SagaEmployeeDto(employeeRepository.findEmployeeBySagaId(sagaId));
         try {
             kafkaApi.publish(DeleteEmployeeSagaFailed, new ObjectMapper().writeValueAsString(sagaEmployeeDto));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            handleException(e, sagaId);
         }
+    }
+    private void handleException(Exception e, String sagaId) {
+        SagaResponseDto sagaResponseDto = new SagaResponseDto(sagaId, SagaStatus.FAILED);
+        sagaResponseDto.setErrorMessage(ExceptionUtils.getStackTrace(e));
+        sagaResponseRepository.save(new SagaResponse(sagaResponseDto));
     }
 }

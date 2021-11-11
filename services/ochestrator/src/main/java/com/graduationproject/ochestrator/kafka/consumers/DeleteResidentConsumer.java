@@ -11,6 +11,7 @@ import com.graduationproject.ochestrator.type.SagaStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,15 +21,20 @@ import static com.graduationproject.ochestrator.topic.resident.ResidentTopics.*;
 
 @Service
 public class DeleteResidentConsumer {
-    private static final String GROUP_ID = "orchestrator";
+
     private ConsumerHelper<ResidentDto> consumerHelper;
-    private static final List<String> services = new ArrayList<>( //Remember that it is not always every service participating in each saga
+
+    private final SagaResponseRepository sagaResponseRepository;
+
+    private final static String BOSTED_SERVICE_NAME = "bosted";
+    private final static String AUTHENTICATION_SERVICE_NAME = "authentication";
+    private static final String GROUP_ID = "orchestrator";
+    private static final List<String> services = new ArrayList<>(
             Arrays.asList(
-                    "bosted",
-                    "authentication"
+                    BOSTED_SERVICE_NAME,
+                    AUTHENTICATION_SERVICE_NAME
             )
     );
-    private final SagaResponseRepository sagaResponseRepository;
     @Autowired
     public DeleteResidentConsumer(DeleteResident deleteResident, SagaResponseRepository sagaResponseRepository) {
         consumerHelper = new ConsumerHelper<>(deleteResident, services, ResidentDto.class);
@@ -36,11 +42,13 @@ public class DeleteResidentConsumer {
     }
 
     @KafkaListener(topics = DeleteResidentSagaInit, groupId = GROUP_ID)
+    @Transactional
     public void consumeDeleteResidentSagaInit(String message) {
-        consumerHelper.initSaga(message, DeleteResidentSagaInit);
+        consumerHelper.initSaga(message, DeleteResidentSagaInit, BOSTED_SERVICE_NAME);
     }
 
     @KafkaListener(topics = DeleteResidentSagaDone, groupId = GROUP_ID)
+    @Transactional
     public void consumeDeleteResidentSagaDone(String message) {
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);
@@ -54,6 +62,7 @@ public class DeleteResidentConsumer {
     }
 
     @KafkaListener(topics = DeleteResidentSagaRevert, groupId = GROUP_ID)
+    @Transactional
     public void consumeDeleteResidentSagaRevert(String message) {
         try {
             SagaResponseDto sagaResponseDto = new ObjectMapper().readValue(message, SagaResponseDto.class);

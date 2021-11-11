@@ -29,18 +29,17 @@ public class Employee extends User {
 
     private String password;
 
-
     public Employee(EmployeeDto employeeDto) {
-        this.id = employeeDto.getId();
-        this.firstname = employeeDto.getFirstname();
-        this.lastname = employeeDto.getLastname();
-        this.Email = employeeDto.getEmail();
-        this.phoneNumber = employeeDto.getPhoneNumber();
-        this.department = new Department(employeeDto.getDepartment());
-        this.role = new Role(employeeDto.getRoleDto());
-        //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
-        this.username = employeeDto.getUsername();
-        this.password = employeeDto.getPassword();
+            this.id = employeeDto.getId();
+            this.firstname = employeeDto.getFirstname();
+            this.lastname = employeeDto.getLastname();
+            this.Email = employeeDto.getEmail();
+            this.phoneNumber = employeeDto.getPhoneNumber();
+            this.department = new Department(employeeDto.getDepartment());
+            this.role = new Role(employeeDto.getRoleDto());
+            //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
+            this.username = employeeDto.getUsername();
+            this.password = employeeDto.getPassword();
 
     }
 
@@ -100,14 +99,6 @@ public class Employee extends User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getId() {
         return id;
     }
@@ -120,6 +111,14 @@ public class Employee extends User {
         this.role = role;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
         public String toString() {
             return "Employee{" +
@@ -130,7 +129,6 @@ public class Employee extends User {
                     ", phoneNumber='" + phoneNumber + '\'' +
                     ", department=" + department +
                     ", username='" + username + '\'' +
-                    ", password='" + password + '\'' +
                     '}';
         }
 }

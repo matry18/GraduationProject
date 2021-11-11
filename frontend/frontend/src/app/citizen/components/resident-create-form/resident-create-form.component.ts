@@ -46,7 +46,7 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
           firstname: ["" , Validators.required],
           lastname: ["" ,Validators.required],
           email: ["", [Validators.required, Validators.email]],
-          phoneNumber: ["", Validators.required],
+          phoneNumber: ["", [Validators.required, Validators.pattern('[- +()0-9]+')]],
           department: ["", Validators.required],
           //these should be removed when we get Kafka, Orchestrator, and Authentication services up.
           username: ["", Validators.required],
@@ -61,7 +61,7 @@ export class ResidentCreateFormComponent implements OnInit, OnDestroy {
           firstname: [data.resident.firstname, Validators.required],
           lastname: [data.resident.lastname, Validators.required],
           email: [data.resident.email, [Validators.required, Validators.email]],
-          phoneNumber: [data.resident.phoneNumber, Validators.required],
+          phoneNumber: [data.resident.phoneNumber, [Validators.required, Validators.pattern('[- +()0-9]+')]],
           department: [null, [Validators.required]]
         }
       );

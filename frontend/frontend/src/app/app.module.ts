@@ -63,6 +63,11 @@ import {FormSubmissionPositiveComponent} from "./snackbars/FormSubmission/form-s
 import {FormSubmissionNegativeComponent} from './snackbars/FormSubmission/form-submission-negative/form-submission-negative.component';
 import {ResidentModule} from "./citizen/resident.module";
 import {EmployeeModule} from "./employee/employee.module";
+import {DepartmentOverviewComponent} from './homepage/components/department-overview/department-overview.component';
+import {EmployeeOverviewComponent} from './homepage/components/employee-overview/employee-overview.component';
+import {ResidentOverviewComponent} from './homepage/components/resident-overview/resident-overview.component';
+import {EmployeeBackedupComponent} from './homepage/components/employee-backedup/employee-backedup.component';
+import {ResidentBackedupComponent} from './homepage/components/resident-backedup/resident-backedup.component';
 import {AddUserDialogButtonComponent} from './user/add-user-dialog/add-user-dialog-button.component';
 import {AddUserMenuComponent} from './user/add-user-menu/add-user-menu.component';
 import {GeneralNavbarComponent} from './navbar/components/general-navbar/general-navbar.component';
@@ -81,11 +86,6 @@ import {SynchronizationLogContainerComponent} from './synchronization-error-log/
 import {FailedSynchronizationResidentListComponent} from './synchronization-error-log/failed-synchronization-resident-list/failed-synchronization-resident-list.component';
 import {FailedSynchronizationEmployeeListComponent} from "./synchronization-error-log/failed-synchronization-employee-list/failed-synchronization-employee-list.component";
 import {LoginFormComponent} from './login/login-form/login-form.component';
-import {DepartmentOverviewComponent} from './homepage/components/department-overview/department-overview.component';
-import {EmployeeOverviewComponent} from './homepage/components/employee-overview/employee-overview.component';
-import {ResidentOverviewComponent} from './homepage/components/resident-overview/resident-overview.component';
-import {EmployeeBackedupComponent} from './homepage/components/employee-backedup/employee-backedup.component';
-import {ResidentBackedupComponent} from './homepage/components/resident-backedup/resident-backedup.component';
 import {SynchronizationErrorsComponent} from './homepage/components/synchronization-errors/synchronization-errors.component';
 import {CreateRoleComponent} from './role/components/create-role/create-role.component';
 import {RoleListComponent} from './role/components/role-list/role-list.component';

@@ -1,30 +1,30 @@
 <div class="custom-container">
   <table mat-table [dataSource]="synchronizationErrors" class="mat-elevation-z8 demo-table">
-    <ng-container matColumnDef="sagaId" class="col-1">
-      <th mat-header-cell class="col-1" *matHeaderCellDef> Saga ID </th>
-      <td class="col-1" mat-cell *matCellDef="let element" >
+    <ng-container matColumnDef="sagaId" class="col-2">
+      <th mat-header-cell class="col-2 space" *matHeaderCellDef> Saga ID </th>
+      <td class="col-2 space" mat-cell *matCellDef="let element" >
         {{element.sagaId}}
       </td>
     </ng-container>
 
-    <ng-container class="col-1" matColumnDef="serviceName">
-      <th class="col-1"  mat-header-cell *matHeaderCellDef>Service Name </th>
-      <td class="col-1"  mat-cell *matCellDef="let element"> {{element.serviceName}} </td>
+    <ng-container class="col-2" matColumnDef="serviceName">
+      <th class="col-2 space"  mat-header-cell *matHeaderCellDef>Service Name </th>
+      <td class="col-2 space"  mat-cell *matCellDef="let element"> {{element.serviceName}} </td>
     </ng-container>
 
-    <ng-container class="col-1" matColumnDef="sagaStatus">
-      <th class="col-1" mat-header-cell *matHeaderCellDef>Saga Status </th>
-      <td class="col-1" mat-cell *matCellDef="let element"> {{element.sagaStatus}} </td>
+    <ng-container class="col-2" matColumnDef="sagaStatus">
+      <th class="col-2 space" mat-header-cell *matHeaderCellDef>Saga Status </th>
+      <td class="col-2 space" mat-cell *matCellDef="let element"> {{element.sagaStatus}} </td>
     </ng-container>
 
-    <ng-container class="col-1" matColumnDef="receivingTime">
-      <th class="col-1" mat-header-cell *matHeaderCellDef>Received at </th>
-      <td class="col-1" mat-cell *matCellDef="let element"> {{element.receivingTime | date:'medium'}} </td>
+    <ng-container class="col-2" matColumnDef="receivingTime">
+      <th class="col-2 space" mat-header-cell *matHeaderCellDef>Received at </th>
+      <td class="col-2 space" mat-cell *matCellDef="let element"> {{element.receivingTime | date:'medium'}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="errorMessage" class="col-1">
-      <th mat-header-cell class="col-1" *matHeaderCellDef >Error Message</th>
-      <td mat-cell *matCellDef="let element; let index"  class="col-1">
+    <ng-container matColumnDef="errorMessage" class="col-4">
+      <th mat-header-cell class="col-4 space" *matHeaderCellDef >Error Message</th>
+      <td mat-cell *matCellDef="let element; let index"  class="col-4 space">
         <mat-expansion-panel style="background: rgba(63,81,181,0.77);" >
           <mat-expansion-panel-header>
             <mat-panel-title style="color: white">
@@ -35,7 +35,6 @@
             </mat-panel-description>
           </mat-expansion-panel-header>
           <span style="color: white">{{element.errorMessage}}</span>
-
         </mat-expansion-panel>
       </td>
     </ng-container>

@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <span routerLink="" class="clickable">POC Sensum <mat-icon>home</mat-icon></span>
+  <span routerLink="" class="clickable" [matTooltip]="'Homepage'" >POC Sensum <mat-icon>home</mat-icon></span>
   <span class="spacer"></span>
 
   <button *ngIf="loggedIn.getValue() && accessRightService.hasAccessRight(['admin'])" routerLink ="roles"
@@ -33,18 +33,20 @@
   <td-user-profile *ngIf="loggedIn.getValue(); else login" [matTooltip]="'Profile'" [name]="currentUser?.username" [email]="currentUser?.email">
     <ng-container td-user-info-list>
       <mat-list-item>
-        <mat-icon matListAvatar>account_balance</mat-icon>
+        <mat-icon matListAvatar class="icons">account_balance</mat-icon>
         <span matLine>{{currentUser?.department?.departmentName}}</span>
       </mat-list-item>
     </ng-container>
     <ng-container td-user-action-list>
       <button mat-list-item routerLink="user/logged-in">
+        <mat-icon matListAvatar class="icons">face</mat-icon>
         <span matListAvatar></span>
-        <span matLine>Go to profile</span>
+        <span matLine [matTooltip]="'Show profile'">Go to profile</span>
       </button>
-      <button mat-list-item (click)="logout()">
+      <button mat-list-item (click)="logout()" >
+        <mat-icon matListAvatar class="icons">power_settings_new</mat-icon>
         <span matListAvatar></span>
-        <span matLine>Sign out</span>
+        <span matLine [matTooltip]="'Log out'">Sign out</span>
       </button>
     </ng-container>
   </td-user-profile>

@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class SagaResponseDto {
 
     private String sagaId;
-    private String serviceName;
+    private String serviceName = "orchestrator";
     private SagaStatus sagaStatus;
     private String errorMessage;
     private LocalDateTime receivingTime;
@@ -21,6 +21,11 @@ public class SagaResponseDto {
         this.errorMessage = errorMessage;
     }
 
+    public SagaResponseDto(String sagaId, SagaStatus sagaStatus) {
+        this.sagaId = sagaId;
+        this.sagaStatus = sagaStatus;
+        errorMessage = "";
+    }
     public SagaResponseDto() {
 
     }
@@ -60,6 +65,10 @@ public class SagaResponseDto {
 
     public LocalDateTime getReceivingTime() {
         return receivingTime;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override
