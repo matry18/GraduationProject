@@ -1,0 +1,81 @@
+version: '3.8'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      #KAFKA_CREATE_TOPICS: "composetest:1:1" <TopicName>:<NumberOfPartitions>:<NumberOfReplicas>
+  bosted_db:
+    image: mysql:8
+    restart: unless-stopped
+    container_name: bosted_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bosted
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
+    ports: 
+      - "3310:3306"
+    volumes:
+      - bosted-volume:/var/lib/mysql
+  authentication_db:
+    image: mysql:8
+    restart: unless-stopped
+    container_name: authentication_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=authentication
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
+    ports: 
+      - "3309:3306"
+    volumes:
+      - authentication-volume:/var/lib/mysql
+  orchestrator_db:
+    image: mysql:8
+    restart: unless-stopped
+    container_name: orchestrator_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=orchestrator
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pswd
+    ports: 
+      - "3308:3306"
+    volumes:
+      - orchestrator-volume:/var/lib/mysql
+  bosted_service:
+    container_name: bosted_service
+    build: services/bosted/.
+    depends_on: 
+      - bosted_db
+    ports: 
+      - "8080:8080"
+    restart: on-failure
+  authentication_service:
+    container_name: authentication_service
+    build: services/authentication/.
+    depends_on: 
+      - authentication_db
+    ports: 
+      - "8090:8090"
+    restart: on-failure
+  orchestrator_service:
+    build: services/ochestrator/.
+    depends_on: 
+      - orchestrator_db
+    container_name: orchestrator_service
+    ports: 
+      - "8088:8090"
+    restart: on-failure
+volumes: 
+  bosted-volume:
+  authentication-volume:
+  orchestrator-volume:
